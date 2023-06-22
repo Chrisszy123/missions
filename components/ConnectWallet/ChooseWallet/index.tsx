@@ -83,7 +83,7 @@ const ChooseWallet = ({ onScan, onClickWallet }: ChooseWalletProps) => {
                           alt="Wallet"
                       />
                   </span>
-                  Auth0 <Icon name="arrow-right" />
+                  Web2 Login <Icon name="arrow-right" />
               </span>
           </button>
       </div>

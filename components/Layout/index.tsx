@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
 import { useRouter } from "next/router";
 import { enablePageScroll, clearQueueScrollLocks } from "scroll-lock";
 import Head from "next/head";
@@ -6,6 +6,7 @@ import cn from "classnames";
 import styles from "./Layout.module.sass";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { WalletContext } from "context/WalletContext";
 
 type LayoutProps = {
     layoutNoOverflow?: boolean;
@@ -31,6 +32,7 @@ const Layout = ({
     children,
 }: LayoutProps) => {
     const { pathname } = useRouter();
+    const {connected}: any = useContext(WalletContext)
 
     useEffect(() => {
         clearQueueScrollLocks();
@@ -48,6 +50,9 @@ const Layout = ({
                 })}
                 style={{ backgroundColor: background }}
             >
+                {!connected ? <div style={{backgroundColor: "red", color: "white", width: "100vw", height: "30px", textAlign: "center"}}> 
+                    To fully use the missions DApp please connect wallet.
+                </div> : ""}
                 {!headerHide && (
                     <Header
                         className={classHeader}

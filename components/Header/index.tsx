@@ -1,5 +1,6 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect, useCallback } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
+import { useUser } from '@auth0/nextjs-auth0/client';
 //import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Link from "next/link";
 import cn from "classnames";
@@ -13,6 +14,7 @@ import Discover from "./Discover";
 import Profile from "./Profile";
 import Menu from "./Menu";
 import { WalletContext } from "context/WalletContext";
+import { AuthContext } from "context/AuthContext";
 
 import { resultSearch } from "@/mocks/resultSearch";
 
@@ -39,19 +41,72 @@ const Header = ({ className, noRegistration, light, empty }: HeaderProps) => {
   const [connect, setConnect] = useState<boolean>(false);
   const [registration, setRegistration] = useState<boolean>(false);
   useHotkeys("esc", () => setVisibleProfile(false));
+  const {user, error, isLoading} = useUser()
   const { connected, account }: any = useContext(WalletContext);
+  const {setUser}: any = useContext(AuthContext)
+  setUser(user)
+  console.log(user)
 
   const handleClick = () => {
     setConnect(false);
     setRegistration(true);
   };
-  const handleConnect = () => {
-    if(!connected){
-        setConnect(true)
+  const HandleNavBtn = () => {
+    if(user && connected){
+      return (
+        <button
+                className={cn(
+                  "button-stroke button-medium",
+                  styles.button,
+                  styles.connect
+                )}
+                onClick={() => setConnect(true)}
+              >
+               {account}
+              </button>
+      )
+    } else if (user && !connected){
+      return (
+        <button
+                className={cn(
+                  "button-stroke button-medium",
+                  styles.button,
+                  styles.connect
+                )}
+                onClick={() => setConnect(true)}
+              >
+                connect wallet
+              </button>
+      )
+    } else if(!user && connected){
+      return(
+        <button
+                className={cn(
+                  "button-stroke button-medium",
+                  styles.button,
+                  styles.connect
+                )}
+                onClick={() => setConnect(true)}
+              >
+                 {account}
+              </button>
+      )
     }else{
-        return
+      return(
+        <button
+                className={cn(
+                  "button-stroke button-medium",
+                  styles.button,
+                  styles.connect
+                )}
+                onClick={() => setConnect(true)}
+              >
+                 Login
+              </button>
+      )
     }
-  }
+  } 
+
   return (
     <>
       <header
@@ -112,16 +167,7 @@ const Header = ({ className, noRegistration, light, empty }: HeaderProps) => {
                   <Icon name="plus" />
                 </a>
               </Link>
-                <button
-                  className={cn(
-                    "button-stroke button-medium",
-                    styles.button,
-                    styles.connect
-                  )}
-                  onClick={() => setConnect(true)}
-                >
-                  {connected ? `${account}` : "Login"}
-                </button>
+              <HandleNavBtn />
               <Link href="/notification">
                 <a className={cn(styles.notification, styles.active)}>
                   <Icon name="flash" />
@@ -143,17 +189,21 @@ const Header = ({ className, noRegistration, light, empty }: HeaderProps) => {
           [styles.visible]: visibleProfile,
         })}
       ></div>
-      <Modal
-        className={styles.modal}
-        closeClassName={styles.close}
-        visible={connected ? !connect : connect}
-        onClose={() => setConnect(false)}
-      >
-        <ConnectWallet
-          onClickLogo={() => setConnect(false)}
-          onContinue={handleClick}
-        />
-      </Modal>
+      {!connected ? (
+        <Modal
+          className={styles.modal}
+          closeClassName={styles.close}
+          visible={connected ? !connect : connect}
+          onClose={() => setConnect(false)}
+        >
+          <ConnectWallet
+            onClickLogo={() => setConnect(false)}
+            onContinue={handleClick}
+          />
+        </Modal>
+      ) : (
+        null
+      )}
     </>
   );
 };

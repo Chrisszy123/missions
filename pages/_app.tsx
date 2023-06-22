@@ -24,8 +24,8 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
 );
 
 const { connectors } = getDefaultWallets({
-  appName: 'RainbowKit App',
-  projectId: 'YOUR_PROJECT_ID',
+  appName: "RainbowKit App",
+  projectId: "YOUR_PROJECT_ID",
   chains,
 });
 const wagmiConfig = createConfig({
@@ -36,18 +36,30 @@ const wagmiConfig = createConfig({
 });
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const [connected, setConnected] = useState(false)
-  const [chain, setChain] = useState("")
-  const [account, setAccount] = useState("")
+  const [connected, setConnected] = useState(false);
+  const [chain, setChain] = useState("");
+  const [account, setAccount] = useState("");
+  const [user, setUser] = useState("");
   return (
     <WagmiConfig config={wagmiConfig}>
       <RainbowKitProvider chains={chains}>
-        <WalletContext.Provider value={{connected, setConnected, chain, setChain, account, setAccount}}>
-          <UserProvider>
-            <Component {...pageProps} />
-          </UserProvider>
+        <WalletContext.Provider
+          value={{
+            connected,
+            setConnected,
+            chain,
+            setChain,
+            account,
+            setAccount,
+          }}
+        >
+          <AuthContext.Provider value={{ user, setUser }}>
+            <UserProvider>
+              <Component {...pageProps} />
+            </UserProvider>
+          </AuthContext.Provider>
         </WalletContext.Provider>
-     </RainbowKitProvider>
+      </RainbowKitProvider>
     </WagmiConfig>
   );
 }

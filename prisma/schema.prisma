@@ -1,0 +1,147 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String      @id @unique @default(uuid())
+  email         String?     @unique
+  username      String?     @unique
+  name          String?
+  password      String?
+  walletAddress String?     @unique
+  levelId       String?
+  role          Role        @default(BASIC)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  winnerId      String?
+  reviews       Reviews?
+  communities   Community[]
+  missions      Mission[]
+  session       Session[]
+  level         Level?      @relation(fields: [levelId], references: [id],onDelete: Cascade, onUpdate: Cascade)
+  winners       Winners?    @relation(fields: [winnerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model Level {
+  id    String @id @unique @default(uuid())
+  name  String @unique
+  users User[]
+}
+
+// model Reward {
+//   id        String   @id @default(uuid())
+//   name      String   @unique
+//   value     String   @unique
+//   details   Json
+//   winnerId  String?  @unique
+//   missionId String?  @unique
+//   mission   Mission? @relation(fields: [missionId], references: [id])
+//   winner    Winners? @relation(fields: [winnerId], references: [id])
+// }
+
+model Community {
+  id            String    @id @unique @default(uuid())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  name          String    @unique
+  desc          String
+  link          String?
+  secondaryLink String?
+  tags          String[]
+  userId        String?
+  user          User?     @relation(fields: [userId], references: [id],onDelete: Cascade, onUpdate: Cascade)
+  missions      Mission[]
+}
+
+model Mission {
+  id             String         @id @unique @default(uuid())
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  desc           String?
+  name           String?        @unique
+  rewards        String[]
+  category       String[]
+  userId         String?        
+  state          State          @default(PENDING)
+  submissionType SubmissionType @default(URL)
+  recurrence     Recurrence     @default(ONCE)
+  communityId    String?
+  community      Community?     @relation(fields: [communityId], references: [id],onDelete: Cascade, onUpdate: Cascade)
+  users          User?          @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  reviews        Reviews?
+}
+
+// model MissionCategory {
+//   id        String   @id @unique @default(uuid())
+//   name      String   @unique
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+//   missionId String?  @unique
+//   mission   Mission? @relation(fields: [missionId], references: [id])
+// }
+
+model Winners {
+  id    String @id @unique @default(uuid())
+  users User[]
+}
+
+model Reviews {
+  id        String      @id @unique @default(uuid())
+  state     ReviewState @default(PENDING)
+  mission   Mission     @relation(fields: [missionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  missionId String      @unique
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId    String      @unique
+}
+
+model Session {
+  id             String   @id @default(uuid())
+  createdAt      DateTime @default(now())
+  userId         String
+  expirationDate DateTime
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+enum Role {
+  BASIC
+  ADMIN
+  CREATOR
+}
+
+enum State {
+  DRAFT
+  PENDING
+  OPEN
+  CLOSED
+}
+
+enum SubmissionType {
+  URL
+  IMAGE
+  TEXT
+  QUIZ
+  VISIT
+  EMPTY
+  TWITTER
+  DISCORD
+  TELEGRAM
+  INVITES
+}
+
+enum Recurrence {
+  ONCE
+  DAILY
+  WEEKLY
+  MONTHLY
+}
+
+enum ReviewState {
+  PENDING
+  APPROVED
+  FAILED
+}

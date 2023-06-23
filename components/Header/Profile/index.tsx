@@ -46,7 +46,7 @@ const Profile = ({
         if (initialRender.current) {
             initialRender.current = false;
         } else {
-            visible ? disablePageScroll() : enablePageScroll();
+             visible ? disablePageScroll() : enablePageScroll();
         }
     }, [visible]);
 

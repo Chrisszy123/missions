@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef } from "react";
 import Layout from "@/components/Layout";
 import Main from "./Main";
 import Catalog from "@/components/Catalog";
@@ -9,27 +9,12 @@ import Newsletter from "@/components/Newsletter";
 
 import { auctions } from "@/mocks/auctions";
 import { tabsTime, nfts, statuses } from "@/mocks/nfts";
-// 
-import { getCommunities, getMissions } from "@/utils/axios";
 
 const HomePage = () => {
-    const [communities, setCommunities] = useState<any>([])
-    const [missions, setMissions] = useState<any>([])
     const scrollToAll = useRef<any>(null);
-    const scrollToCommunities = useRef<any>(null);
-    const scrollToMissions = useRef<any>(null);
+    const scrollToNFTs = useRef<any>(null);
+    const scrollToCollections = useRef<any>(null);
     const scrollToArtist = useRef<any>(null);
-
-    useEffect( () => {
-        getCommunities().then((res) => {
-            setCommunities(res.data)
-        })
-        getMissions().then((res) => {
-            setMissions(res.data)
-            console.log(res.data)
-        })
-       
-    }, [])
 
     const tabsSorting = [
         {
@@ -38,20 +23,20 @@ const HomePage = () => {
             anchor: scrollToAll,
         },
         {
-            title: "Communities",
-            value: "communities",
+            title: "NFTs",
+            value: "nfts",
             counter: "456,789",
-            anchor: scrollToCommunities,
+            anchor: scrollToNFTs,
         },
         {
-            title: "Missions",
-            value: "missions",
+            title: "Collections",
+            value: "collections",
             counter: "123,987",
-            anchor: scrollToMissions,
+            anchor: scrollToCollections,
         },
         {
-            title: "Creatives",
-            value: "creatives",
+            title: "Artist",
+            value: "artist",
             counter: "45,678",
             anchor: scrollToArtist,
         },
@@ -60,15 +45,15 @@ const HomePage = () => {
         <Layout layoutNoOverflow noRegistration>
             <Main scrollToRef={scrollToAll} />
             <Catalog
-                title="Communities"
+                title="NFTs"
                 tabsSorting={tabsSorting}
                 tabsTime={tabsTime}
                 filters={statuses}
-                items={communities}
-                scrollToRef={scrollToCommunities}
+                items={nfts}
+                scrollToRef={scrollToNFTs}
             />
-            {/* <Auctions color="#DBFF73" items={auctions} /> */}
-            <Collections scrollToRef={scrollToMissions} />
+            <Auctions color="#DBFF73" items={auctions} />
+            <Collections scrollToRef={scrollToCollections} />
             <Artists scrollToRef={scrollToArtist} />
             <Newsletter />
         </Layout>

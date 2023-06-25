@@ -12,6 +12,7 @@ import { WalletContext } from "context/WalletContext";
 import { AuthContext } from "context/AuthContext";
 import { useState } from "react";
 
+
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
     mainnet,
@@ -20,7 +21,7 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
     arbitrum,
     ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true" ? [goerli] : []),
   ],
-  [publicProvider()]
+  [ publicProvider()]
 );
 
 const { connectors } = getDefaultWallets({

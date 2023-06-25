@@ -6,7 +6,6 @@ import Tabs from "@/components/Tabs";
 import Filters from "@/components/Filters";
 import Sorting from "./Sorting";
 import Card from "./Card";
-import Link from "next/link";
 
 type TabsType = {
     title: string;
@@ -40,16 +39,6 @@ const Catalog = ({
 
     return (
         <div className={cn(styles.catalog, { [styles.dark]: dark || theme })}>
-            {tabsSorting && (
-                <Sorting
-                    tabs={tabsSorting}
-                    sorting={sorting}
-                    setSorting={setSorting}
-                    theme={theme}
-                    setTheme={setTheme}
-                    dark={theme}
-                />
-            )}
             <div className={styles.wrapper} ref={scrollToRef}>
                 <div className={styles.top}>
                     <div className={cn("h1", styles.title)}>{title}</div>
@@ -80,22 +69,6 @@ const Catalog = ({
                             key={index}
                         />
                     ))}
-                </div>
-                <div className={styles.btns}>
-                    <Link href="/communities">
-                    <button
-                        className={cn(
-                            {
-                                "button-stroke button-medium": !dark || !theme,
-                                "button-stroke-white button-medium":
-                                    dark || theme,
-                            },
-                            styles.button
-                        )}
-                    >
-                        load more
-                    </button>
-                    </Link>
                 </div>
             </div>
         </div>

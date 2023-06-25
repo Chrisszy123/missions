@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import Main from "./Main";
-import Catalog from "@/components/Catalog";
+import Catalog from "@/components/CommunityCatalog";
 import Auctions from "@/components/Auctions";
 import Collections from "./Collections";
 import Artists from "./Artists";
@@ -67,9 +67,6 @@ const HomePage = () => {
                 items={communities}
                 scrollToRef={scrollToCommunities}
             />
-            {/* <Auctions color="#DBFF73" items={auctions} /> */}
-            <Collections scrollToRef={scrollToMissions} />
-            <Artists scrollToRef={scrollToArtist} />
             <Newsletter />
         </Layout>
     );

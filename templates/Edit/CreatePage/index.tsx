@@ -7,7 +7,7 @@ import LayoutCreate from "@/components/LayoutCreate";
 import Icon from "@/components/Icon";
 import Field from "@/components/Field";
 import Preview from "./Preview";
-import { createCommunity } from "@/utils/axios";
+import { updateCommunity } from "@/utils/axios";
 
 const CreatPage = () => {
   const [name, setName] = useState<string>("");
@@ -30,10 +30,9 @@ const CreatPage = () => {
         link: link,
         secondaryLink: secondaryLink,
         desc: desc,
-        userId: userId,
+        userId: userId
       };
-      console.log(communityData)
-      await createCommunity(communityData);
+      await updateCommunity(communityData);
     } catch (err: any) {
       throw new Error("errors submitting community data" + err);
     }
@@ -45,7 +44,7 @@ const CreatPage = () => {
           <>
             <div className={styles.head}>
               <div className={cn("h1", styles.title)}>
-                Create a <br></br>Community.
+                Edit <br></br>Community.
               </div>
               <Link href="">
                 <a className={cn("button-circle", styles.back)}>
@@ -54,7 +53,7 @@ const CreatPage = () => {
               </Link>
             </div>
             <div className={styles.info}>
-              Create a community on o1Node to be able to create Missions.
+             Edit your o1node community
             </div>
             <form
               className={styles.form}

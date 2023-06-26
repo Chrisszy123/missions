@@ -1,66 +1,68 @@
 import cn from "classnames";
 import styles from "./DetailsCollection.module.sass";
 import Icon from "@/components/Icon";
+import Link from "next/link";
 
 type DetailsType = {
-    label: string;
-    value: string;
+  name: string;
+  desc: string;
+  secondaryLink: string;
+  link: string;
+  tags: string[];
 };
 
 type DetailsProps = {
-    details: DetailsType[];
+  details: DetailsType[];
 };
 
 const Details = ({ details }: DetailsProps) => {
-    return (
-        <div className={styles.details}>
-            <div className={styles.head}>
-                <div className={styles.box}>
-                    <div className={cn("h2", styles.user)}>Cute Planet</div>
-                    <div className={styles.line}>
-                        <div className={styles.category}>CUTE</div>
-                        <div className={styles.code}>
-                            0xE5A1....D0306
-                            <button className={styles.copy}>
-                                <Icon name="copy" />
-                            </button>
-                        </div>
-                    </div>
+  return (
+    <div className={styles.details}>
+      {details.map((item, key) => (
+        <>
+          <div className={styles.head}>
+            <div className={styles.box}>
+              <div className={cn("h2", styles.user)}>{item.name}</div>
+              <div className={styles.line}>
+                <div className={styles.category}>{item.tags[0]}</div>
+                <div className={styles.code}>
+                  {item.link}
+                  <button className={styles.copy}>
+                    <Icon name="copy" />
+                  </button>
                 </div>
-                <button
-                    className={cn(
-                        "button-stroke-grey button-medium",
-                        styles.button
-                    )}
-                >
-                    <span>edit</span>
-                    <Icon name="edit" />
-                </button>
+              </div>
             </div>
-            <div className={styles.list}>
-                {details.map((item, index) => (
-                    <div className={styles.item} key={index}>
-                        <div className={styles.label}>
-                            <Icon name="profile-fat" />
-                            {item.label}
-                        </div>
-                        <div className={cn("h4", styles.value)}>
-                            {item.value}
-                        </div>
-                    </div>
-                ))}
+            
+              <button
+                className={cn(
+                  "button-stroke-grey button-medium",
+                  styles.button
+                )}
+              >
+                <Link href="/communities/edit">
+                <span>edit</span>
+                </Link>
+                <Icon name="edit" />
+              </button>
+        
+          </div>
+          <div className={styles.list}>
+            <div className={styles.item}>
+              <div className={styles.label}>
+                <Icon name="profile-fat" />
+              </div>
+              <div className={cn("h4", styles.value)}></div>
             </div>
-            <div className={styles.foot}>
-                <div className={styles.stage}>Description</div>
-                <div className={styles.content}>
-                    We are laying the groundwork for web3 — the next generation
-                    of the internet full of limitless possibilities. Join the
-                    millions of creators, collectors, and curators who are on
-                    this journey.
-                </div>
-            </div>
-        </div>
-    );
+          </div>
+          <div className={styles.foot}>
+            <div className={styles.stage}>Description</div>
+            <div className={styles.content}>{item.desc}</div>
+          </div>
+        </>
+      ))}
+    </div>
+  );
 };
 
 export default Details;

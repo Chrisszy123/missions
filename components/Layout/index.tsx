@@ -17,6 +17,7 @@ type LayoutProps = {
     emptyHeader?: boolean;
     footerHide?: boolean;
     background?: string;
+    Link?: any;
     children: React.ReactNode;
 };
 

@@ -38,13 +38,13 @@ const HomePage = () => {
             anchor: scrollToAll,
         },
         {
-            title: "Communities",
+            title: "NFTS",
             value: "communities",
             counter: "456,789",
             anchor: scrollToCommunities,
         },
         {
-            title: "Missions",
+            title: "DEFI",
             value: "missions",
             counter: "123,987",
             anchor: scrollToMissions,

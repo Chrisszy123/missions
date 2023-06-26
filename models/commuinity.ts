@@ -49,7 +49,7 @@ export const updateCommunity = async (data: CommunityData) => {
     if (communityData.userId !== community?.userId)
       throw new Error("You cannot edit this community");
     const updatedCommunity = await prisma.community.update({
-      where: { name: communityData.name },
+      where: { id: communityData.id },
       data: communityData,
     });
     return updatedCommunity;

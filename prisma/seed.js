@@ -52,7 +52,7 @@ function getUsers() {
   return [
     {
       id: "90ba9d4b-83eb-4668-a944-4ee7486d4345",
-      email: "bassygoodluck@gmail.com",
+      email: "basseygoodluck@gmail.com",
       name: "John Doe",
       username: "JohnD",
       role: "BASIC",

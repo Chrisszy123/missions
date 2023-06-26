@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import Link from "next/link";
 import cn from "classnames";
 import styles from "./CreateStep1Page.module.sass";
@@ -8,6 +8,7 @@ import Icon from "@/components/Icon";
 import Field from "@/components/Field";
 import Preview from "./Preview";
 import { createCommunity } from "@/utils/axios";
+import { AuthContext } from "context/AuthContext";
 
 const CreatPage = () => {
   const [name, setName] = useState<string>("");
@@ -15,11 +16,10 @@ const CreatPage = () => {
   const [link, setLink] = useState<string>("");
   const [secondaryLink, setSecondaryLink] = useState<string>("");
   const [desc, setDesc] = useState<string>("");
-  const [userId, setUserId] = useState<any>("");
-  useEffect(() => {
-    const userId: string | null = localStorage.getItem("userId");
-    setUserId(userId)
-  }, [])
+  const [error, setError] = useState<any>(false);
+
+  const {userId}: any = useContext(AuthContext)
+  
  // <Link href="/communities/create/congrats">
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -32,8 +32,11 @@ const CreatPage = () => {
         desc: desc,
         userId: userId,
       };
-      console.log(communityData)
-      await createCommunity(communityData);
+      const comm = await createCommunity(communityData);
+      // use data to redirect
+      if(comm?.status === true){
+        setError(true)
+      }
     } catch (err: any) {
       throw new Error("errors submitting community data" + err);
     }
@@ -113,6 +116,8 @@ const CreatPage = () => {
                     <Icon name="arrow-right" />
                   </a>
                 </button>
+
+                {error ? <div style={{color: 'red', }}>Error creating Community</div> : ""}
               
             </form>
           </>

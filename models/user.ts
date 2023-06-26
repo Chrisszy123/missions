@@ -26,11 +26,12 @@ type UserData = z.infer<typeof UserSchema>;
 
 export const createUser = async (data: UserData) => {
   const userData = UserSchema.parse(data);
+  console.log(userData)
   try {
     const existingUser = await prisma.user.findFirst({
       where: { email: userData.email },
     });
-    if (existingUser) return;
+    if (existingUser) return
     const user = await prisma.user.create({
       data: {
         name: userData.name,
@@ -73,13 +74,10 @@ export const getAllUsers = async () => {
     const users = await prisma.user.findMany({
       orderBy: { createdAt: "desc" },
     });
-    if (!users) return { message: "cannot get users", status: false };
+    if (!users) throw new Error("users does not exist");
     return users;
   } catch (err: any) {
-    return {
-      message: "error getting users" + err,
-      status: false,
-    };
+    throw new Error(err)
   }
 };
 

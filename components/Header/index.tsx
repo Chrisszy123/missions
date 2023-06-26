@@ -15,9 +15,8 @@ import Profile from "./Profile";
 import Menu from "./Menu";
 import { WalletContext } from "context/WalletContext";
 import { AuthContext } from "context/AuthContext";
-
 import { resultSearch } from "@/mocks/resultSearch";
-import { Url } from "url";
+import { createUser } from "@/utils/axios";
 
 const menu = [
   {
@@ -35,10 +34,10 @@ type HeaderProps = {
   noRegistration?: boolean;
   light?: boolean;
   empty?: boolean;
-  createLink?: any;
+  comm?: any
 };
 
-const Header = ({ className, noRegistration, light, empty, createLink }: HeaderProps) => {
+const Header = ({ className, noRegistration, light, empty, comm }: HeaderProps) => {
   const [visibleProfile, setVisibleProfile] = useState<boolean>(false);
   const [connect, setConnect] = useState<boolean>(false);
   const [registration, setRegistration] = useState<boolean>(false);
@@ -47,11 +46,18 @@ const Header = ({ className, noRegistration, light, empty, createLink }: HeaderP
   const { connected, account }: any = useContext(WalletContext);
   const {setUser}: any = useContext(AuthContext)
   setUser(user)
+  // const id: any = user?.sid
+  // localStorage.setItem('userId', id)
+  //
+  useEffect(() => {
+    createUser(user).then((u) => console.log(u)).catch((e) => console.log(e))
+  }, [user])
 
   const handleClick = () => {
     setConnect(false);
     setRegistration(true);
   };
+  //
   const HandleNavBtn = () => {
     if(user && connected){
       return (

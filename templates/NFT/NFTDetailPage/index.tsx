@@ -89,7 +89,6 @@ const tags = [
 ];
 
 const MintNFTPage = ({ mission }: any) => {
-  console.log(mission);
   return (
     <Layout layoutNoOverflow footerHide>
       {mission ? (

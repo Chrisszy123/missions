@@ -11,10 +11,10 @@ const statistics = [
         login: "randomdash",
     },
     {
-        label: "Collection",
+        label: "Community",
         image: "/images/robot.jpg",
         title: "Cute Planet",
-        category: "cute",
+        category: "DEFI",
     },
 ];
 
@@ -36,44 +36,44 @@ const links = [
     },
 ];
 
-const provenance = [
-    {
-        avatar: "/images/avatar.jpg",
-        history: true,
-        content: (
-            <>
-                Bid placed by <span>0x56C1...8eCC</span>
-            </>
-        ),
-        price: "5.00 ETH",
-        date: "Aug 18, 2022 at 18:80",
-        url: "https://ui8.net/",
-    },
-    {
-        avatar: "/images/avatar.jpg",
-        history: true,
-        content: (
-            <>
-                Listed by <span>@randomdash</span>
-            </>
-        ),
-        price: "5.00 ETH",
-        date: "Aug 18, 2022 at 18:80",
-        url: "https://ui8.net/",
-    },
-    {
-        avatar: "/images/avatar.jpg",
-        history: true,
-        content: (
-            <>
-                Minted by <span>@randomdash</span>
-            </>
-        ),
-        price: "5.00 ETH",
-        date: "Aug 18, 2022 at 18:80",
-        url: "https://ui8.net/",
-    },
-];
+// const provenance = [
+//     {
+//         avatar: "/images/avatar.jpg",
+//         history: true,
+//         content: (
+//             <>
+//                 Bid placed by <span>0x56C1...8eCC</span>
+//             </>
+//         ),
+//         price: "5.00 ETH",
+//         date: "Aug 18, 2022 at 18:80",
+//         url: "https://ui8.net/",
+//     },
+//     {
+//         avatar: "/images/avatar.jpg",
+//         history: true,
+//         content: (
+//             <>
+//                 Listed by <span>@randomdash</span>
+//             </>
+//         ),
+//         price: "5.00 ETH",
+//         date: "Aug 18, 2022 at 18:80",
+//         url: "https://ui8.net/",
+//     },
+//     {
+//         avatar: "/images/avatar.jpg",
+//         history: true,
+//         content: (
+//             <>
+//                 Minted by <span>@randomdash</span>
+//             </>
+//         ),
+//         price: "5.00 ETH",
+//         date: "Aug 18, 2022 at 18:80",
+//         url: "https://ui8.net/",
+//     },
+// ];
 
 const tags = [
     "Cute",
@@ -88,16 +88,17 @@ const tags = [
     "Cinema 4D",
 ];
 
-const MintNFTPage = () => {
+const MintNFTPage = ({mission}:  any) => {
+    console.log(mission)
     return (
         <Layout layoutNoOverflow footerHide>
             <Description
                 image="/images/cute-planet-large.jpg"
-                title="The Explorer"
-                date="Minted on Aug 18, 2022"
+                title={mission[0].name}
+                date={`created at ${mission[0].createdAt.slice(0, 10)}`}
                 statistics={statistics}
                 links={links}
-                tags={tags}
+                tags={mission[0].category}
                 provenanceAction={{
                     avatar: "/images/avatar.jpg",
                     history: true,
@@ -118,12 +119,11 @@ const MintNFTPage = () => {
                             Auction settled by <span>@Kohaku</span>
                         </>
                     ),
-                    linkUrl: "https://ui8.net/",
+                    linkUrl: "#",
                 }}
-                provenance={provenance}
-                content="We are laying the groundwork for web3 — the next generation of the internet full of limitless possibilities. Join the millions of creators, collectors, and curators who are on this journey with you."
+                content={mission[0].desc}
             >
-                <Details />
+                <Details mission={mission}/>
             </Description>
         </Layout>
     );

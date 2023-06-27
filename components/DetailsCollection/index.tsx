@@ -89,13 +89,15 @@ const Details = ({ details }: DetailsProps) => {
             >
               <span>edit</span>
               <Icon name="edit" />
-              <Modal
+              
+            </button>
+            <Modal
                 isOpen={modalIsOpen}
                 onRequestClose={closeModal}
                 contentLabel="Example Modal"
                 style={{
                   overlay: {
-                    zIndex: "100",
+                    zIndex: "1",
                   },
                 }}
               >
@@ -187,7 +189,6 @@ const Details = ({ details }: DetailsProps) => {
                   <Preview />
                 </LayoutCreate>
               </Modal>
-            </button>
           </div>
           <div className={styles.list}>
             <div className={styles.item}>

@@ -26,7 +26,6 @@ type UserData = z.infer<typeof UserSchema>;
 
 export const createUser = async (data: UserData) => {
   const userData = UserSchema.parse(data);
-  console.log(userData)
   try {
     const existingUser = await prisma.user.findFirst({
       where: { email: userData.email },

@@ -2,13 +2,8 @@ import { useRef, useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import Main from "./Main";
 import Catalog from "@/components/CommunityCatalog";
-import Auctions from "@/components/Auctions";
-import Collections from "./Collections";
-import Artists from "./Artists";
 import Newsletter from "@/components/Newsletter";
-
-import { auctions } from "@/mocks/auctions";
-import { tabsTime, nfts, statuses } from "@/mocks/nfts";
+import { tabsTime, statuses } from "@/mocks/nfts";
 // 
 import { getCommunities, getMissions } from "@/utils/axios";
 

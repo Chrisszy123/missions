@@ -49,9 +49,8 @@ const Header = ({ className, noRegistration, light, empty, comm }: HeaderProps) 
   // const id: any = user?.sid
   // localStorage.setItem('userId', id)
   //
-  useEffect(() => {
-    createUser(user).then((u) => console.log(u)).catch((e) => console.log(e))
-  }, [user])
+  
+  createUser(user).then((u) => console.log(u)).catch((e) => console.log(e))
 
   const handleClick = () => {
     setConnect(false);

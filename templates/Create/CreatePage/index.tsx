@@ -9,6 +9,8 @@ import Field from "@/components/Field";
 import Preview from "./Preview";
 import { createCommunity } from "@/utils/axios";
 import { AuthContext } from "context/AuthContext";
+//modal
+
 
 const CreatPage = () => {
   const [name, setName] = useState<string>("");
@@ -17,6 +19,7 @@ const CreatPage = () => {
   const [secondaryLink, setSecondaryLink] = useState<string>("");
   const [desc, setDesc] = useState<string>("");
   const [error, setError] = useState<any>(false);
+
 
   const {userId}: any = useContext(AuthContext)
   

@@ -3,41 +3,43 @@ import cn from "classnames";
 import styles from "./Details.module.sass";
 import Image from "@/components/Image";
 
-type DetailsProps = {};
+type DetailsProps = {
+    mission: any
+};
 
-const Details = ({}: DetailsProps) => (
+const Details = ({mission}: DetailsProps) => (
     <div className={styles.details}>
         <div className={styles.row}>
             <div className={styles.col}>
-                <div className={styles.label}>Buy now</div>
-                <div className={cn("h4", styles.value)}>10.00 ETH</div>
-                <Link href="/buy-now">
+                <div className={styles.label}>Reward</div>
+                <div className={cn("h4", styles.value)}>{mission[0].rewards[0]}</div>
+                <Link href="#">
                     <a
                         className={cn(
                             "button-medium button-wide",
                             styles.button
                         )}
                     >
-                        buy now
+                       ENTER
                     </a>
                 </Link>
             </div>
             <div className={styles.col}>
-                <div className={styles.label}>Reserve</div>
-                <div className={cn("h4", styles.value)}>0.35 ETH</div>
-                <Link href="/place-a-bid">
+                <div className={styles.label}>State</div>
+                <div className={cn("h4", styles.value)}>{mission[0].state}</div>
+                <Link href="#">
                     <a
                         className={cn(
                             "button-stroke-grey button-medium button-wide",
                             styles.button
                         )}
                     >
-                        place a bid
+                        Join
                     </a>
                 </Link>
             </div>
         </div>
-        <div className={styles.foot}>
+        {/* <div className={styles.foot}>
             <div className={styles.box}>
                 <div className={styles.label}>Last sold</div>
                 <div className={cn("h4", styles.value)}>6.05 ETH</div>
@@ -66,7 +68,7 @@ const Details = ({}: DetailsProps) => (
                     make offer
                 </a>
             </Link>
-        </div>
+        </div> */}
     </div>
 );
 

@@ -156,7 +156,7 @@ const Header = ({ className, noRegistration, light, empty, createLink }: HeaderP
                   </Link>
                 ))}
               </div>
-              <Link href="/communities/create">
+              <Link href="/missions/create">
                 <a
                   className={cn(
                     "button-stroke button-medium",

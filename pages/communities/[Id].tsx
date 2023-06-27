@@ -4,11 +4,13 @@ import { useRouter } from "next/router";
 import CollectionPage from "@/templates/CollectionPage";
 import { getCommunities, getUsers } from "@/utils/axios";
 import { AuthContext } from "context/AuthContext";
+import Modal from 'react-modal';
 //import { AuthContext } from "context/AuthContext";
 
 const Profile: NextPage = () => {
   //const {user}: any = useContext(AuthContext)
   const [community, setCommunity] = useState<any>([]);
+  
   const router = useRouter();
   const pageId = router.query.Id;
   const {user, setUserId}: any = useContext(AuthContext)

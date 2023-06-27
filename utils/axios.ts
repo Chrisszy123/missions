@@ -7,7 +7,7 @@ export const getCommunities = async () => {
 }
 export const createCommunity = async(communityData: any) => {
     try{
-        console.log(communityData)
+       
         await axios.post('/api/community/create', {
             communityData
         })
@@ -18,7 +18,7 @@ export const createCommunity = async(communityData: any) => {
 }
 export const updateCommunity = async(communityData: any) => {
     try{
-        console.log(communityData)
+        
         await axios.put('/api/community/edit', {
             communityData
         })

@@ -15,8 +15,8 @@ const Spotlight = ({}: SpotlightProps) => {
         <div className={styles.spotlight}>
             <div className={styles.head}>
                 <div className={styles.details}>
-                    <div className={cn("h1", styles.title)}>Spotlight.</div>
-                    <div className={styles.info}>Projects you&apos;ll love</div>
+                    <div className={cn("h1", styles.title)}>Missions.</div>
+                    <div className={styles.info}>Missions you&apos;ll love</div>
                 </div>
                 <Tabs
                     className={styles.tabs}

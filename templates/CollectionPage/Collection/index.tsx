@@ -32,12 +32,13 @@ const detailsList = [
     },
 ];
 
-type ProfileProps = {};
+type ProfileProps = {
+    item: any
+};
 
-const Profile = ({}: ProfileProps) => {
+const Profile = ({item}: ProfileProps) => {
     const [sorting, setSorting] = useState<string>("nfts");
     const [theme, setTheme] = useState<boolean>(false);
-
     const tabs = [
         {
             title: "NFTs",
@@ -69,7 +70,7 @@ const Profile = ({}: ProfileProps) => {
                         alt="Avatar"
                     />
                 </div>
-                <DetailsCollection details={detailsList} />
+                <DetailsCollection details={item} />
             </div>
             <div className={styles.col}>
                 <List

@@ -23,6 +23,7 @@ type CommunityData = z.infer<typeof CommunitySchema>;
 // handle create community
 export const createCommunity = async (data: CommunityData) => {
   const communityData = CommunitySchema.parse(data);
+  console.log(communityData)
   try {
     const existingCommunity = await prisma.community.findFirst({
       where: { link: communityData.link },
@@ -43,7 +44,7 @@ export const updateCommunity = async (data: CommunityData) => {
   try {
     // check if user is the creator of the community
     const community = await prisma.community.findFirst({
-      where: { link: communityData.link },
+      where: { userId: communityData.userId },
     });
     if (communityData.userId !== community?.userId)
       throw new Error("You cannot edit this community");
@@ -53,7 +54,7 @@ export const updateCommunity = async (data: CommunityData) => {
     });
     return updatedCommunity;
   } catch (err: any) {
-    return { status: false, message: "error updating community" };
+   throw new Error('error updating community' + err)
   }
 };
 

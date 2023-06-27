@@ -41,6 +41,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   const [chain, setChain] = useState("");
   const [account, setAccount] = useState("");
   const [user, setUser] = useState("");
+  const [userId, setUserId] = useState("");
   return (
     <WagmiConfig config={wagmiConfig}>
       <RainbowKitProvider chains={chains}>
@@ -54,7 +55,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             setAccount,
           }}
         >
-          <AuthContext.Provider value={{ user, setUser }}>
+          <AuthContext.Provider value={{ user, setUser, setUserId, userId }}>
             <UserProvider>
               <Component {...pageProps} />
             </UserProvider>

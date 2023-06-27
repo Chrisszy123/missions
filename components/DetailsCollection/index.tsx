@@ -1,66 +1,210 @@
 import cn from "classnames";
 import styles from "./DetailsCollection.module.sass";
+import style from "@/templates/Create/CreatePage/CreateStep1Page.module.sass";
 import Icon from "@/components/Icon";
+import { useRouter } from "next/router";
+import { useContext, useState } from "react";
+import Modal from "react-modal";
+import Preview from "@/templates/Create/CreatePage/Preview";
+import Layout from "@/components/Layout";
+import LayoutCreate from "@/components/LayoutCreate";
+import Field from "@/components/Field";
+import { AuthContext } from "context/AuthContext";
+import { updateCommunity } from "@/utils/axios";
 
 type DetailsType = {
-    label: string;
-    value: string;
+  name: string;
+  desc: string;
+  secondaryLink: string;
+  link: string;
+  tags: string[];
 };
 
 type DetailsProps = {
-    details: DetailsType[];
+  details: DetailsType[];
 };
 
 const Details = ({ details }: DetailsProps) => {
-    return (
-        <div className={styles.details}>
-            <div className={styles.head}>
-                <div className={styles.box}>
-                    <div className={cn("h2", styles.user)}>Cute Planet</div>
-                    <div className={styles.line}>
-                        <div className={styles.category}>CUTE</div>
-                        <div className={styles.code}>
-                            0xE5A1....D0306
-                            <button className={styles.copy}>
-                                <Icon name="copy" />
-                            </button>
-                        </div>
-                    </div>
+  const [modalIsOpen, setIsOpen] = useState(false);
+  const [name, setName] = useState<string>("");
+  const [tags, setTags] = useState<string>("");
+  const [link, setLink] = useState<string>("");
+  const [secondaryLink, setSecondaryLink] = useState<string>("");
+  const [desc, setDesc] = useState<string>("");
+  const [error, setError] = useState<any>(false);
+
+  const { userId }: any = useContext(AuthContext);
+
+  const router = useRouter()
+  const communityId = router.query.Id
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    try {
+      const communityData = {
+        name: name,
+        tags: tags,
+        link: link,
+        secondaryLink: secondaryLink,
+        desc: desc,
+        userId: userId,
+        id: communityId
+      };
+      const comm = await updateCommunity(communityData);
+      //use data to redirect
+      if(comm?.status === true){
+        setError(true)
+      }
+    } catch (err: any) {
+      throw new Error("errors submitting community data" + err);
+    }
+  };
+  const openModal = () => {
+    setIsOpen(true);
+  };
+  const closeModal = () => {
+    setIsOpen(false);
+  };
+  return (
+    <div className={styles.details}>
+      {details.map((item, key) => (
+        <>
+          <div className={styles.head}>
+            <div className={styles.box}>
+              <div className={cn("h2", styles.user)}>{item.name}</div>
+              <div className={styles.line}>
+                <div className={styles.category}>{item.tags[0]}</div>
+                <div className={styles.code}>
+                  {item.link}
+                  <button className={styles.copy}>
+                    <Icon name="copy" />
+                  </button>
                 </div>
-                <button
-                    className={cn(
-                        "button-stroke-grey button-medium",
-                        styles.button
-                    )}
-                >
-                    <span>edit</span>
-                    <Icon name="edit" />
+              </div>
+            </div>
+
+            <button
+              className={cn("button-stroke-grey button-medium", styles.button)}
+              onClick={openModal}
+            >
+              <span>edit</span>
+              <Icon name="edit" />
+              <Modal
+                isOpen={modalIsOpen}
+                onRequestClose={closeModal}
+                contentLabel="Example Modal"
+                style={{
+                  overlay: {
+                    zIndex: "100",
+                  },
+                }}
+              >
+                <button onClick={closeModal}>
+                  <a className={cn("button-circle", style.back)}>
+                    <Icon name="arrow-left" />
+                  </a>
                 </button>
-            </div>
-            <div className={styles.list}>
-                {details.map((item, index) => (
-                    <div className={styles.item} key={index}>
-                        <div className={styles.label}>
-                            <Icon name="profile-fat" />
-                            {item.label}
+                <LayoutCreate
+                  left={
+                    <>
+                      <div className={style.head}>
+                        <div className={cn("h1", style.title)}>
+                          Edit <br></br>Community.
                         </div>
-                        <div className={cn("h4", styles.value)}>
-                            {item.value}
-                        </div>
-                    </div>
-                ))}
+                      </div>
+                      <div className={style.info}>Edit Community</div>
+                      <form
+                        className={style.form}
+                        action=""
+                        onSubmit={(e) => handleSubmit(e)}
+                      >
+                        <Field
+                          className={style.field}
+                          placeholder="Community name"
+                          icon="profile"
+                          value={name}
+                          onChange={(e: any) => setName(e.target.value)}
+                          large
+                          required
+                        />
+                        <Field
+                          className={style.field}
+                          placeholder="Community Link"
+                          icon="profile"
+                          value={link}
+                          onChange={(e: any) => setLink(e.target.value)}
+                          large
+                          required
+                        />
+                        <Field
+                          className={style.field}
+                          placeholder="Secondary Link"
+                          icon="profile"
+                          value={secondaryLink}
+                          onChange={(e: any) =>
+                            setSecondaryLink(e.target.value)
+                          }
+                          large
+                          required
+                        />
+                        <Field
+                          className={style.field}
+                          placeholder="Community Tags"
+                          icon="profile"
+                          value={tags}
+                          onChange={(e: any) => setTags(e.target.value)}
+                          large
+                          required
+                        />
+                        <Field
+                          className={style.field}
+                          placeholder="Community Desc"
+                          icon="email"
+                          type="text"
+                          value={desc}
+                          onChange={(e: any) => setDesc(e.target.value)}
+                          large
+                          required
+                        />
+                        <button type="submit">
+                          <a className={cn("button-large", style.button)}>
+                            <span>Continue</span>
+                            <Icon name="arrow-right" />
+                          </a>
+                        </button>
+
+                        {error ? (
+                          <div style={{ color: "red" }}>
+                            Error creating Community
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                      </form>
+                    </>
+                  }
+                >
+                  <Preview />
+                </LayoutCreate>
+              </Modal>
+            </button>
+          </div>
+          <div className={styles.list}>
+            <div className={styles.item}>
+              <div className={styles.label}>
+                <Icon name="profile-fat" />
+              </div>
+              <div className={cn("h4", styles.value)}></div>
             </div>
-            <div className={styles.foot}>
-                <div className={styles.stage}>Description</div>
-                <div className={styles.content}>
-                    We are laying the groundwork for web3 — the next generation
-                    of the internet full of limitless possibilities. Join the
-                    millions of creators, collectors, and curators who are on
-                    this journey.
-                </div>
-            </div>
-        </div>
-    );
+          </div>
+          <div className={styles.foot}>
+            <div className={styles.stage}>Description</div>
+            <div className={styles.content}>{item.desc}</div>
+          </div>
+        </>
+      ))}
+    </div>
+  );
 };
 
 export default Details;

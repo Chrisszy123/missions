@@ -6,11 +6,10 @@ import { useRouter } from "next/router";
 import { useContext, useState } from "react";
 import Modal from "react-modal";
 import Preview from "@/templates/Create/CreatePage/Preview";
-import Layout from "@/components/Layout";
 import LayoutCreate from "@/components/LayoutCreate";
 import Field from "@/components/Field";
 import { AuthContext } from "context/AuthContext";
-import { updateCommunity } from "@/utils/axios";
+import { getUsers, updateCommunity } from "@/utils/axios";
 
 type DetailsType = {
   name: string;
@@ -33,7 +32,17 @@ const Details = ({ details }: DetailsProps) => {
   const [desc, setDesc] = useState<string>("");
   const [error, setError] = useState<any>(false);
 
-  const { userId }: any = useContext(AuthContext);
+  const [userId, setUserId] = useState<any>()
+
+  const { user }: any = useContext(AuthContext);
+  const useremail = user?.email;
+  getUsers().then((e: any) => {
+    const filteredUser = e.message.data.filter(
+      (user: any) => user.email === useremail
+    );
+    console.log(filteredUser);
+    setUserId(filteredUser[0].id);
+  });
 
   const router = useRouter()
   const communityId = router.query.Id
@@ -54,6 +63,8 @@ const Details = ({ details }: DetailsProps) => {
       //use data to redirect
       if(comm?.status === true){
         setError(true)
+      }else{
+        router.push(`/communities/${communityId}`)
       }
     } catch (err: any) {
       throw new Error("errors submitting community data" + err);

@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect, useCallback } from "react";
+import { useState, useContext } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useUser } from '@auth0/nextjs-auth0/client';
 //import { ConnectButton } from '@rainbow-me/rainbowkit';
@@ -156,7 +156,7 @@ const Header = ({ className, noRegistration, light, empty, createLink }: HeaderP
                   </Link>
                 ))}
               </div>
-              <Link href="/missions/create">
+              <Link href="/communities/missions/create">
                 <a
                   className={cn(
                     "button-stroke button-medium",

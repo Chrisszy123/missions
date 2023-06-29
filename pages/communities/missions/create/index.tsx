@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import CreatePage from "@/templates/Create/CreatePage";
+import CreatePage from "@/templates/MissionCreate/CreatePage";
 
 const Create: NextPage = () => {
     return <CreatePage />;

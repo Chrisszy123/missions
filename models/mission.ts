@@ -65,7 +65,7 @@ export const updateOneMission = async (data: MissionData) => {
     });
     return updatedMission;
   } catch (err: any) {
-    return { status: false, message: "error updating user" };
+    return { status: false, message: "error updating mission" };
   }
 };
 // get all missions

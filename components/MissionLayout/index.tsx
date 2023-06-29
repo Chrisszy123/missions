@@ -4,11 +4,9 @@ import { enablePageScroll, clearQueueScrollLocks } from "scroll-lock";
 import Head from "next/head";
 import cn from "classnames";
 import styles from "./Layout.module.sass";
-import Header from "@/components/Header";
+import Header from "@/components/MissionHeader";
 import Footer from "@/components/Footer";
 import { WalletContext } from "context/WalletContext";
-import { AuthContext } from "context/AuthContext";
-import { getUsers } from "@/utils/axios";
 
 type LayoutProps = {
     layoutNoOverflow?: boolean;

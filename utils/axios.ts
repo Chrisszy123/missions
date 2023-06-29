@@ -33,7 +33,26 @@ export const getMissions = async () => {
     const missions = await axios.get('/api/mission')
     return missions
 }
-
+export const createMission = async(data: any) => {
+    try{
+        const mission = await axios.post('/api/mission/create', data)
+        if(!mission) throw new Error('error')
+        return { status: true, message: mission}
+    }catch(err: any){
+        throw new Error("error creating mission" + err)
+    } 
+}
+export const updateMission = async(missionData: any) => {
+    try{
+        
+        await axios.put('/api/mission/edit', {
+            missionData
+        })
+        return{status: true, message: "Mission successfully updated"}
+    }catch(err: any){
+        throw new Error('axios patch mission error' + err)
+    }
+}
 // users
 export const createUser = async(userData: any) => {
     try{

@@ -1,4 +1,4 @@
-import Layout from "@/components/Layout";
+import Layout from "@/components/MissionLayout";
 import Description from "@/components/Description";
 import Details from "./Details";
 

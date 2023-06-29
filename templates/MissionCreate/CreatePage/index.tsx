@@ -2,28 +2,27 @@ import { useState, useEffect, useContext } from "react";
 import Link from "next/link";
 import cn from "classnames";
 import styles from "./CreateStep1Page.module.sass";
-import Layout from "@/components/Layout";
+import Layout from "@/components/MissionLayout";
 import LayoutCreate from "@/components/LayoutCreate";
 import Icon from "@/components/Icon";
 import Field from "@/components/Field";
 import Preview from "./Preview";
-import { createCommunity, getUsers } from "@/utils/axios";
+import { createMission, getUsers } from "@/utils/axios";
 import { AuthContext } from "context/AuthContext";
 //modal
 
 
 const CreatPage = () => {
   const [name, setName] = useState<string>("");
-  const [tags, setTags] = useState<string>("");
-  const [link, setLink] = useState<string>("");
-  const [secondaryLink, setSecondaryLink] = useState<string>("");
+  const [rewards, setRewards] = useState<string>("");
+  const [category, setCategory] = useState<string>("");
   const [desc, setDesc] = useState<string>("");
   const [error, setError] = useState<any>(false);
-  const [userId, setUserId] = useState<any>()
+  const [userId, setUserId] = useState<any>("");
 
   const { user }: any = useContext(AuthContext);
   const useremail = user?.email;
-  getUsers().then((e: any) => {
+  getUsers().then((e) => {
     const filteredUser = e.message.data.filter(
       (user: any) => user.email === useremail
     );
@@ -35,21 +34,21 @@ const CreatPage = () => {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     try {
-      const communityData = {
+      const missionData = {
         name: name,
-        tags: tags,
-        link: link,
-        secondaryLink: secondaryLink,
+        rewards: rewards,
+        category: category,
         desc: desc,
         userId: userId,
+        communityId: "90ba9d4b-83eb-4668-a944-4ee7486d4349",
       };
-      const comm = await createCommunity(communityData);
+      const mission = await createMission(missionData);
       // use data to redirect
-      if(comm?.status === true){
+      if(mission?.status === true){
         setError(true)
       }
     } catch (err: any) {
-      throw new Error("errors submitting community data" + err);
+      throw new Error("Errors submitting mission data" + err);
     }
   };
   return (
@@ -59,7 +58,7 @@ const CreatPage = () => {
           <>
             <div className={styles.head}>
               <div className={cn("h1", styles.title)}>
-                Create a <br></br>Community.
+                Create a <br></br>Mission.
               </div>
               <Link href="">
                 <a className={cn("button-circle", styles.back)}>
@@ -68,7 +67,7 @@ const CreatPage = () => {
               </Link>
             </div>
             <div className={styles.info}>
-              Create a community on o1Node to be able to create Missions.
+              Create a Mission on o1Node
             </div>
             <form
               className={styles.form}
@@ -77,7 +76,7 @@ const CreatPage = () => {
             >
               <Field
                 className={styles.field}
-                placeholder="Community name"
+                placeholder="Mission name"
                 icon="profile"
                 value={name}
                 onChange={(e: any) => setName(e.target.value)}
@@ -86,34 +85,25 @@ const CreatPage = () => {
               />
               <Field
                 className={styles.field}
-                placeholder="Community Link"
+                placeholder="Missions Rewards"
                 icon="profile"
-                value={link}
-                onChange={(e: any) => setLink(e.target.value)}
+                value={rewards}
+                onChange={(e: any) => setRewards(e.target.value)}
                 large
                 required
               />
               <Field
                 className={styles.field}
-                placeholder="Secondary Link"
+                placeholder="Missions Category"
                 icon="profile"
-                value={secondaryLink}
-                onChange={(e: any) => setSecondaryLink(e.target.value)}
+                value={category}
+                onChange={(e: any) => setCategory(e.target.value)}
                 large
                 required
               />
               <Field
                 className={styles.field}
-                placeholder="Community Tags"
-                icon="profile"
-                value={tags}
-                onChange={(e: any) => setTags(e.target.value)}
-                large
-                required
-              />
-              <Field
-                className={styles.field}
-                placeholder="Community Desc"
+                placeholder="Mission Desc"
                 icon="email"
                 type="text"
                 value={desc}
@@ -127,9 +117,7 @@ const CreatPage = () => {
                     <Icon name="arrow-right" />
                   </a>
                 </button>
-
-                {error ? <div style={{color: 'red', }}>Error creating Community</div> : ""}
-              
+                {error ? <div style={{color: 'red', }}>Error creating Mission</div> : ""} 
             </form>
           </>
         }

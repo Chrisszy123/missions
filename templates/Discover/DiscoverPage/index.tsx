@@ -57,7 +57,7 @@ const HomePage = () => {
   ];
   return (
     <Layout layoutNoOverflow noRegistration>
-      {communities ? (
+      {communities && communities ? (
         <>
           <Main scrollToRef={scrollToAll} />
           <Catalog

@@ -89,9 +89,11 @@ const tags = [
 ];
 
 const MintNFTPage = ({ mission }: any) => {
+  console.log("mission ====")
+  console.log(mission)
   return (
     <Layout layoutNoOverflow footerHide>
-      {mission ? (
+      {mission?.length > 0 ? (
         <>
           <Description
             image="/images/cute-planet-large.jpg"

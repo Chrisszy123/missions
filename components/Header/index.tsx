@@ -20,8 +20,8 @@ import { createUser } from "@/utils/axios";
 
 const menu = [
   {
-    title: "Discover",
-    url: "/discover",
+    title: "discover",
+    url: "/discover" // change to dashboar,
   },
   {
     title: "Feed",
@@ -34,10 +34,9 @@ type HeaderProps = {
   noRegistration?: boolean;
   light?: boolean;
   empty?: boolean;
-  comm?: any
 };
 
-const Header = ({ className, noRegistration, light, empty, comm }: HeaderProps) => {
+const Header = ({ className, noRegistration, light, empty }: HeaderProps) => {
   const [visibleProfile, setVisibleProfile] = useState<boolean>(false);
   const [connect, setConnect] = useState<boolean>(false);
   const [registration, setRegistration] = useState<boolean>(false);
@@ -46,10 +45,7 @@ const Header = ({ className, noRegistration, light, empty, comm }: HeaderProps) 
   const { connected, account }: any = useContext(WalletContext);
   const {setUser}: any = useContext(AuthContext)
   setUser(user)
-  // const id: any = user?.sid
-  // localStorage.setItem('userId', id)
-  //
-  
+  // create a new user
   createUser(user).then((u) => console.log(u)).catch((e) => console.log(e))
 
   const handleClick = () => {
@@ -161,7 +157,7 @@ const Header = ({ className, noRegistration, light, empty, comm }: HeaderProps) 
                   </Link>
                 ))}
               </div>
-              <Link href="/communities/create">
+              {/* <Link href="/communities/create">
                 <a
                   className={cn(
                     "button-stroke button-medium",
@@ -172,7 +168,7 @@ const Header = ({ className, noRegistration, light, empty, comm }: HeaderProps) 
                   <span>create</span>
                   <Icon name="plus" />
                 </a>
-              </Link>
+              </Link> */}
               <HandleNavBtn />
               <Link href="/notification">
                 <a className={cn(styles.notification, styles.active)}>

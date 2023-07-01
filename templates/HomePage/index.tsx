@@ -20,7 +20,7 @@ const HomePage = () => {
             <Auctions items={auctions} />
             <Spotlight />
             <Creativity />
-            <Newsletter />
+            {/* <Newsletter /> */}
         </Layout>
     );
 };

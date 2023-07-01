@@ -48,11 +48,11 @@ const HomePage = () => {
 
   return (
     <Layout layoutNoOverflow noRegistration>
-      {!communities ? (
-        <div>loading...</div>
+      {communities?.length === 0 ? (
+        <div>Communities Data Loading</div>
       ) : (
         <>
-          <Main scrollToRef={scrollToAll} />
+          {/* <Main scrollToRef={scrollToAll} /> */}
           <Catalog
             title="Communities"
             tabsSorting={tabsSorting}
@@ -61,7 +61,7 @@ const HomePage = () => {
             items={communities}
             scrollToRef={scrollToCommunities}
           />
-          <Newsletter />
+          {/* <Newsletter /> */}
         </>
       )}
     </Layout>

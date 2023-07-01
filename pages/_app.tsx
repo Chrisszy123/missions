@@ -1,4 +1,5 @@
 import "../styles/app.sass";
+import './globals.css'
 import type { AppProps } from "next/app";
 import { UserProvider } from "@auth0/nextjs-auth0/client";
 import "@rainbow-me/rainbowkit/styles.css";
@@ -40,6 +41,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   const [connected, setConnected] = useState(false);
   const [chain, setChain] = useState("");
   const [account, setAccount] = useState("");
+  const [walletBalance, setWalletBalance] = useState("");
   const [user, setUser] = useState("");
   const [userId, setUserId] = useState("");
   return (
@@ -53,6 +55,8 @@ function MyApp({ Component, pageProps }: AppProps) {
             setChain,
             account,
             setAccount,
+            walletBalance,
+            setWalletBalance
           }}
         >
           <AuthContext.Provider value={{ user, setUser, setUserId, userId }}>

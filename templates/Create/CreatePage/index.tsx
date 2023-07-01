@@ -53,7 +53,7 @@ const CreatPage = () => {
     }
   };
   return (
-    <Layout layoutNoOverflow footerHide emptyHeader>
+    <Layout layoutNoOverflow footerHide noRegistration>
       <LayoutCreate
         left={
           <>

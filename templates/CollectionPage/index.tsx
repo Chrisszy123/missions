@@ -4,7 +4,7 @@ import Collection from "./Collection";
 
 const CollectionPage = ({ community }: any) => {
   return (
-    <Layout layoutNoOverflow lightHeader footerHide>
+    <Layout layoutNoOverflow lightHeader footerHide noRegistration>
       {community.length > 0 ? (
         <>
           <Background image="/images/background-2.jpg" />

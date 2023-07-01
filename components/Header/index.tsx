@@ -1,7 +1,6 @@
 import { useState, useContext, useEffect, useCallback } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useUser } from '@auth0/nextjs-auth0/client';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Link from "next/link";
 import cn from "classnames";
 import styles from "./Header.module.sass";
@@ -20,12 +19,12 @@ import { createUser } from "@/utils/axios";
 
 const menu = [
   {
-    title: "discover",
-    url: "/discover" // change to dashboar,
+    title: "Communities",
+    url: "/communities" // change to dashboar,
   },
   {
-    title: "Feed",
-    url: "/feed",
+    title: "Create",
+    url: "#",
   },
 ];
 

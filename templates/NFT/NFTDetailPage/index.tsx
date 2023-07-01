@@ -1,4 +1,4 @@
-import Layout from "@/components/MissionLayout";
+import Layout from "@/components/Layout";
 import Description from "@/components/Description";
 import Details from "./Details";
 
@@ -92,7 +92,7 @@ const MintNFTPage = ({ mission }: any) => {
   console.log("mission ====")
   console.log(mission)
   return (
-    <Layout layoutNoOverflow footerHide>
+    <Layout layoutNoOverflow footerHide noRegistration>
       {mission?.length > 0 ? (
         <>
           <Description

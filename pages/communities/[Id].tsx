@@ -15,7 +15,7 @@ const Profile: NextPage = () => {
       setCommunity(data);
     });
     
-  }, []);
+  }, [pageId]);
   return <CollectionPage community={community} />;
 };
 

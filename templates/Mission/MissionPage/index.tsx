@@ -7,7 +7,7 @@ import Newsletter from "@/components/Newsletter";
 const HomePage = () => {
     const scrollToAll = useRef<any>(null);
     return (
-        <Layout layoutNoOverflow noRegistration>
+        <Layout layoutNoOverflow>
             <Main scrollToRef={scrollToAll} />
             <Spotlight />
             <Newsletter />

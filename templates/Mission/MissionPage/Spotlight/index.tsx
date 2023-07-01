@@ -21,7 +21,7 @@ const Spotlight = ({}: SpotlightProps) => {
   console.log(missions);
   return (
     <>
-      {!missions ? (
+      {missions?.length === 0 ? (
         <>loading ...</>
       ) : (
         <div className={styles.spotlight}>
@@ -39,7 +39,7 @@ const Spotlight = ({}: SpotlightProps) => {
             />
           </div>
           <div className={styles.list}>
-            {missions.map((card: any, index: any) => (
+            {missions?.map((card: any, index: any) => (
               <Card className={styles.card} item={card} key={index} />
             ))}
           </div>

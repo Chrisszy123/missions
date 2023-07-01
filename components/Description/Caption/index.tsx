@@ -33,7 +33,7 @@ const Caption = ({ title, date }: CaptionProps) => {
       (user: any) => user.email === useremail
     );
     console.log(filteredUser);
-    setUserId(filteredUser[0].id);
+    setUserId(filteredUser[0]?.id);
   });
 
   const router = useRouter();

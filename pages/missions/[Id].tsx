@@ -14,7 +14,7 @@ const NFTDetail: NextPage = () => {
       const singleMission = e.data.filter((m: any) => m.id === missionId)
       setMission(singleMission)
      })
-  }, [])
+  }, [missionId])
   //
   return <NFTDetailPage mission={mission}/>;
 };

@@ -72,7 +72,7 @@ const Catalog = ({
                 </div>
                 {filter && <Filters statuses={filters} dark={dark || theme} />}
                 <div className={styles.list}>
-                    {items.map((card: any, index: number) => (
+                    {items && items?.map((card: any, index: number) => (
                         <Card
                             className={styles.card}
                             item={card}

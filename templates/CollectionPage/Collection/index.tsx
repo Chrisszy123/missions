@@ -39,14 +39,9 @@ type ProfileProps = {
 };
 
 const Profile = ({ item }: ProfileProps) => {
-  const [image, setImage] = useState("/images/nfts/image-1.jpg");
+  // const [image, setImage] = useState("/images/nfts/image-1.jpg");
   const router = useRouter();
   const communityId = router.query.Id;
-
-  
-useCallback(() => {
-    setImage(item?.image?.publicId)
-}, [])
 
   const [sorting, setSorting] = useState<string>("nfts");
   const [theme, setTheme] = useState<boolean>(false);
@@ -75,7 +70,7 @@ useCallback(() => {
       <div className={styles.col}>
         <div className={styles.photo}>
           <Image
-            src={`${image}`}
+            src={item?.image ? `${item?.image?.publicId}` : "/images/nfts/image-1.jpg"}
             layout="fill"
             objectFit="cover"
             alt="Avatar"

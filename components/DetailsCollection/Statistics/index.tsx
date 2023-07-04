@@ -1,6 +1,7 @@
 import cn from "classnames";
 import styles from "./Statistics.module.sass";
 import Image from "@/components/Image";
+import truncateEthAddress from 'truncate-eth-address'
 
 type StatisticsProps = {
   className?: string;
@@ -15,14 +16,14 @@ const Statistics = ({ className, items }: StatisticsProps) => {
           label: "Owned by",
           avatar: "/images/avatar.jpg",
           history: true,
-          title: "Dash",
-          login: "randomdash",
+          title: items.user[0].name,
+          login: truncateEthAddress(items.user[0].walletAddress)
         },
         {
           label: "Community",
           image: "/images/robot.jpg",
-          title: "Cute Planet",
-          category: "DEFI",
+          title: "Category",
+          category: items.tags[0].name,
         },
       ];
   return (
@@ -52,7 +53,7 @@ const Statistics = ({ className, items }: StatisticsProps) => {
               <div className={styles.details}>
                 <div className={styles.title}>{item.title}</div>
                 {item.login && (
-                  <div className={styles.login}>@{item.login}</div>
+                  <div className={styles.login}>{item.login}</div>
                 )}
                 {item.category && (
                   <div className={styles.category}>{item.category}</div>

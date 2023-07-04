@@ -35,6 +35,7 @@
     "sass": "^1.52.1",
     "scroll-lock": "^2.1.5",
     "swiper": "^8.4.2",
+    "truncate-eth-address": "^1.0.2",
     "uuid": "^9.0.0",
     "viem": "~1.0.6",
     "wagmi": "~1.2.0",

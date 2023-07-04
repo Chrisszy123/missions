@@ -10,14 +10,23 @@ const Profile: NextPage = () => {
   const router = useRouter();
   const pageId = router.query.Id;
   useEffect(() => {
-    getOneCommunity(pageId).then((c) => {
-      setCommunity(c?.message?.data);
-    });
-    
+    if(pageId === undefined){
+      setCommunity([])
+    }else{
+      getOneCommunity(pageId).then((c) => {
+        setCommunity(c?.message.data);
+      });
+    }  
   }, [pageId]);
-  
-  console.log(community)
-  return <CollectionPage community={community} />;
+  return (
+    <>
+    {community.length === 0 ? (
+      <div>Community data Loading...</div>
+    ): (
+      <CollectionPage community={community} />
+    )}
+    </>
+  );
 };
 
 export default Profile;

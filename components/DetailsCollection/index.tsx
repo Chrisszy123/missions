@@ -26,6 +26,7 @@ type DetailsProps = {
 };
 
 const Details = ({ details }: any) => {
+  const creator = details?.user[0].id
   const [modalIsOpen, setIsOpen] = useState(false);
   const [name, setName] = useState<string>("");
   const [tags, setTags] = useState<any>([]);
@@ -93,7 +94,7 @@ const Details = ({ details }: any) => {
           </div>
         </div>
         <div>
-          {details?.user[0].id !== userId ? (<></>): (
+          { creator !== userId ? (<></>): (
             <button
             className={cn("button-stroke-grey button-medium", styles.button)}
             onClick={openModal}

@@ -113,6 +113,6 @@ export const getOneCommunity = async (communityId: any) => {
     if (!community) throw new Error('community does not exist')
     return community;
   } catch (err: any) {
-    throw new Error(`error getting community ${communityId}`);
+    throw new Error(`error getting community ${communityId}` + err);
   }
 };

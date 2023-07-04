@@ -23,7 +23,7 @@ model User {
   communities   Community[]
   missions      Mission[]
   session       Session[]
-  level         Level?      @relation(fields: [levelId], references: [id],onDelete: Cascade, onUpdate: Cascade)
+  level         Level?      @relation(fields: [levelId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   winners       Winners?    @relation(fields: [winnerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
@@ -45,17 +45,31 @@ model Level {
 // }
 
 model Community {
-  id            String    @id @unique @default(uuid())
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  name          String    @unique
-  desc          String
-  link          String?
-  secondaryLink String?
-  tags          String[]
-  userId        String?
-  user          User?     @relation(fields: [userId], references: [id],onDelete: Cascade, onUpdate: Cascade)
-  missions      Mission[]
+  id        String          @id @unique @default(uuid())
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  name      String          @unique
+  desc      String
+  link      String?
+  image     CommunityImage?
+  tags      CommunityTags[]
+  user      User[]
+  missions  Mission[]
+}
+
+model CommunityTags {
+  id        String      @id @unique @default(uuid())
+  name      String
+  community Community[]
+}
+
+model CommunityImage {
+  id          String    @id @unique @default(uuid())
+  publicId    String    @unique
+  format      String?
+  version     String?
+  community   Community @relation(fields: [communityId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  communityId String    @unique
 }
 
 model Mission {
@@ -66,12 +80,12 @@ model Mission {
   name           String?        @unique
   rewards        String[]
   category       String[]
-  userId         String?        
+  userId         String?
   state          State          @default(PENDING)
   submissionType SubmissionType @default(URL)
   recurrence     Recurrence     @default(ONCE)
   communityId    String?
-  community      Community?     @relation(fields: [communityId], references: [id],onDelete: Cascade, onUpdate: Cascade)
+  community      Community?     @relation(fields: [communityId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   users          User?          @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   reviews        Reviews?
 }

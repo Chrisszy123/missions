@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  images: {
+    domains: ['www.shutterstock.com', 'firebasestorage.googleapis.com', 'static.vecteezy.com']
+  },
   reactStrictMode: true,
   swcMinify: true,
   future: {

@@ -5,15 +5,16 @@ import styles from "./Logo.module.sass";
 type LogoProps = {
     className?: string;
     light?: boolean;
+    white?: boolean;
     onClick?: () => void;
 };
 
-const Logo = ({ className, light, onClick }: LogoProps) => (
+const Logo = ({ className, light, white, onClick }: LogoProps) => (
     <Link href="/">
         <a
             className={cn(styles.logo, { [styles.light]: light }, className)}
             onClick={onClick}
-            style={{color: 'black', fontSize: '20px', fontWeight: '700'}}
+            style={white ? {color: 'black', fontSize: '20px', fontWeight: '700'}: {color: '#fff', fontSize: '20px', fontWeight: '700'}}
         >
             Missions DApp
             {/* <svg

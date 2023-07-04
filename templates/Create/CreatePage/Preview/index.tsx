@@ -1,21 +1,39 @@
 import cn from "classnames";
 import styles from "./Preview.module.sass";
 import Image from "@/components/Image";
+import { useContext } from "react";
+import { AuthContext } from "context/AuthContext";
 
 type PreviewProps = {};
 
-const Preview = ({}: PreviewProps) => (
+const Preview = ({}: PreviewProps) => {
+    const {commName, commDesc, commLink, commTags, commImage}: any = useContext(AuthContext)
+    console.log(commImage)
+  return (
     <>
-        <div className={styles.title}>Preview</div>
-        <div className={styles.preview}>
-            <div className={styles.image}></div>
-            <div className={styles.category}></div>
+      <div className={styles.title}>Preview</div>
+      <div className={styles.preview}>
+        <Image src={commImage !== '' ? `${commImage}` : "/images/nfts/image-1.jpg"} layout='fill' />
+        <div className={styles.image}> </div>
+        <div className={styles.category}></div>
+      </div>
+      <div className={styles.head}>
+        <div className={cn("h4", styles.subtitle)} style={{fontSize: '20px'}}> 
+            Community Name: <br />
+            Link:  <br />
+            Tags: <br />
+            Description: 
         </div>
-        <div className={styles.head}>
-            <div className={cn("h4", styles.subtitle)}></div>
-            <div className={styles.price}>0 NFT</div>
+        <div className={styles.price} style={{color: 'gray'}}>
+            {commName} <br />
+            {commLink} <br />
+            {commTags} <br />
+            <div style={{overflow: 'hidden', width: '100px', height: '40px', textOverflow: 'ellipsis'}}> {commDesc}</div>
         </div>
+      </div>
     </>
-);
-
+  );
+};
 export default Preview;
+
+{/*  */}

@@ -1,8 +1,7 @@
-import { getAllUsers, getOneUser } from "models/user";
+import { getTags } from "models/tags";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function(req: NextApiRequest,  res: NextApiResponse) {
-        const users = await getAllUsers()
-        return res.json(users)
-    
+    const user = await getTags()
+    return res.json(user)
 }

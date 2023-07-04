@@ -28,13 +28,13 @@ const Tokens = ({ items, titleUsers, users, theme, setTheme }: TokensProps) => {
                     dark={theme}
                     border
                 />
-                <Actions
+                {/* <Actions
                     sortingValue={sorting}
                     setSortingValue={setSorting}
                     theme={theme}
                     setTheme={setTheme}
                     dark={theme}
-                />
+                /> */}
             </div>
             <div
                 className={cn(styles.tokens, {

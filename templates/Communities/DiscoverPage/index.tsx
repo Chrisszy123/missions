@@ -49,7 +49,7 @@ const HomePage = () => {
   return (
     <Layout layoutNoOverflow noRegistration>
       {communities?.length === 0 ? (
-        <div>Communities Data Loading</div>
+        <div>There are no communities at the moment</div>
       ) : (
         <>
           {/* <Main scrollToRef={scrollToAll} /> */}

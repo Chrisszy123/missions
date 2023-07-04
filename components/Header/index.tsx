@@ -124,7 +124,7 @@ const Header = ({ className, noRegistration, light, empty }: HeaderProps) => {
       >
         {empty ? (
           <>
-            <Logo className={styles.logo} light={visibleProfile || light} />
+            <Logo className={styles.logo} light={visibleProfile || light} white={true}/>
             <Profile
               className={styles.profile}
               headClassName={styles.profileHead}

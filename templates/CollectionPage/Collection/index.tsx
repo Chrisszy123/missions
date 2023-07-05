@@ -88,7 +88,7 @@ const Profile = ({ item }: ProfileProps) => {
           {sorting === "nfts" && (
             <Tokens
               titleUsers="Owned by"
-              items={nfts}
+              items={item?.missions}
               users={["/images/artists/artist-1.jpg"]}
               theme={theme}
               setTheme={setTheme}
@@ -97,8 +97,8 @@ const Profile = ({ item }: ProfileProps) => {
           {sorting === "activity" && <Activity items={activity} />}
           {sorting === "owners" && <Owners items={followers} />}
           <div className={styles.foot}>
-            <Link href="/article">
-              <a className={styles.link}>How to mint an NFT?</a>
+            <Link href="#">
+              <a className={styles.link}>How to enter a Mission</a>
             </Link>
           </div>
         </List>

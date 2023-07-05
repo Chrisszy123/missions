@@ -12,7 +12,7 @@ type TokenProps = {
 };
 
 const Token = ({ className, item, large, dark }: TokenProps) => (
-    <Link href={item.url}>
+    <Link href={`communities/${item.communityId}/missions/${item.id}`}>
         <a
             className={cn(
                 styles.token,
@@ -20,20 +20,21 @@ const Token = ({ className, item, large, dark }: TokenProps) => (
                 className
             )}
         >
-            <div className={styles.preview}>
+            {/* <div className={styles.preview}>
                 <Image
                     src={item.image}
                     layout="fill"
                     objectFit="cover"
                     alt="Token"
                 />
-            </div>
+            </div> */}
             <div className={styles.details}>
-                <div className={styles.title}>{item.title}</div>
-                <div className={styles.category}>Buy now</div>
+                <div className={styles.title}>{item.name}</div>
+                <div className={styles.category}>Enter</div>
                 <div className={styles.line}>
-                    <div className={styles.price}>{item.price}</div>
-                    <Users items={item.users} />
+                    <div className={styles.price}>{item.rewards[0]}</div>
+                    <div className={styles.price}>{item.state}</div>
+                    {/* <Users items={item.users} /> */}
                 </div>
             </div>
         </a>

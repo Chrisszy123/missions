@@ -80,13 +80,12 @@ model Mission {
   name           String?        @unique
   rewards        String[]
   category       String[]
-  userId         String?
   state          State          @default(PENDING)
   submissionType SubmissionType @default(URL)
   recurrence     Recurrence     @default(ONCE)
   communityId    String?
   community      Community?     @relation(fields: [communityId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  users          User?          @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  users          User[]
   reviews        Reviews?
 }
 

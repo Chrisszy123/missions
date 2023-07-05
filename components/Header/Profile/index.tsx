@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { disablePageScroll, enablePageScroll } from "scroll-lock";
 import OutsideClickHandler from "react-outside-click-handler";
 import cn from "classnames";
@@ -7,20 +7,21 @@ import Image from "@/components/Image";
 import NavLink from "@/components/NavLink";
 import Icon from "@/components/Icon";
 import Wallet from "./Wallet";
+import { AuthContext } from "context/AuthContext";
 
 const menu = [
     {
-        title: "My profile",
+        title: "My Communities",
         url: "/profile",
     },
-    {
-        title: "Settings",
-        url: "/settings",
-    },
-    {
-        title: "Help",
-        url: "/help",
-    },
+    // {
+    //     title: "Settings",
+    //     url: "/settings",
+    // },
+    // {
+    //     title: "Help",
+    //     url: "/help",
+    // },
 ];
 
 type ProfileProps = {
@@ -41,7 +42,8 @@ const Profile = ({
     visible,
 }: ProfileProps) => {
     const initialRender = useRef(true);
-
+    const {user}: any = useContext(AuthContext)
+    console.log(user)
     useEffect(() => {
         if (initialRender.current) {
             initialRender.current = false;
@@ -90,8 +92,8 @@ const Profile = ({
                             />
                         </div>
                         <div className={styles.details}>
-                            <div className={cn("h3", styles.man)}>Dash</div>
-                            <div className={styles.login}>@randomdash</div>
+                            <div className={cn("h3", styles.man)}>{user?.nickname}</div>
+                            <div className={styles.login}>{user?.email}</div>
                         </div>
                     </div>
                     <Wallet onDisconnect={onClose} />

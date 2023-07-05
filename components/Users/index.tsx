@@ -29,7 +29,7 @@ const Users = ({
             className
         )}
     >
-        {title && <div className={styles.title}>{title}</div>}
+        {/* {title && <div className={styles.title}>{title}</div>} */}
         <div className={styles.group}>
             {items.slice(0, 5).map((user, index) => (
                 <div className={cn(styles.user, classUsersItem)} key={index}>

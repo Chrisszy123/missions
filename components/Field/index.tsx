@@ -7,7 +7,7 @@ type FieldProps = {
     inputClassName?: string;
     textarea?: boolean;
     type?: string;
-    value: string;
+    value?: string;
     onChange: any;
     placeholder?: string;
     required?: boolean;

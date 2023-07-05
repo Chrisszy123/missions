@@ -2,29 +2,35 @@ import Link from "next/link";
 import cn from "classnames";
 import styles from "./Wallet.module.sass";
 import Icon from "@/components/Icon";
+import { Connect } from "@/components/connectButton/ConnectButton";
+import { useContext } from "react";
+import { WalletContext } from "context/WalletContext";
+import { AuthContext } from "context/AuthContext";
 
 type WalletProps = {
     onDisconnect: () => void;
 };
 
 const Wallet = ({ onDisconnect }: WalletProps) => {
+    const {connected, account, walletBalance}: any = useContext(WalletContext)
+    const {user}: any = useContext(AuthContext)
     const actions = [
         {
-            title: "Manage wallet",
-            icon: "settings-alt",
-            url: "/settings#wallet",
+            title: `${user ? "Logout" : "Web2 Login"}`,
+            icon: "logout",
+            url: `${user ? "/api/auth/logout" : "/api/auth/login"}`,
         },
-        {
-            title: "Disconnect",
-            icon: "close-square",
-            onClick: onDisconnect,
-        },
+        // {
+        //     title: "Disconnect",
+        //     icon: "close-square",
+        //     onClick: onDisconnect,
+        // },
     ];
 
     return (
         <div className={styles.wallet}>
             <div className={styles.head}>
-                <div className={styles.title}>Connected wallet</div>
+                <div className={styles.title}><Connect image="/" text={connected ? "connected" : "Connect Wallet"}/></div>
                 <div className={styles.actions}>
                     {actions.map((action: any, index: number) =>
                         action.onClick ? (
@@ -48,9 +54,9 @@ const Wallet = ({ onDisconnect }: WalletProps) => {
                 </div>
             </div>
             <div className={styles.details}>
-                <div className={styles.code}>0x1e86...533B</div>
+                <div className={styles.code}>{account}</div>
                 <div className={cn("h3", styles.line)}>
-                    <div className={styles.crypto}>3.345 ETH</div>
+                    <div className={styles.crypto}>{walletBalance}</div>
                     <div className={styles.price}>$5,448</div>
                 </div>
             </div>

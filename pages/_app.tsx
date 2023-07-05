@@ -1,4 +1,5 @@
 import "../styles/app.sass";
+import "./globals.css";
 import type { AppProps } from "next/app";
 import { UserProvider } from "@auth0/nextjs-auth0/client";
 import "@rainbow-me/rainbowkit/styles.css";
@@ -12,7 +13,6 @@ import { WalletContext } from "context/WalletContext";
 import { AuthContext } from "context/AuthContext";
 import { useState } from "react";
 
-
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
     mainnet,
@@ -21,7 +21,7 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
     arbitrum,
     ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true" ? [goerli] : []),
   ],
-  [ publicProvider()]
+  [publicProvider()]
 );
 
 const { connectors } = getDefaultWallets({
@@ -40,8 +40,16 @@ function MyApp({ Component, pageProps }: AppProps) {
   const [connected, setConnected] = useState(false);
   const [chain, setChain] = useState("");
   const [account, setAccount] = useState("");
+  const [walletBalance, setWalletBalance] = useState("");
   const [user, setUser] = useState("");
   const [userId, setUserId] = useState("");
+  const [commName, setCommName] = useState("");
+  const [commLink, setCommLink] = useState("");
+  const [commImage, setCommImage] = useState(
+    "https://www.shutterstock.com/image-illustration/magical-flowing-castle-digital-illustration-600w-1874672812.jpg"
+  );
+  const [commDesc, setCommDesc] = useState("");
+  const [commTags, setCommTags] = useState([]);
   return (
     <WagmiConfig config={wagmiConfig}>
       <RainbowKitProvider chains={chains}>
@@ -53,9 +61,28 @@ function MyApp({ Component, pageProps }: AppProps) {
             setChain,
             account,
             setAccount,
+            walletBalance,
+            setWalletBalance,
           }}
         >
-          <AuthContext.Provider value={{ user, setUser, setUserId, userId }}>
+          <AuthContext.Provider
+            value={{
+              user,
+              setUser,
+              setUserId,
+              userId,
+              commName,
+              setCommName,
+              commLink,
+              setCommLink,
+              commImage,
+              setCommImage,
+              commDesc,
+              setCommDesc,
+              commTags,
+              setCommTags,
+            }}
+          >
             <UserProvider>
               <Component {...pageProps} />
             </UserProvider>

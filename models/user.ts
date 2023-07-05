@@ -81,9 +81,15 @@ export const getAllUsers = async () => {
 };
 
 //get one user
-export const getOneUser = async ({ email }: any) => {
+export const getOneUser = async (email : any) => {
   try {
-    const user = await prisma.user.findFirst({ where: { email } });
+    const user = await prisma.user.findUnique({ 
+      where: { email },
+      include: {
+        communities: true,
+        missions: true
+      } 
+    });
     if (!user) throw new Error("user missing");
     return user;
   } catch (err: any) {

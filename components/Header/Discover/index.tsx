@@ -9,12 +9,12 @@ import Icon from "@/components/Icon";
 export const create = [
   {
     title: "Create Community",
-    url: "/discover",
+    url: "/communities/create",
   },
-  {
-    title: "Create Mission",
-    url: "/discover/ranking",
-  },
+  // {
+  //   title: "Create Mission",
+  //   url: "/communities/missions/create",
+  // },
 ];
 export const discover = [
   {

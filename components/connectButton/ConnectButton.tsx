@@ -6,7 +6,7 @@ import { useContext } from "react";
 import { WalletContext } from "context/WalletContext";
 
 export const Connect = (props:  any) => {
-  const {setConnected, setAccount, setChain}: any = useContext(WalletContext)
+  const {setConnected, setAccount, setWalletBalance}: any = useContext(WalletContext)
   return (
     <ConnectButton.Custom>
       {({
@@ -26,7 +26,9 @@ export const Connect = (props:  any) => {
           account &&
           chain &&
           (!authenticationStatus || authenticationStatus === "authenticated");
+          console.log()
         setAccount(account?.displayName)
+        setWalletBalance(account?.displayBalance)
         return (
           <div
             {...(!ready && {
@@ -51,7 +53,8 @@ export const Connect = (props:  any) => {
                                     alt="Wallet"
                                 />
                             </span>
-                            {props.text} <Icon name="arrow-right" />
+                            {props.text} 
+                            <Icon name="arrow-right" />
                         </span>
                   </button>
                 );
@@ -67,7 +70,7 @@ export const Connect = (props:  any) => {
               }
               return (
                 <div style={{ display: "flex", gap: 12 }}>
-                  <button
+                  {/* <button
                     onClick={openChainModal}
                     style={{ display: "flex", alignItems: "center" }}
                     type="button"
@@ -93,7 +96,7 @@ export const Connect = (props:  any) => {
                       </div>
                     )}
                     {chain.name}
-                  </button>
+                  </button> */}
                   <button onClick={openAccountModal} type="button">
                     {account.displayName}
                     {account.displayBalance

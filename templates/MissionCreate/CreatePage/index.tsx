@@ -1,8 +1,9 @@
 import { useState, useEffect, useContext } from "react";
+import { useRouter } from "next/router";
 import Link from "next/link";
 import cn from "classnames";
 import styles from "./CreateStep1Page.module.sass";
-import Layout from "@/components/MissionLayout";
+import Layout from "@/components/Layout";
 import LayoutCreate from "@/components/LayoutCreate";
 import Icon from "@/components/Icon";
 import Field from "@/components/Field";
@@ -22,13 +23,18 @@ const CreatPage = () => {
 
   const { user }: any = useContext(AuthContext);
   const useremail = user?.email;
-  getUsers().then((e) => {
-    const filteredUser = e.message.data.filter(
-      (user: any) => user.email === useremail
-    );
-    console.log(filteredUser);
-    setUserId(filteredUser[0].id);
-  });
+
+  const router = useRouter()
+
+  useEffect(() => {
+    getUsers().then((e) => {
+      const filteredUser = e.message.data.filter(
+        (user: any) => user.email === useremail
+      );
+      console.log(filteredUser);
+      setUserId(filteredUser[0]?.id);
+    });
+  }, [useremail])
   
  // <Link href="/communities/create/congrats">
   const handleSubmit = async (e: any) => {
@@ -45,14 +51,14 @@ const CreatPage = () => {
       const mission = await createMission(missionData);
       // use data to redirect
       if(mission?.status === true){
-        setError(true)
+        router.push('/congrats')
       }
     } catch (err: any) {
       throw new Error("Errors submitting mission data" + err);
     }
   };
   return (
-    <Layout layoutNoOverflow footerHide emptyHeader>
+    <Layout layoutNoOverflow footerHide noRegistration>
       <LayoutCreate
         left={
           <>

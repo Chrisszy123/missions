@@ -15,7 +15,7 @@ import Menu from "./Menu";
 import { WalletContext } from "context/WalletContext";
 import { AuthContext } from "context/AuthContext";
 import { resultSearch } from "@/mocks/resultSearch";
-import { createUser } from "@/utils/axios";
+import { createUser, getOneUser } from "@/utils/axios";
 import { Connect } from "@/components/connectButton/ConnectButton";
 
 const menu = [
@@ -62,10 +62,11 @@ const Header = ({
   useEffect(() => {
     createUser(user)
     .then((u) => {
-      setUser(u);
+      console.log(u)
     })
     .catch((e) => console.log(e));
-  }, [walletAddress])
+    getOneUser(walletAddress).then((u) => setUser(u))
+  }, [user])
 
   // const handleClick = () => {
   //   setConnect(false);

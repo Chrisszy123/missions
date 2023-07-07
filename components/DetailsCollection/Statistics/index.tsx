@@ -10,15 +10,13 @@ type StatisticsProps = {
 
 
 const Statistics = ({ className, items }: StatisticsProps) => {
-    console.log(items)
-    
     const statistics = [
         {
           label: "Owned by",
           avatar: "/images/avatar.jpg",
           history: true,
-          title: items.user[0].username,
-          login: items?.user[0]?.walletAddress ? items?.user[0].walletAddress : ""
+          title: items.users[0].username,
+          login: items?.users[0]?.walletAddress ? truncateEthAddress(items?.users[0].walletAddress) : ""
         }
       ];
   return (

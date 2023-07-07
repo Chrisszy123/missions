@@ -1,14 +1,12 @@
 import { useRouter } from 'next/router';
-import { useEffect, useContext } from 'react';
-import { WalletContext } from 'context/WalletContext';
-import { AuthContext } from 'context/AuthContext';
+import { useEffect } from 'react';
+import { getAccount } from '@wagmi/core'
 
 const withAuth = <T extends object>(WrappedComponent: React.ComponentType<T>) => {
   const Wrapper: React.FC<T> = (props) => {
     const router = useRouter();
-    const {connected}: any = useContext(WalletContext)
-    const {user}:  any = useContext(AuthContext)
-
+    const account = getAccount()
+    const connected = account.isConnected
     // Perform your authentication logic here
     // const isAuthenticated =  true;
 

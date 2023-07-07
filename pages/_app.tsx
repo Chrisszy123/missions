@@ -12,7 +12,6 @@ import { publicProvider } from "wagmi/providers/public";
 import { WalletContext } from "context/WalletContext";
 import { AuthContext } from "context/AuthContext";
 import { useState } from "react";
-import ErrorBoundary from "./_error";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
@@ -46,9 +45,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   const [userId, setUserId] = useState("");
   const [commName, setCommName] = useState("");
   const [commLink, setCommLink] = useState("");
-  const [commImage, setCommImage] = useState(
-    "https://www.shutterstock.com/image-illustration/magical-flowing-castle-digital-illustration-600w-1874672812.jpg"
-  );
+  const [commImage, setCommImage] = useState("");
   const [commDesc, setCommDesc] = useState("");
   const [commTags, setCommTags] = useState([]);
   return (
@@ -85,9 +82,9 @@ function MyApp({ Component, pageProps }: AppProps) {
             }}
           >
             <UserProvider>
-              <ErrorBoundary>
+              
                 <Component {...pageProps} />
-              </ErrorBoundary>
+              
             </UserProvider>
           </AuthContext.Provider>
         </WalletContext.Provider>

@@ -32,21 +32,17 @@ function getUsers() {
       name: "John Doe",
       username: "JohnD",
       role: "BASIC",
-      password: "12311",
       communities: {
         create: {
           desc: "A new community created for 1",
           name: "01node community",
+          ownerId: '90ba9d4b-83eb-4668-a944-4ee7486d4345',
           tags: {
             create: {
-              name: "Validator",
+              name: ["CEFI", "VALIDATOR"],
             },
           },
-          image: {
-            create: {
-              publicId: "https://www.shutterstock.com/image-illustration/magical-flowing-castle-digital-illustration-600w-1874672812.jpg"
-            }
-          },
+          image: "https://www.shutterstock.com/image-illustration/magical-flowing-castle-digital-illustration-600w-1874672812.jpg",
           link: "https://www.o1node.com",
           missions: {
             create: {
@@ -68,21 +64,17 @@ function getUsers() {
       name: "John D",
       username: "John Den",
       role: "ADMIN",
-      password: "12311",
       communities: {
         create: {
           desc: "A new community created for 2",
           name: "01node community2",
+          ownerId: '90ba9d4b-83eb-4668-a944-4ee7486d4300',
           tags: {
             create: {
-              name: "DEFI",
+              name: ["DEFI", "VALIDATOR"],
             },
           },
-          image: {
-            create: {
-              publicId: "https://static.vecteezy.com/system/resources/previews/002/928/556/non_2x/silhouette-of-businessman-standing-on-mountain-looking-flag-on-hill-at-sunset-business-target-and-success-concept-free-photo.jpg"
-            }
-          },
+          image: "https://static.vecteezy.com/system/resources/previews/002/928/556/non_2x/silhouette-of-businessman-standing-on-mountain-looking-flag-on-hill-at-sunset-business-target-and-success-concept-free-photo.jpg",
           link: "https://www.o1node.com",
           missions: {
             create: {

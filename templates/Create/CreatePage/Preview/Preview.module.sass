@@ -29,25 +29,28 @@
     border-radius: rem(12)
 
 .image
-    width: rem(96)
-    height: rem(96)
-    background: rgba($n4, .3)
-    img
-        border-radius: rem(12)
+    min-width: rem(98)
+    min-height: rem(48)
+    background: $n1
+    +body1
+    &:empty
+        background: rgba($n4, .3)
 
 .category
     min-width: rem(98)
     min-height: rem(48)
-    padding: rem(8) rem(16)
     background: $n1
     +body1
     &:empty
         background: rgba($n4, .3)
 
 .head
-    display: flex
-    justify-content: space-between
-    align-items: center
+    min-width: rem(98)
+    min-height: rem(48)
+    background: $n1
+    +body1
+    &:empty
+        background: rgba($n4, .3)
 
 .subtitle
     &:empty

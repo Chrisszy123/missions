@@ -19,8 +19,7 @@ CREATE TABLE "User" (
     "email" TEXT,
     "username" TEXT,
     "name" TEXT,
-    "password" TEXT,
-    "walletAddress" TEXT,
+    "walletAddress" TEXT NOT NULL,
     "levelId" TEXT,
     "role" "Role" NOT NULL DEFAULT 'BASIC',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -46,7 +45,8 @@ CREATE TABLE "Community" (
     "name" TEXT NOT NULL,
     "desc" TEXT NOT NULL,
     "link" TEXT,
-    "userId" TEXT,
+    "image" TEXT,
+    "ownerId" TEXT NOT NULL,
 
     CONSTRAINT "Community_pkey" PRIMARY KEY ("id")
 );
@@ -54,20 +54,9 @@ CREATE TABLE "Community" (
 -- CreateTable
 CREATE TABLE "CommunityTags" (
     "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
+    "name" TEXT[],
 
     CONSTRAINT "CommunityTags_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "CommunityImage" (
-    "id" TEXT NOT NULL,
-    "publicId" TEXT NOT NULL,
-    "format" TEXT NOT NULL,
-    "version" TEXT NOT NULL,
-    "communityId" TEXT NOT NULL,
-
-    CONSTRAINT "CommunityImage_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -79,11 +68,10 @@ CREATE TABLE "Mission" (
     "name" TEXT,
     "rewards" TEXT[],
     "category" TEXT[],
-    "userId" TEXT,
     "state" "State" NOT NULL DEFAULT 'PENDING',
     "submissionType" "SubmissionType" NOT NULL DEFAULT 'URL',
     "recurrence" "Recurrence" NOT NULL DEFAULT 'ONCE',
-    "communityId" TEXT,
+    "communityId" TEXT NOT NULL,
 
     CONSTRAINT "Mission_pkey" PRIMARY KEY ("id")
 );
@@ -121,6 +109,18 @@ CREATE TABLE "_CommunityToCommunityTags" (
     "B" TEXT NOT NULL
 );
 
+-- CreateTable
+CREATE TABLE "_UsersUserRelation" (
+    "A" TEXT NOT NULL,
+    "B" TEXT NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "_MissionToUser" (
+    "A" TEXT NOT NULL,
+    "B" TEXT NOT NULL
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_id_key" ON "User"("id");
 
@@ -149,15 +149,6 @@ CREATE UNIQUE INDEX "Community_name_key" ON "Community"("name");
 CREATE UNIQUE INDEX "CommunityTags_id_key" ON "CommunityTags"("id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "CommunityImage_id_key" ON "CommunityImage"("id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "CommunityImage_publicId_key" ON "CommunityImage"("publicId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "CommunityImage_communityId_key" ON "CommunityImage"("communityId");
-
--- CreateIndex
 CREATE UNIQUE INDEX "Mission_id_key" ON "Mission"("id");
 
 -- CreateIndex
@@ -181,6 +172,18 @@ CREATE UNIQUE INDEX "_CommunityToCommunityTags_AB_unique" ON "_CommunityToCommun
 -- CreateIndex
 CREATE INDEX "_CommunityToCommunityTags_B_index" ON "_CommunityToCommunityTags"("B");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "_UsersUserRelation_AB_unique" ON "_UsersUserRelation"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_UsersUserRelation_B_index" ON "_UsersUserRelation"("B");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_MissionToUser_AB_unique" ON "_MissionToUser"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_MissionToUser_B_index" ON "_MissionToUser"("B");
+
 -- AddForeignKey
 ALTER TABLE "User" ADD CONSTRAINT "User_levelId_fkey" FOREIGN KEY ("levelId") REFERENCES "Level"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -188,16 +191,10 @@ ALTER TABLE "User" ADD CONSTRAINT "User_levelId_fkey" FOREIGN KEY ("levelId") RE
 ALTER TABLE "User" ADD CONSTRAINT "User_winnerId_fkey" FOREIGN KEY ("winnerId") REFERENCES "Winners"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Community" ADD CONSTRAINT "Community_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "CommunityImage" ADD CONSTRAINT "CommunityImage_communityId_fkey" FOREIGN KEY ("communityId") REFERENCES "Community"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Community" ADD CONSTRAINT "Community_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Mission" ADD CONSTRAINT "Mission_communityId_fkey" FOREIGN KEY ("communityId") REFERENCES "Community"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Mission" ADD CONSTRAINT "Mission_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Reviews" ADD CONSTRAINT "Reviews_missionId_fkey" FOREIGN KEY ("missionId") REFERENCES "Mission"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -213,3 +210,15 @@ ALTER TABLE "_CommunityToCommunityTags" ADD CONSTRAINT "_CommunityToCommunityTag
 
 -- AddForeignKey
 ALTER TABLE "_CommunityToCommunityTags" ADD CONSTRAINT "_CommunityToCommunityTags_B_fkey" FOREIGN KEY ("B") REFERENCES "CommunityTags"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_UsersUserRelation" ADD CONSTRAINT "_UsersUserRelation_A_fkey" FOREIGN KEY ("A") REFERENCES "Community"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_UsersUserRelation" ADD CONSTRAINT "_UsersUserRelation_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_MissionToUser" ADD CONSTRAINT "_MissionToUser_A_fkey" FOREIGN KEY ("A") REFERENCES "Mission"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_MissionToUser" ADD CONSTRAINT "_MissionToUser_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

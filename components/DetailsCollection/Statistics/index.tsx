@@ -11,20 +11,15 @@ type StatisticsProps = {
 
 const Statistics = ({ className, items }: StatisticsProps) => {
     console.log(items)
+    
     const statistics = [
         {
           label: "Owned by",
           avatar: "/images/avatar.jpg",
           history: true,
-          title: items.user[0].name,
-          login: truncateEthAddress(items.user[0].walletAddress)
-        },
-        {
-          label: "Community",
-          image: "/images/robot.jpg",
-          title: "Category",
-          category: items.tags[0].name,
-        },
+          title: items.user[0].username,
+          login: items?.user[0]?.walletAddress ? items?.user[0].walletAddress : ""
+        }
       ];
   return (
     <div
@@ -55,9 +50,11 @@ const Statistics = ({ className, items }: StatisticsProps) => {
                 {item.login && (
                   <div className={styles.login}>{item.login}</div>
                 )}
-                {item.category && (
-                  <div className={styles.category}>{item.category}</div>
-                )}
+                {/* {items.category && (
+                  <div className={styles.category}>
+                    {items.tags.map((tag: any) => (<div> {tag.name}</div>))}
+                  </div>
+                )} */}
               </div>
             </div>
           </div>

@@ -1,34 +1,8 @@
 import prisma from "../utils/db";
 import { z } from "zod";
+import { missionSchema } from "@/types/missions";
 
-const missionSchema = z
-  .object({
-    id: z.string(),
-    desc: z.string().min(10),
-    name: z.string().min(5),
-    rewards: z.string(),
-    category: z.string(),
-    userId: z.string(),
-    communityId: z.string(),
-    state: z.enum(["DRAFT", "PENDING", "OPEN", "CLOSED"]),
-    submissionType: z.enum([
-      "URL",
-      "IMAGE",
-      "TEXT",
-      "QUIZ",
-      "VISIT",
-      "EMPTY",
-      "TWITTER",
-      "DISCORD",
-      "TELEGRAM",
-      "INVITES",
-    ]),
-    recurrence: z.enum(["ONCE", "DAILY", "WEEKLY", "MONTHLY"]),
-  })
-  .partial();
-
-type MissionData = z.infer<typeof missionSchema>;
-
+type MissionData = z.infer<typeof missionSchema>
 // handle create mission
 export const createMission = async (data: MissionData) => {
   const missionData = missionSchema.parse(data);
@@ -43,7 +17,17 @@ export const createMission = async (data: MissionData) => {
     if (!missionData.userId)
       throw new Error("Not Authenticated to create mission");
     await prisma.mission.create({
-      data: missionData,
+      data: {
+        ...missionData,
+        community: {
+          connect: {
+            id: missionData.communityId,
+          },
+        },
+      },
+      include: {
+        community: true,
+      },
     });
   } catch (err: any) {
     throw new Error("error creating mission" + err);

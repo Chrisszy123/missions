@@ -5,17 +5,9 @@ import Link from "next/link";
 import cn from "classnames";
 import styles from "./Discover.module.sass";
 import Icon from "@/components/Icon";
+import { useRouter } from "next/router";
 
-export const create = [
-  {
-    title: "Create Community",
-    url: "/communities/create",
-  },
-  // {
-  //   title: "Create Mission",
-  //   url: "/communities/missions/create",
-  // },
-];
+
 export const discover = [
   {
     title: "Communities",
@@ -34,9 +26,13 @@ export const discover = [
 type DiscoverProps = {
   className?: string;
   light?: boolean;
+  isCommunity?: boolean;
 };
 
-const Discover = ({ className, light }: DiscoverProps) => {
+const Discover = ({ className, light, isCommunity }: DiscoverProps) => {
+  const router = useRouter()
+  const slug = router.query.Id
+
   const [visible, setVisible] = useState<boolean>(false);
   const [visibleD, setDVisible] = useState<boolean>(false);
   useHotkeys("esc", () => setVisible(false));
@@ -94,14 +90,21 @@ const Discover = ({ className, light }: DiscoverProps) => {
           </button>
           <div className={styles.body}>
             <div className={styles.list}>
-              {create.map((item, index) => (
-                <Link href={item.url} key={index}>
+              
+                <Link href="/communities/create">
                   <a className={styles.item}>
-                    {item.title}
+                    Create Community
                     <Icon name="arrow-right-thin" />
                   </a>
                 </Link>
-              ))}
+                {isCommunity ? (
+                  <Link href={`/communities/${slug}/missions/create`}>
+                  <a className={styles.item}>
+                    Create Mission
+                    <Icon name="arrow-right-thin" />
+                  </a>
+                </Link>
+                ): null}
             </div>
           </div>
         </div>

@@ -14,7 +14,7 @@ const Logo = ({ className, light, white, onClick }: LogoProps) => (
         <a
             className={cn(styles.logo, { [styles.light]: light }, className)}
             onClick={onClick}
-            style={white ? {color: 'black', fontSize: '20px', fontWeight: '700'}: {color: '#fff', fontSize: '20px', fontWeight: '700'}}
+            style={white ? {color: '#fff', fontSize: '20px', fontWeight: '700'}: {color: 'black', fontSize: '20px', fontWeight: '700'}}
         >
             Missions DApp
             {/* <svg

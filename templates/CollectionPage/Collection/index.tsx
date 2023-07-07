@@ -54,7 +54,7 @@ const Profile = ({ item }: ProfileProps) => {
     {
       title: "Leaderboard",
       value: "activity",
-      counter: "5",
+      counter: "",
       onClick: () => setTheme(false),
     },
     {
@@ -70,7 +70,7 @@ const Profile = ({ item }: ProfileProps) => {
       <div className={styles.col}>
         <div className={styles.photo}>
           <Image
-            src={item?.image ? `${item?.image?.publicId}` : "/images/nfts/image-1.jpg"}
+            src={item?.image ? `${item?.image}` : "/images/nfts/image-1.jpg"}
             layout="fill"
             objectFit="cover"
             alt="Avatar"

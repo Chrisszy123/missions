@@ -21,6 +21,8 @@ type LayoutProps = {
     footerHide?: boolean;
     background?: string;
     Link?: any;
+    isCommunity?: boolean;
+    white?: boolean;
     children: React.ReactNode;
 };
 
@@ -34,11 +36,13 @@ const Layout = ({
     footerHide,
     background,
     children,
+    isCommunity,
+    white
 }: LayoutProps) => {
     const { pathname } = useRouter();
 
     const {connected}: any = useContext(WalletContext)
-    const {user}: any = useContext(AuthContext)
+    //const {user}: any = useContext(AuthContext)
     useEffect(() => {
         clearQueueScrollLocks();
         enablePageScroll();
@@ -59,9 +63,11 @@ const Layout = ({
                 {!headerHide && (
                     <Header
                         className={classHeader}
-                        noRegistration={user || connected ? !noRegistration : noRegistration}
+                        noRegistration={ connected ? !noRegistration : noRegistration}
                         light={lightHeader}
                         empty={emptyHeader}
+                        isCommunity={isCommunity}
+                        white={white}
                     />
                 )}
                 <div className={styles.inner}>{children}</div>

@@ -9,7 +9,9 @@ type CardProps = {
     dark?: any;
 };
 
-const Card = ({ className, item, dark }: CardProps) => (
+const Card = ({ className, item, dark }: CardProps) => {
+    console.log(item)
+return (
     <Link href={`/communities/${item.id}`}>
         <a className={cn(styles.card, { [styles.dark]: dark }, className)}>
         <div className={styles.user}>
@@ -36,7 +38,7 @@ const Card = ({ className, item, dark }: CardProps) => (
             <div className={styles.preview} style={{marginBottom: '2px'}}>
                 <Image
                     className={styles.photo}
-                    src="/images/nfts/image-1.jpg"
+                    src={item?.image ? `${item?.image}`:"/images/nfts/image-1.jpg"}
                     layout="fill"
                     objectFit="cover"
                     alt="Card"
@@ -44,7 +46,7 @@ const Card = ({ className, item, dark }: CardProps) => (
                 <div className={styles.category}>
                     <div className={styles.image}>
                         <Image
-                            src="/images/collection/image-6.jpg"
+                            src={item?.image ? `${item?.image}`:"/images/collection/image-6.jpg"}
                             layout="fill"
                             objectFit="cover"
                             alt="Photo category"
@@ -55,19 +57,19 @@ const Card = ({ className, item, dark }: CardProps) => (
                 <div className={styles.title}>{item.title}</div>
             </div>
             <div className={styles.user}>
-                {/* <div className={styles.avatar}>
+                <div className={styles.avatar}>
                     <Image
                         src="/images/artists/artist-1.jpg"
                         layout="fill"
                         objectFit="cover"
                         alt="Avatar"
                     />
-                </div> */}
+                </div>
                 <div className={styles.login} style={{fontSize: '14px'}}>{item.desc}</div>
                 {item.verified && (
                     <div className={styles.verified}>
                         <Image
-                            src="/images/verified.png"
+                            src={"/images/verified.png"}
                             width={100}
                             height={100}
                             alt="Verified"
@@ -87,6 +89,7 @@ const Card = ({ className, item, dark }: CardProps) => (
             </div>
         </a>
     </Link>
-);
+)
+                };
 
 export default Card;

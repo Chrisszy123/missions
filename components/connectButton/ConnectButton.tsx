@@ -1,12 +1,10 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import classNames from "classnames";
-import Icon from "../Icon";
-import Image from "../Image";
 import { useContext } from "react";
 import { WalletContext } from "context/WalletContext";
 
-export const Connect = (props:  any) => {
-  const {setConnected, setAccount, setWalletBalance}: any = useContext(WalletContext)
+export const Connect = (props: any) => {
+  const { setConnected, setAccount, setWalletBalance }: any =
+    useContext(WalletContext);
   return (
     <ConnectButton.Custom>
       {({
@@ -26,9 +24,8 @@ export const Connect = (props:  any) => {
           account &&
           chain &&
           (!authenticationStatus || authenticationStatus === "authenticated");
-          console.log()
-        setAccount(account?.displayName)
-        setWalletBalance(account?.displayBalance)
+        setAccount(account?.address);
+        setWalletBalance(account?.displayBalance);
         return (
           <div
             {...(!ready && {
@@ -43,27 +40,23 @@ export const Connect = (props:  any) => {
             {(() => {
               if (!connected) {
                 return (
-                  <button onClick={openConnectModal} type="button" className={props.className} style={{marginTop: '10px'}}>
-                    <span className={props.innerClass}>
-                            <span className={props.Iconclass}>
-                                <Image
-                                    src={props.image}
-                                    width={40}
-                                    height={40}
-                                    alt="Wallet"
-                                />
-                            </span>
-                            {props.text} 
-                            <Icon name="arrow-right" />
-                        </span>
+                  <button
+                    onClick={openConnectModal}
+                    type="button"
+                    style={{ fontSize: '16px'}}
+                  >
+                    Connect Wallet
                   </button>
                 );
-              }else{
-                setConnected(true)
+              } else {
+                setConnected(true);
               }
               if (chain.unsupported) {
                 return (
-                  <button onClick={openChainModal} type="button" className={props.className}>
+                  <button
+                    onClick={openChainModal}
+                    type="button"
+                  >
                     Wrong network
                   </button>
                 );

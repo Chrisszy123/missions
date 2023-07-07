@@ -36,7 +36,7 @@ const Catalog = ({
     const [time, setTime] = useState<string>("1-days");
     const [theme, setTheme] = useState<any>(false);
     const [filter, setFilter] = useState<any>(false);
-
+    console.log(items)
     return (
         <div className={cn(styles.catalog, { [styles.dark]: dark || theme })}>
             <div className={styles.wrapper} ref={scrollToRef}>

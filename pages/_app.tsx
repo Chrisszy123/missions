@@ -12,6 +12,7 @@ import { publicProvider } from "wagmi/providers/public";
 import { WalletContext } from "context/WalletContext";
 import { AuthContext } from "context/AuthContext";
 import { useState } from "react";
+import ErrorBoundary from "./_error";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
@@ -84,7 +85,9 @@ function MyApp({ Component, pageProps }: AppProps) {
             }}
           >
             <UserProvider>
-              <Component {...pageProps} />
+              <ErrorBoundary>
+                <Component {...pageProps} />
+              </ErrorBoundary>
             </UserProvider>
           </AuthContext.Provider>
         </WalletContext.Provider>

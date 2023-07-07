@@ -89,16 +89,19 @@ const icons: IconsType = {
 type IconProps = {
     className?: string;
     name: string;
+    onClick?: any;
     size?: number | string;
     fill?: string;
 };
 
-const Icon = ({ className, name, size, fill }: IconProps) => (
+const Icon = ({ className, name, size, fill, onClick }: IconProps) => (
     <svg
         className={cn(styles.icon, className)}
         width={size || 24}
         height={size || 24}
         viewBox="0 0 24 24"
+        onClick={onClick}
+        style={{cursor: 'pointer', pointerEvents: 'visible'}}
     >
         <path fill={fill} d={icons[name]}></path>
     </svg>

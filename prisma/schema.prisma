@@ -12,8 +12,7 @@ model User {
   email         String?     @unique
   username      String?     @unique
   name          String?
-  password      String?
-  walletAddress String?     @unique
+  walletAddress String     @unique
   levelId       String?
   role          Role        @default(BASIC)
   createdAt     DateTime    @default(now())
@@ -51,7 +50,7 @@ model Community {
   name      String          @unique
   desc      String
   link      String?
-  image     CommunityImage?
+  image     String?
   tags      CommunityTags[]
   user      User[]
   missions  Mission[]
@@ -59,18 +58,18 @@ model Community {
 
 model CommunityTags {
   id        String      @id @unique @default(uuid())
-  name      String
+  name      String[]
   community Community[]
 }
 
-model CommunityImage {
-  id          String    @id @unique @default(uuid())
-  publicId    String    @unique
-  format      String?
-  version     String?
-  community   Community @relation(fields: [communityId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  communityId String    @unique
-}
+// model CommunityImage {
+//   id          String    @id @unique @default(uuid())
+//   publicId    String    @unique
+//   format      String?
+//   version     String?
+//   community   Community @relation(fields: [communityId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+//   communityId String    @unique
+// }
 
 model Mission {
   id             String         @id @unique @default(uuid())
@@ -83,8 +82,8 @@ model Mission {
   state          State          @default(PENDING)
   submissionType SubmissionType @default(URL)
   recurrence     Recurrence     @default(ONCE)
-  communityId    String?
-  community      Community?     @relation(fields: [communityId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  communityId    String
+  community      Community     @relation(fields: [communityId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   users          User[]
   reviews        Reviews?
 }

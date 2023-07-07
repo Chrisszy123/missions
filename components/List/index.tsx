@@ -4,7 +4,7 @@ import Tabs from "./Tabs";
 
 type ListProps = {
     tabs: any;
-    tabsValue: any;
+    tabsValue?: any;
     setTabsValue: any;
     children: React.ReactNode;
     light?: boolean;

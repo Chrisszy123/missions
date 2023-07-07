@@ -27,14 +27,15 @@ const Caption = ({ title, date }: CaptionProps) => {
   const [userId, setUserId] = useState<any>();
 
   const { user }: any = useContext(AuthContext);
+  console.log(user)
   const useremail = user?.email;
-  getUsers().then((e: any) => {
-    const filteredUser = e.message.data.filter(
-      (user: any) => user.email === useremail
-    );
-    console.log(filteredUser);
-    setUserId(filteredUser[0]?.id);
-  });
+  // getUsers().then((e: any) => {
+  //   const filteredUser = e.message.data.filter(
+  //     (user: any) => user.email === useremail
+  //   );
+  //   console.log(filteredUser);
+  //   setUserId(filteredUser[0]?.id);
+  // });
 
   const router = useRouter();
   const missionId = router.query.Id;

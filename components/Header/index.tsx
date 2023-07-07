@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect, useCallback } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { useUser } from '@auth0/nextjs-auth0/client';
+import { useUser } from "@auth0/nextjs-auth0/client";
 import Link from "next/link";
 import cn from "classnames";
 import styles from "./Header.module.sass";
@@ -16,14 +16,15 @@ import { WalletContext } from "context/WalletContext";
 import { AuthContext } from "context/AuthContext";
 import { resultSearch } from "@/mocks/resultSearch";
 import { createUser } from "@/utils/axios";
+import { Connect } from "@/components/connectButton/ConnectButton";
 
 const menu = [
   {
     title: "Communities",
-    url: "/communities" // change to dashboar,
+    url: "/communities", // change to dashboar,
   },
   {
-    title: "Create",
+    title: "About",
     url: "#",
   },
 ];
@@ -33,81 +34,44 @@ type HeaderProps = {
   noRegistration?: boolean;
   light?: boolean;
   empty?: boolean;
+  isCommunity?: boolean;
+  white?: boolean;
 };
 
-const Header = ({ className, noRegistration, light, empty }: HeaderProps) => {
+const Header = ({
+  className,
+  noRegistration,
+  light,
+  empty,
+  isCommunity,
+  white,
+}: HeaderProps) => {
   const [visibleProfile, setVisibleProfile] = useState<boolean>(false);
   const [connect, setConnect] = useState<boolean>(false);
   const [registration, setRegistration] = useState<boolean>(false);
   useHotkeys("esc", () => setVisibleProfile(false));
-  const {user, error, isLoading} = useUser()
+  //const {user, error, isLoading} = useUser()
   const { connected, account }: any = useContext(WalletContext);
-  const {setUser}: any = useContext(AuthContext)
-  setUser(user)
+  const { setUser }: any = useContext(AuthContext);
   // create a new user
-  createUser(user).then((u) => console.log(u)).catch((e) => console.log(e))
-
-  const handleClick = () => {
-    setConnect(false);
-    setRegistration(true);
+  const walletAddress = account?.toString().toLowerCase();
+  const user = {
+    walletAddress,
   };
-  //
-  const HandleNavBtn = () => {
-    if(user && connected){
-      return (
-        <button
-                className={cn(
-                  "button-stroke button-medium",
-                  styles.button,
-                  styles.connect
-                )}
-                onClick={() => setConnect(true)}
-              >
-               {account}
-              </button>
-      )
-    } else if (user && !connected){
-      return (
-        <button
-                className={cn(
-                  "button-stroke button-medium",
-                  styles.button,
-                  styles.connect
-                )}
-                onClick={() => setConnect(true)}
-              >
-                connect wallet
-              </button>
-      )
-    } else if(!user && connected){
-      return(
-        <button
-                className={cn(
-                  "button-stroke button-medium",
-                  styles.button,
-                  styles.connect
-                )}
-                onClick={() => setConnect(true)}
-              >
-                 {account}
-              </button>
-      )
-    }else{
-      return(
-        <button
-                className={cn(
-                  "button-stroke button-medium",
-                  styles.button,
-                  styles.connect
-                )}
-                onClick={() => setConnect(true)}
-              >
-                 Login
-              </button>
-      )
-    }
-  } 
 
+  useEffect(() => {
+    createUser(user)
+    .then((u) => {
+      setUser(u);
+    })
+    .catch((e) => console.log(e));
+  }, [walletAddress])
+
+  // const handleClick = () => {
+  //   setConnect(false);
+  //   setRegistration(true);
+  // };
+  //
   return (
     <>
       <header
@@ -124,7 +88,11 @@ const Header = ({ className, noRegistration, light, empty }: HeaderProps) => {
       >
         {empty ? (
           <>
-            <Logo className={styles.logo} light={visibleProfile || light} white={true}/>
+            <Logo
+              className={styles.logo}
+              light={visibleProfile || light}
+              white={white}
+            />
             <Profile
               className={styles.profile}
               headClassName={styles.profileHead}
@@ -137,7 +105,11 @@ const Header = ({ className, noRegistration, light, empty }: HeaderProps) => {
         ) : (
           <>
             <div className={styles.col}>
-              <Logo className={styles.logo} light={visibleProfile || light} />
+              <Logo
+                className={styles.logo}
+                light={visibleProfile || light}
+                white={white}
+              />
               <Search
                 className={styles.search}
                 result={resultSearch}
@@ -147,6 +119,7 @@ const Header = ({ className, noRegistration, light, empty }: HeaderProps) => {
             <div className={styles.col}>
               <Discover
                 className={styles.discover}
+                isCommunity={isCommunity}
                 light={visibleProfile || light}
               />
               <div className={styles.navigation}>
@@ -156,19 +129,19 @@ const Header = ({ className, noRegistration, light, empty }: HeaderProps) => {
                   </Link>
                 ))}
               </div>
-              {/* <Link href="/communities/create">
-                <a
-                  className={cn(
-                    "button-stroke button-medium",
-                    styles.button,
-                    styles.create
-                  )}
-                >
-                  <span>create</span>
-                  <Icon name="plus" />
-                </a>
-              </Link> */}
-              <HandleNavBtn />
+              <div
+                className={cn(
+                  "button-stroke button-medium",
+                  styles.button,
+                  styles.connect
+                )}
+              >
+                {connected ? (
+                  <div>{account}</div>
+                ) : (
+                    <Connect /> 
+                )}
+              </div>
               <Link href="/notification">
                 <a className={cn(styles.notification, styles.active)}>
                   <Icon name="flash" />
@@ -190,7 +163,7 @@ const Header = ({ className, noRegistration, light, empty }: HeaderProps) => {
           [styles.visible]: visibleProfile,
         })}
       ></div>
-      {!connected ? (
+      {/* {!connected ? (
         <Modal
           className={styles.modal}
           closeClassName={styles.close}
@@ -204,7 +177,7 @@ const Header = ({ className, noRegistration, light, empty }: HeaderProps) => {
         </Modal>
       ) : (
         null
-      )}
+      )} */}
     </>
   );
 };

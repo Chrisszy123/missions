@@ -7,20 +7,20 @@ const UserSchema = z
     id: z.string(),
     email: z.string().email(),
     name: z.string().min(5),
-    nickname: z.string().min(3),
+    username: z.string().min(3),
     role: z.enum(["BASIC", "ADMIN", "CREATOR"]),
-    password: z.string(),
     walletAddress: z.string(),
     levelId: z.string(),
     winnerId: z.string(),
   })
   .partial({
-    password: true,
     role: true,
     id: true,
-    walletAddress: true,
     levelId: true,
     winnerId: true,
+    email: true,
+    username: true,
+    name: true
   });
 type UserData = z.infer<typeof UserSchema>;
 
@@ -28,14 +28,12 @@ export const createUser = async (data: UserData) => {
   const userData = UserSchema.parse(data);
   try {
     const existingUser = await prisma.user.findFirst({
-      where: { email: userData.email },
+      where: { walletAddress: userData.walletAddress },
     });
     if (existingUser) return
     const user = await prisma.user.create({
       data: {
-        name: userData.name,
-        email: userData.email,
-        username: userData.nickname,
+       walletAddress: userData.walletAddress
       },
     });
     return user;
@@ -81,10 +79,10 @@ export const getAllUsers = async () => {
 };
 
 //get one user
-export const getOneUser = async (email : any) => {
+export const getOneUser = async (walletAddress : any) => {
   try {
     const user = await prisma.user.findUnique({ 
-      where: { email },
+      where: { walletAddress },
       include: {
         communities: true,
         missions: true
@@ -93,7 +91,7 @@ export const getOneUser = async (email : any) => {
     if (!user) throw new Error("user missing");
     return user;
   } catch (err: any) {
-    throw new Error("error getting user");
+    throw new Error("error getting user" + err);
   }
 };
 // enter a mission

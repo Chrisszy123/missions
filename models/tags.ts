@@ -2,10 +2,10 @@ import prisma from "../utils/db";
 import { z } from "zod";
 
 const TagsSchema = z.object({
-    name: z.string(),
-    communities: z.any()
+    name: z.any(),
+    communityId: z.string()
 }).partial({
-    communities: true
+    communityId: true
 })
 type TagsData = z.infer<typeof TagsSchema>;
 
@@ -14,14 +14,22 @@ export const createTag = async(data: TagsData) => {
     try{
         const existingTag = await prisma.communityTags.findFirst({
             where: {
-                name: tagsData.name
+                community: {
+                    some: {
+                        id: tagsData.communityId
+                    }
+                }
             }
         })
-        if(existingTag) throw new Error('Tag already Exist')
+        if(existingTag) throw new Error('community already have existing Tags')
         await prisma.communityTags.create({
             data: {
                 name: tagsData.name,
-                community: tagsData.communities
+                community: {
+                    connect: {
+                        id: tagsData.communityId
+                    }
+                }
             }
         })
     }catch(err: any){

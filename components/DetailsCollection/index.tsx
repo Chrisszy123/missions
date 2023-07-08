@@ -1,6 +1,7 @@
 import cn from "classnames";
 import styles from "./DetailsCollection.module.sass";
 import styled from "@/components/Description/Description.module.sass";
+import sty from '@/components/Description/Description.module.sass'
 import Statistics from "./Statistics";
 import style from "@/templates/Create/CreatePage/CreateStep1Page.module.sass";
 import Icon from "@/components/Icon";
@@ -11,6 +12,9 @@ import Preview from "@/templates/Create/CreatePage/Preview";
 import LayoutCreate from "@/components/LayoutCreate";
 import Field from "@/components/Field";
 import { AuthContext } from "context/AuthContext";
+import { WalletContext } from "context/WalletContext";
+import Links from "./Links";
+import Tags from "./Tags";
 import { getTags, getTag, updateCommunity, getOneUser } from "@/utils/axios";
 
 type DetailsType = {
@@ -37,12 +41,14 @@ const Details = ({ details }: any) => {
 
   const [userId, setUserId] = useState<any>();
 
-  const { user }: any = useContext(AuthContext);
-  const useremail = user?.email;
+ // const { user }: any = useContext(AuthContext);
+  const {connected, account}: any = useContext(WalletContext)
+  //const useremail = user?.email;
   const router = useRouter();
   const communityId = router.query.Id;
+  const walletAddress = account?.toString().toLowerCase()
 
-  getOneUser(useremail).then((e: any) => {
+  getOneUser(walletAddress).then((e: any) => {
     console.log(e);
     setUserId(e?.message?.data?.id);
   });
@@ -55,7 +61,7 @@ const Details = ({ details }: any) => {
         tags: tags,
         link: link,
         desc: desc,
-        userId: userId,
+        //userId: userId, get userId via walletAddress
         id: communityId,
       };
       const comm = await updateCommunity(communityData);
@@ -79,12 +85,8 @@ const Details = ({ details }: any) => {
     <div className={styles.details}>
       <div className={styles.head}>
         <div className={styles.box}>
-          <div className={cn("h2", styles.user)}>{details?.name}</div>
+          <div className={cn("h2", styles.user)} style={{fontSize: '30px'}}>{details?.name}</div>
           <div className={styles.line}>
-            {details?.tags?.map((tag: any) => (
-              <div className={styles.category}>{tag.name}</div>
-            ))}
-
             <div className={styles.code}>
               {details?.link}
               <button className={styles.copy}>
@@ -98,18 +100,21 @@ const Details = ({ details }: any) => {
             <button
             className={cn("button-stroke-grey button-medium", styles.button)}
             onClick={openModal}
+            style={{paddingLeft: '0.5rem', paddingRight: '0.6rem', marginLeft: '0px'}}
           >
-            <span>edit</span>
             <Icon name="edit" />
           </button>
           )}
-          <button
+          {connected ? (
+            <button
             className={cn("button-stroke-grey button-medium", styles.button)}
             onClick={() => {}}
+            style={{paddingLeft: '0.5rem', paddingRight: '0.6rem', marginLeft: '0px'}}
           >
-            <span>Join</span>
             <Icon name="share" />
           </button>
+          ): null}
+          
         </div>
         <Modal
           isOpen={modalIsOpen}
@@ -212,10 +217,27 @@ const Details = ({ details }: any) => {
         </div>
       </div>
       <Statistics items={details} className={styled.box} />
-      <div className={styles.foot}>
+      <div className={sty.box} style={{padding: '0', paddingTop: '1rem',marginTop: '2rem'}}>
+                        <div className={cn("h4", sty.stage)}>Description</div>
+                        <div className={sty.content} style={{fontSize: '14px'}}>{details.desc}</div>
+                        {details?.links && <Links items={details} />}
+                        {/* {addTags && (
+                            <button
+                                className={cn(
+                                    "button-stroke-grey button-medium",
+                                    styles.button
+                                )}
+                            >
+                                <span>Add tags</span>
+                                <Icon name="plus" />
+                            </button>
+                        )} */}
+                        {details?.tags && <Tags tags={details?.tags[0].name} />}
+                    </div>
+      {/* <div className={styles.foot}>
         <div className={styles.stage}>Description</div>
         <div className={styles.content}>{details?.desc}</div>
-      </div>
+      </div> */}
     </div>
   );
 };

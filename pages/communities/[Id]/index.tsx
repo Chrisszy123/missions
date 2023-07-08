@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import CollectionPage from "@/templates/CollectionPage";
 import { getOneCommunity } from "@/utils/axios";
+import ErrorBoundary from "pages/_error";
 
 const Profile: NextPage = () => {
   const [community, setCommunity] = useState<any>([]);
@@ -20,7 +21,7 @@ const Profile: NextPage = () => {
   }, [pageId]);
   return (
     <>
-    {community.length === 0 ? (
+    {community?.length === 0 ? (
       <div>Community data Loading...</div>
     ): (
       <CollectionPage community={community} />
@@ -29,4 +30,9 @@ const Profile: NextPage = () => {
   );
 };
 
-export default Profile;
+const WithErrorBoundary: React.FC = () => (
+  <ErrorBoundary>
+    <Profile />
+  </ErrorBoundary>
+);
+export default WithErrorBoundary;

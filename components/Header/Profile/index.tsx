@@ -14,14 +14,6 @@ const menu = [
         title: "My Communities",
         url: "/profile",
     },
-    // {
-    //     title: "Settings",
-    //     url: "/settings",
-    // },
-    // {
-    //     title: "Help",
-    //     url: "/help",
-    // },
 ];
 
 type ProfileProps = {
@@ -42,8 +34,7 @@ const Profile = ({
     visible,
 }: ProfileProps) => {
     const initialRender = useRef(true);
-    const {user}: any = useContext(AuthContext)
-    console.log(user)
+    //const {user}: any = useContext(AuthContext)
     useEffect(() => {
         if (initialRender.current) {
             initialRender.current = false;
@@ -91,10 +82,10 @@ const Profile = ({
                                 alt="Avatar"
                             />
                         </div>
-                        <div className={styles.details}>
+                        {/* <div className={styles.details}>
                             <div className={cn("h3", styles.man)}>{user?.nickname}</div>
                             <div className={styles.login}>{user?.email}</div>
-                        </div>
+                        </div> */}
                     </div>
                     <Wallet onDisconnect={onClose} />
                     <div className={styles.menu}>

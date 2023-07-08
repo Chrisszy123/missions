@@ -22,12 +22,28 @@ import {
 
 const CreatPage = () => {
   const [name, setName] = useState<string>("");
-  const [tags, setTags] = useState<string>("");
+  const [tags, setTags] = useState<any>([]);
   const [link, setLink] = useState<string>("");
   const [image, setImage] = useState<any>("");
   const [desc, setDesc] = useState<string>("");
   const [error, setError] = useState<any>(false);
   const [userId, setUserId] = useState<any>();
+
+  const [dataArray, setDataArray] = useState<string[]>([]);
+  const [inputData, setInputData] = useState<string>("");
+
+  const handleClick = () => {
+    if (inputData.trim() !== "") {
+      setDataArray((prevDataArray) => [...prevDataArray, inputData]);
+      setInputData("");
+      setCommTags(dataArray);
+      console.log(dataArray); // Print the updated array
+    }
+  };
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputData(event.target.value);
+    
+  };
 
   const {
     user,
@@ -43,7 +59,7 @@ const CreatPage = () => {
     const filteredUser = e?.message?.data?.filter(
       (user: any) => user.email === useremail
     );
-    if(!filteredUser) return
+    if (!filteredUser) return;
     setUserId(filteredUser[0]?.id);
   });
   //
@@ -51,10 +67,12 @@ const CreatPage = () => {
     if (img == null) return;
     const imageRef = ref(storage, `communities/${img.name + v4()}`);
     uploadBytes(imageRef, img).then((snapshot) => {
-      getDownloadURL(snapshot.ref).then((url) => {
-        setImage((prev: any) => [...prev, url]);
-        setCommImage(url)
-      }).catch((err: any) => console.log(err));
+      getDownloadURL(snapshot.ref)
+        .then((url) => {
+          setImage(url);
+          setCommImage(url);
+        })
+        .catch((err: any) => console.log(err));
     });
   };
 
@@ -63,9 +81,9 @@ const CreatPage = () => {
     try {
       const communityData = {
         name: name,
-        tags: tags,
+        tags: dataArray,
         link: link,
-        image: image[0],
+        image: image,
         desc: desc,
         userId: userId,
       };
@@ -79,7 +97,7 @@ const CreatPage = () => {
     }
   };
   return (
-    <Layout layoutNoOverflow footerHide emptyHeader>
+    <Layout layoutNoOverflow footerHide noRegistration>
       <LayoutCreate
         left={
           <>
@@ -113,7 +131,7 @@ const CreatPage = () => {
               />
               <Field
                 className={styles.field}
-                placeholder="name"
+                placeholder="Name"
                 icon="profile"
                 value={name}
                 onChange={(e: any) => {
@@ -125,7 +143,7 @@ const CreatPage = () => {
               />
               <Field
                 className={styles.field}
-                placeholder="URL/Link"
+                placeholder="URL"
                 icon="profile"
                 value={link}
                 onChange={(e: any) => {
@@ -135,17 +153,19 @@ const CreatPage = () => {
                 large
                 required
               />
+              <div style={{ display: "flex", alignItems: 'center', gap: '1rem' }}> Tags:
+                {dataArray.map((e: any, index) => (
+                  <div key={index}>{e}</div>
+                ))}
+              </div>
               <Field
                 className={styles.field}
                 placeholder="Tags"
-                icon="profile"
-                value={tags}
-                onChange={(e: any) => {
-                  setTags(e.target.value);
-                  setCommTags(e.target.value);
-                }}
+                icon="plus"
+                value={inputData}
+                onChange={handleInputChange}
+                onClick={handleClick}
                 large
-                required
               />
               <Field
                 className={styles.field}

@@ -27,16 +27,24 @@ export const createCommunity = async (data: CommunityData) => {
   const communityData = CommunitySchema.parse(data);
   console.log(communityData)
   try {
-    const existingCommunity = await prisma.community.findFirst({
-      where: { link: communityData.link },
-    });
     if(!communityData.userId) throw new Error('only users can create a community')
-    if (existingCommunity) throw new Error("Commnunity already exists");
     await prisma.community.create({
       data: {
         name: communityData.name,
         desc: communityData.desc,
         link: communityData.link,
+        image: communityData.image,
+        user: {
+          connect: {
+            id: communityData.userId
+          }
+        },
+        tags: {
+          create: {
+            name: communityData.tags
+          }
+        }
+        
       },
     });
   } catch (err: any) {
@@ -91,6 +99,10 @@ export const getAllCommunities = async () => {
   try {
     const community = await prisma.community.findMany({
       orderBy: { createdAt: "desc" },
+      include: {
+        user: true,
+        tags: true
+      }
     });
     if (!community) return { message: "cannot get communities", status: false };
     return community;
@@ -104,7 +116,6 @@ export const getOneCommunity = async (communityId: any) => {
     const community = await prisma.community.findFirst({
       where: { id: communityId },
       include: {
-        image: true,
         user: true,
         missions: true,
         tags: true

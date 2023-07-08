@@ -84,9 +84,9 @@ export const getUsers = async() => {
         return {status: false, message: err}
     }
 }
-export const getOneUser = async(email:  any) => {
+export const getOneUser = async(walletAddress:  any) => {
     const data = {
-        email
+        walletAddress
     }
     try{
         const users = await axios.post('/api/users/getOne', data)

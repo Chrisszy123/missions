@@ -100,7 +100,7 @@ const Menu = ({ classBurger, resultSearch }: MenuProps) => {
                 </NavLink>
               ))}
             </div>
-            <div className={cn("h4", styles.info)}>Download app</div>
+            {/* <div className={cn("h4", styles.info)}>Download app</div>
             <div className={styles.btns}>
               <a
                 className={cn("button", styles.button)}
@@ -120,7 +120,7 @@ const Menu = ({ classBurger, resultSearch }: MenuProps) => {
                 <span>google play</span>
                 <Icon name="google-play" />
               </a>
-            </div>
+            </div> */}
           </div>
         </div>
       </Modal>

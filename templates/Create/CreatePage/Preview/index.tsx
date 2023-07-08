@@ -7,8 +7,7 @@ import { AuthContext } from "context/AuthContext";
 type PreviewProps = {};
 
 const Preview = ({}: PreviewProps) => {
-    const {commName, commDesc, commLink, commTags, commImage}: any = useContext(AuthContext)
-    console.log(commImage)
+    const {commName, commDesc, commLink, commImage}: any = useContext(AuthContext)
   return (
     <>
       <div className={styles.title}>Preview</div>
@@ -21,13 +20,11 @@ const Preview = ({}: PreviewProps) => {
         <div className={cn("h4", styles.subtitle)} style={{fontSize: '20px'}}> 
             Community Name: <br />
             Link:  <br />
-            Tags: <br />
             Description: 
         </div>
         <div className={styles.price} style={{color: 'gray'}}>
             {commName} <br />
             {commLink} <br />
-            {commTags} <br />
             <div style={{overflow: 'hidden', width: '100px', height: '40px', textOverflow: 'ellipsis'}}> {commDesc}</div>
         </div>
       </div>

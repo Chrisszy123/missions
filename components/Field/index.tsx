@@ -4,11 +4,14 @@ import Icon from "@/components/Icon";
 
 type FieldProps = {
     className?: string;
+    id?: string;
+    onClick?: any;
     inputClassName?: string;
     textarea?: boolean;
     type?: string;
     value?: string;
-    onChange: any;
+    onChange?: any;
+    onBlur?: any;
     placeholder?: string;
     required?: boolean;
     children?: any;
@@ -17,10 +20,12 @@ type FieldProps = {
     light?: boolean;
     large?: boolean;
     label?: string;
+    error?: any;
 };
 
 const Field = ({
     className,
+    id,
     inputClassName,
     textarea,
     type,
@@ -33,6 +38,9 @@ const Field = ({
     light,
     large,
     label,
+    onClick,
+    onBlur,
+    error,
 }: FieldProps) => (
     <div
         className={cn(
@@ -49,23 +57,27 @@ const Field = ({
                 <textarea
                     className={styles.textarea}
                     value={value}
+                    id={id}
                     onChange={onChange}
                     placeholder={placeholder}
                     required={required}
                     autoFocus={autoFocus}
+                    onBlur={onBlur}
                 ></textarea>
             ) : (
                 <input
                     className={cn(styles.input, inputClassName)}
                     type={type || "text"}
+                    id={id}
                     value={value}
                     onChange={onChange}
+                    onBlur={onBlur}
                     placeholder={placeholder}
                     required={required}
                     autoFocus={autoFocus}
                 />
             )}
-            {icon && <Icon className={styles.icon} name={icon} />}
+            {icon && <Icon className={styles.icon} name={icon} onClick={onClick}/>}
         </div>
         {label && <div className={styles.label}>{label}</div>}
     </div>

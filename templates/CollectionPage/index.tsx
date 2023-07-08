@@ -2,12 +2,12 @@ import Layout from "@/components/Layout";
 import Background from "@/components/Background";
 import Collection from "./Collection";
 
-const CollectionPage = ({ community }: any) => {
+const CollectionPage = ({ community }: any) => { //lightheader and white
   return (
-    <Layout layoutNoOverflow lightHeader footerHide noRegistration>
+    <Layout layoutNoOverflow footerHide noRegistration isCommunity={true}> 
       {community && community ? (
         <>
-          <Background image="/images/background-2.jpg" />
+          <Background/>
           <Collection item={community} />
         </>
       ) : (

@@ -49,6 +49,10 @@ function MyApp({ Component, pageProps }: AppProps) {
   const [commImage, setCommImage] = useState("");
   const [commDesc, setCommDesc] = useState("");
   const [commTags, setCommTags] = useState([]);
+  const [missionName, setMissionName] = useState("");
+  const [missionRewards, SetMissionRewards] = useState("");
+  const [mDesc, setMDesc] = useState("");
+  
   return (
     <WagmiConfig config={wagmiConfig}>
       <RainbowKitProvider chains={chains}>
@@ -80,6 +84,12 @@ function MyApp({ Component, pageProps }: AppProps) {
               setCommDesc,
               commTags,
               setCommTags,
+              setMissionName,
+              missionName,
+              SetMissionRewards,
+              missionRewards,
+              mDesc,
+              setMDesc
             }}
           >
             <UserProvider>

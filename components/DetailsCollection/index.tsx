@@ -15,6 +15,8 @@ import { AuthContext } from "context/AuthContext";
 import { WalletContext } from "context/WalletContext";
 import Links from "./Links";
 import Tags from "./Tags";
+import { getAccount } from '@wagmi/core'
+
 import { getTags, getTag, updateCommunity, getOneUser } from "@/utils/axios";
 
 type DetailsType = {
@@ -30,7 +32,9 @@ type DetailsProps = {
 };
 
 const Details = ({ details }: any) => {
-  const creator = details?.user[0].id
+  const wallet = getAccount()
+  console.log(wallet)
+  const creator = details?.ownerId
   const [modalIsOpen, setIsOpen] = useState(false);
   const [name, setName] = useState<string>("");
   const [tags, setTags] = useState<any>([]);
@@ -49,7 +53,6 @@ const Details = ({ details }: any) => {
   const walletAddress = account?.toString().toLowerCase()
 
   getOneUser(walletAddress).then((e: any) => {
-    console.log(e);
     setUserId(e?.message?.data?.id);
   });
 
@@ -207,7 +210,7 @@ const Details = ({ details }: any) => {
           <div className={styles.label}>
             <Icon name="profile-fat" /> Users
           </div>
-          <div className={cn("h4", styles.value)}>{details?.user?.length}</div>
+          <div className={cn("h4", styles.value)}>{details?.users.length}</div>
         </div>
         <div className={styles.item}>
           <div className={styles.label}>

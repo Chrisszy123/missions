@@ -4,8 +4,8 @@ import { NextApiRequest, NextApiResponse } from "next";
 export default async function(req: NextApiRequest, res: NextApiResponse){
     try{
         const data = req.body
-        await createMission(data)
-        return{ status: true, message: "success creating mission"}
+        const mission = await createMission(data)
+        return res.json(mission)
     }catch(err: any){
         throw new Error("Error creating mission" + err)
     }

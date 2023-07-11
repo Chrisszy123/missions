@@ -6,7 +6,6 @@ type LinksProps = {
 };
 
 const Links = ({ items }: LinksProps) => {
-    console.log(items)
     return(
     <div className={styles.links}>
         

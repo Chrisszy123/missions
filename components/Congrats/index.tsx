@@ -62,7 +62,7 @@ const Congrats = ({ title, content }: CongratsProps) => (
                     <div className={styles.btns}>
                         <Link href="/nft">
                             <a className={cn("button-large", styles.button)}>
-                                View NFT
+                                My Profile
                             </a>
                         </Link>
                         <Link href="/share-nft">

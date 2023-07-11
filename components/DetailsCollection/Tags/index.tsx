@@ -5,7 +5,6 @@ type TagsProps = {
 };
 
 const Tags = ({ tags }: TagsProps) => {
-    console.log(tags)
     return(
     <div className={styles.tags}>
         {tags.map((tag: any, index: number) => (

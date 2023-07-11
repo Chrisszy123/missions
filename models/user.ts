@@ -8,6 +8,7 @@ const UserSchema = z
     email: z.string().email(),
     name: z.string().min(5),
     username: z.string().min(3),
+    password: z.string(),
     role: z.enum(["BASIC", "ADMIN", "CREATOR"]),
     walletAddress: z.string(),
     levelId: z.string(),
@@ -20,7 +21,8 @@ const UserSchema = z
     winnerId: true,
     email: true,
     username: true,
-    name: true
+    name: true,
+    password: true
   });
 type UserData = z.infer<typeof UserSchema>;
 

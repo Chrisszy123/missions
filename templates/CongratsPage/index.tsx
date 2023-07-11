@@ -13,7 +13,7 @@ const CongratsPage = () => {
         >
             <Congrats
                 title="Awesome"
-                content="Congratulations! You successfully purchased Escape NFT."
+                content="Congratulations! You successfully created a community."
             />
         </Layout>
     );

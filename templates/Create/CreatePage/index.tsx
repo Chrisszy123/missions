@@ -18,9 +18,10 @@ import {
   listAll,
   list,
 } from "firebase/storage";
+import { useRouter } from "next/router";
 //modal
 
-const CreatPage = () => {
+const CreatePage = () => {
   const [name, setName] = useState<string>("");
   const [tags, setTags] = useState<any>([]);
   const [link, setLink] = useState<string>("");
@@ -28,7 +29,7 @@ const CreatPage = () => {
   const [desc, setDesc] = useState<string>("");
   const [error, setError] = useState<any>(false);
   const [userId, setUserId] = useState<any>();
-
+  const router = useRouter()
   const [dataArray, setDataArray] = useState<string[]>([]);
   const [inputData, setInputData] = useState<string>("");
 
@@ -53,15 +54,15 @@ const CreatPage = () => {
     setCommLink,
     setCommTags,
   }: any = useContext(AuthContext);
-  const useremail = user?.email;
+  const walletAddress = user?.walletAddress;
   //
-  getUsers().then((e: any) => {
-    const filteredUser = e?.message?.data?.filter(
-      (user: any) => user.email === useremail
-    );
-    if (!filteredUser) return;
-    setUserId(filteredUser[0]?.id);
-  });
+  // getUsers().then((e: any) => {
+  //   const filteredUser = e?.message?.data?.filter(
+  //     (user: any) => user.walletAddress === walletAddress
+  //   );
+  //   if (!filteredUser) return;
+  //   setUserId(filteredUser[0]?.id);
+  // });
   //
   const uploadFile = (img: any) => {
     if (img == null) return;
@@ -85,12 +86,14 @@ const CreatPage = () => {
         link: link,
         image: image,
         desc: desc,
-        userId: userId,
+        userId: user?.message?.data?.id,
+        ownerId: user?.message?.data?.id
       };
       const comm = await createCommunity(communityData);
+      console.log(comm)
       // use data to redirect
       if (comm?.status === true) {
-        window.location.replace("/congrats");
+        router.push("/congrats");
       }
     } catch (err: any) {
       throw new Error("errors submitting community data" + err);
@@ -202,4 +205,4 @@ const CreatPage = () => {
   );
 };
 
-export default CreatPage;
+export default CreatePage;

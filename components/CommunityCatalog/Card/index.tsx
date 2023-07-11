@@ -10,7 +10,6 @@ type CardProps = {
 };
 
 const Card = ({ className, item, dark }: CardProps) => {
-    console.log(item)
 return (
     <Link href={`/communities/${item.id}`}>
         <a className={cn(styles.card, { [styles.dark]: dark }, className)}>
@@ -83,7 +82,7 @@ return (
                     <div className={styles.price} style={{fontSize: "10px", textOverflow: 'ellipsis'}}>{item.link}</div>
                 </div>
                 <div className={styles.box}>
-                    <div className={styles.text}>Secondary Link</div>
+                    <div className={styles.text}></div>
                     <div className={styles.price} style={{fontSize: "10px", textOverflow: 'ellipsis'}}>{item.secondaryLink}</div>
                 </div>
             </div>

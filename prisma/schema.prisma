@@ -12,14 +12,15 @@ model User {
   email         String?     @unique
   username      String?     @unique
   name          String?
-  walletAddress String     @unique
+  walletAddress String      @unique
   levelId       String?
   role          Role        @default(BASIC)
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
   winnerId      String?
   reviews       Reviews?
-  communities   Community[]
+  communities   Community[] @relation("UsersUserRelation")
+  owner         Community[] @relation("OwnerUserRelation")
   missions      Mission[]
   session       Session[]
   level         Level?      @relation(fields: [levelId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -51,8 +52,10 @@ model Community {
   desc      String
   link      String?
   image     String?
+  ownerId   String
   tags      CommunityTags[]
-  user      User[]
+  owner     User            @relation("OwnerUserRelation", fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  users     User[]          @relation("UsersUserRelation")
   missions  Mission[]
 }
 
@@ -83,7 +86,7 @@ model Mission {
   submissionType SubmissionType @default(URL)
   recurrence     Recurrence     @default(ONCE)
   communityId    String
-  community      Community     @relation(fields: [communityId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  community      Community      @relation(fields: [communityId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   users          User[]
   reviews        Reviews?
 }

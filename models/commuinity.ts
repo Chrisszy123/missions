@@ -12,7 +12,8 @@ const CommunitySchema = z
     missions: z.any(),
     link: z.string().url(),
     image: z.string().url(),
-    userId: z.string()
+    userId: z.string(),
+    ownerId: z.string()
   })
   .partial({
     user: true,
@@ -28,13 +29,14 @@ export const createCommunity = async (data: CommunityData) => {
   console.log(communityData)
   try {
     if(!communityData.userId) throw new Error('only users can create a community')
-    await prisma.community.create({
+    const community = await prisma.community.create({
       data: {
         name: communityData.name,
         desc: communityData.desc,
         link: communityData.link,
         image: communityData.image,
-        user: {
+        ownerId: communityData.ownerId,
+        users: {
           connect: {
             id: communityData.userId
           }
@@ -47,6 +49,7 @@ export const createCommunity = async (data: CommunityData) => {
         
       },
     });
+    return {status: true, message: community}
   } catch (err: any) {
     throw new Error("error creating community" + err);
   }
@@ -57,16 +60,16 @@ export const updateCommunity = async (data: CommunityData) => {
   try {
     // check if user is the creator of the community
     const community = await prisma.community.findFirst({
-      where: { user: {
+      where: { users: {
         some: {
           id: communityData.userId 
         }
       }},
       include: {
-        user: true
+        users: true
       }
     });
-    if(communityData.userId !== community?.user[0].id) throw new Error('not a creator of this community')
+    if(communityData.userId !== community?.ownerId) throw new Error('not a creator of this community')
     const updatedCommunity = await prisma.community.update({
       where: { id: communityData.id },
       data: {
@@ -100,8 +103,9 @@ export const getAllCommunities = async () => {
     const community = await prisma.community.findMany({
       orderBy: { createdAt: "desc" },
       include: {
-        user: true,
-        tags: true
+        users: true,
+        tags: true,
+        owner: true
       }
     });
     if (!community) return { message: "cannot get communities", status: false };
@@ -116,9 +120,10 @@ export const getOneCommunity = async (communityId: any) => {
     const community = await prisma.community.findFirst({
       where: { id: communityId },
       include: {
-        user: true,
+        users: true,
         missions: true,
-        tags: true
+        tags: true,
+        owner: true
       }
     });
     if (!community) throw new Error('community does not exist')

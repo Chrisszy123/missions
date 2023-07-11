@@ -25,11 +25,11 @@ const Caption = ({ title, date, data }: CaptionProps) => {
   const [desc, setDesc] = useState<string>("");
   const [error, setError] = useState<any>(false);
 
-  const owner = data[0]?.community?.ownerId
+  const owner = data[0]?.community?.ownerId;
 
   const { user }: any = useContext(AuthContext);
-  const userId = user?.message?.data?.id
-  console.log(userId)
+  const userId = user?.message?.data?.id;
+  console.log(userId);
   const router = useRouter();
   const missionId = router.query.MissionId;
   const communityId = data[0]?.community?.ownerId;
@@ -50,8 +50,8 @@ const Caption = ({ title, date, data }: CaptionProps) => {
       // use data to redirect
       if (mission?.status === true) {
         setError(true);
-      }else{
-        router.push(`/missions/${missionId}`)
+      } else {
+        router.push(`/missions/${missionId}`);
       }
     } catch (err: any) {
       throw new Error("errors submitting mission data" + err);
@@ -68,13 +68,15 @@ const Caption = ({ title, date, data }: CaptionProps) => {
       <div className={styles.line}>
         <div className={cn("h2", styles.title)}>{title}</div>
         <div className={styles.actions}>
-          {owner !== userId ? (<div> </div>) : (
+          {owner !== userId ? (
+            <div> </div>
+          ) : (
             <button
-            className={cn("button-circle button-medium", styles.button)}
-            onClick={openModal}
-          >
-            <Icon name="edit" />
-          </button>
+              className={cn("button-circle button-medium", styles.button)}
+              onClick={openModal}
+            >
+              <Icon name="edit" />
+            </button>
           )}
           <ReactModal
             isOpen={modalIsOpen}

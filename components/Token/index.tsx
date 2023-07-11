@@ -13,7 +13,7 @@ type TokenProps = {
 
 const Token = ({ className, item, large, dark }: TokenProps) => (
   <Link
-    href={`communities/${item.communityId}/missions/${item.id}`}
+    href={`${item.communityId}/missions/${item.id}`}
     
   >
     <a

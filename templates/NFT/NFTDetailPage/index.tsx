@@ -117,7 +117,7 @@ const MintNFTPage = ({ mission }: any) => {
             //   ),
             //   linkUrl: "#",
             // }}
-            provenance={mission?.users ? mission?.users : provenance}
+            provenance={mission}
             content={mission[0].desc}
             missionData={mission}
           >

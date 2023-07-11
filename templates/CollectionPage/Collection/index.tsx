@@ -39,10 +39,6 @@ type ProfileProps = {
 };
 
 const Profile = ({ item }: ProfileProps) => {
-  // const [image, setImage] = useState("/images/nfts/image-1.jpg");
-  const router = useRouter();
-  const communityId = router.query.Id;
-
   const [sorting, setSorting] = useState<string>("nfts");
   const [theme, setTheme] = useState<boolean>(false);
   const tabs = [

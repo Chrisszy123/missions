@@ -10,14 +10,14 @@ type PreviewProps = {
 const Preview = ({ image, alt }: PreviewProps) => (
     <div className={styles.preview}>
         <Image src={image} layout="fill" objectFit="cover" alt={alt} />
-        <div className={styles.actions}>
+        {/* <div className={styles.actions}>
             <button className={styles.action}>
                 <Icon name="music" />
             </button>
             <button className={styles.action}>
                 <Icon name="full-view" />
             </button>
-        </div>
+        </div> */}
     </div>
 );
 

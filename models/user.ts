@@ -87,7 +87,8 @@ export const getOneUser = async (walletAddress : any) => {
       where: { walletAddress },
       include: {
         communities: true,
-        missions: true
+        missions: true,
+        level: true
       } 
     });
     if (!user) throw new Error("user missing");

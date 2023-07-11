@@ -15,7 +15,7 @@ import { AuthContext } from "context/AuthContext";
 import { WalletContext } from "context/WalletContext";
 import Links from "./Links";
 import Tags from "./Tags";
-import { getAccount } from '@wagmi/core'
+
 
 import { getTags, getTag, updateCommunity, getOneUser } from "@/utils/axios";
 
@@ -32,8 +32,6 @@ type DetailsProps = {
 };
 
 const Details = ({ details }: any) => {
-  const wallet = getAccount()
-  console.log(wallet)
   const creator = details?.ownerId
   const [modalIsOpen, setIsOpen] = useState(false);
   const [name, setName] = useState<string>("");

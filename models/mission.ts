@@ -18,12 +18,19 @@ export const createMission = async (data: MissionData) => {
       throw new Error("Not Authenticated to create mission");
     await prisma.mission.create({
       data: {
-        ...missionData,
+        name: missionData.name,
+        desc: missionData.desc,
+        rewards: missionData.rewards,
         community: {
           connect: {
             id: missionData.communityId,
           },
         },
+        users: {
+          connect: {
+            id: missionData.userId
+          }
+        }
       },
       include: {
         community: true,
@@ -57,6 +64,14 @@ export const getAllMission = async () => {
   try {
     const missions = await prisma.mission.findMany({
       orderBy: { createdAt: "desc" },
+      include: {
+        community: {
+          include: {
+            tags: true
+          }
+        },
+        users: true
+      }
     });
     if (!missions) return { message: "cannot get missions", status: false };
     return missions;
@@ -74,6 +89,10 @@ export const getOneMission = async (data: MissionData) => {
   try {
     const mission = await prisma.mission.findFirst({
       where: { id: missionData.id },
+      include: {
+        users: true,
+        community: true
+      }
     });
     if (!mission)
       return {

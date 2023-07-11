@@ -1,13 +1,13 @@
 import styles from "./Activity.module.sass";
 import Image from "@/components/Image";
-
+import truncateEthAddress from 'truncate-eth-address'
 type ItemsType = {
     nft: string;
     fromAvatar: string;
     fromLogin: string;
-    toAvatar: string;
-    toLogin: string;
-    price: string;
+    username: string;
+    walletAddress: string;
+    level: string;
 };
 
 type ActivityProps = {
@@ -17,17 +17,17 @@ type ActivityProps = {
 const Activity = ({ items }: ActivityProps) => (
     <div className={styles.table}>
         <div className={styles.row}>
-            <div className={styles.col}>NFT</div>
-            <div className={styles.col}>From</div>
-            <div className={styles.col}>To</div>
-            <div className={styles.col}>Price</div>
+            <div className={styles.col}>Profile</div>
+            <div className={styles.col}>Username</div>
+            <div className={styles.col}>Address</div>
+            <div className={styles.col}>Rank</div>
         </div>
         {items.map((item, index) => (
             <div className={styles.row} key={index}>
                 <div className={styles.col}>
                     <div className={styles.preview}>
                         <Image
-                            src={item.nft}
+                            src="/images/nfts/image-6.jpg"
                             layout="fill"
                             objectFit="cover"
                             alt="NFT"
@@ -35,32 +35,34 @@ const Activity = ({ items }: ActivityProps) => (
                     </div>
                 </div>
                 <div className={styles.col}>
-                    <div className={styles.user}>
+                    <div className={styles.login} style={{paddingLeft: '0px'}}>@{item?.username ? item?.username : "newuser"}</div>
+                    {/* <div className={styles.user}>
                         <div className={styles.avatar}>
                             <Image
-                                src={item.fromAvatar}
+                                src="/images/nfts/image-6.jpg"
                                 layout="fill"
                                 objectFit="cover"
                                 alt="NFT"
                             />
                         </div>
-                        <div className={styles.login}>@{item.fromLogin}</div>
-                    </div>
+                        
+                    </div> */}
                 </div>
                 <div className={styles.col}>
-                    <div className={styles.user}>
+                    <div className={styles.login} style={{paddingLeft: '0px'}}>{truncateEthAddress(item?.walletAddress)}</div>
+                    {/* <div className={styles.user}>
                         <div className={styles.avatar}>
                             <Image
-                                src={item.toAvatar}
+                                src="/images/nfts/image-6.jpg"
                                 layout="fill"
                                 objectFit="cover"
                                 alt="NFT"
                             />
                         </div>
-                        <div className={styles.login}>@{item.toLogin}</div>
-                    </div>
+                       
+                    </div> */}
                 </div>
-                <div className={styles.col}>{item.price}</div>
+                <div className={styles.col}>{item?.level}</div>
             </div>
         ))}
     </div>

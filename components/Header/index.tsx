@@ -54,19 +54,25 @@ const Header = ({
   const { connected, account }: any = useContext(WalletContext);
   const { setUser }: any = useContext(AuthContext);
   // create a new user
-  const walletAddress = account?.toString().toLowerCase();
-  const user = {
-    walletAddress,
-  };
+  const walletAddress = account?.toString().toLowerCase()
 
-  useEffect(() => {
+  const CreateUser = () => {
+    const user = {
+      walletAddress,
+    };
+    if(!user) return
     createUser(user)
-    .then((u) => {
-      console.log(u)
-    })
-    .catch((e) => console.log(e));
+    .then((u) => {}).catch((e) => {});
+
+  }
+  const GetUser = () => {
+    if(!walletAddress) return
     getOneUser(walletAddress).then((u) => setUser(u))
-  }, [user])
+  }
+  useEffect(() => {
+    CreateUser()
+    GetUser()
+  }, [walletAddress])
 
   // const handleClick = () => {
   //   setConnect(false);

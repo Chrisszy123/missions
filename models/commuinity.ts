@@ -26,7 +26,6 @@ type CommunityData = z.infer<typeof CommunitySchema>;
 // handle create community
 export const createCommunity = async (data: CommunityData) => {
   const communityData = CommunitySchema.parse(data);
-  console.log(communityData)
   try {
     if(!communityData.userId) throw new Error('only users can create a community')
     const community = await prisma.community.create({
@@ -120,7 +119,12 @@ export const getOneCommunity = async (communityId: any) => {
     const community = await prisma.community.findFirst({
       where: { id: communityId },
       include: {
-        users: true,
+        users: {
+          include: {
+            level: true,
+            reviews: true
+          }
+        },
         missions: true,
         tags: true,
         owner: true

@@ -5,22 +5,31 @@ import Image from "@/components/Image";
 import Users from "@/components/Users";
 
 type TokenProps = {
-    className?: string;
-    item: any;
-    large?: boolean;
-    dark?: boolean;
+  className?: string;
+  item: any;
+  large?: boolean;
+  dark?: boolean;
 };
 
 const Token = ({ className, item, large, dark }: TokenProps) => (
-    <Link href={`communities/${item.communityId}/missions/${item.id}`}>
-        <a
-            className={cn(
-                styles.token,
-                { [styles.large]: large, [styles.dark]: dark },
-                className
-            )}
-        >
-            {/* <div className={styles.preview}>
+  <Link
+    href={`communities/${item.communityId}/missions/${item.id}`}
+    
+  >
+    <a
+      className={cn(
+        styles.token,
+        { [styles.large]: large, [styles.dark]: dark },
+        className
+      )}
+      style={{
+        border: "solid",
+        borderColor: "#C4BCBA",
+        borderRadius: "10px",
+        padding: "1rem",
+      }}
+    >
+      {/* <div className={styles.preview}>
                 <Image
                     src={item.image}
                     layout="fill"
@@ -28,17 +37,17 @@ const Token = ({ className, item, large, dark }: TokenProps) => (
                     alt="Token"
                 />
             </div> */}
-            <div className={styles.details}>
-                <div className={styles.title}>{item.name}</div>
-                <div className={styles.category}>Enter</div>
-                <div className={styles.line}>
-                    <div className={styles.price}>{item.rewards[0]}</div>
-                    <div className={styles.price}>{item.state}</div>
-                    {/* <Users items={item.users} /> */}
-                </div>
-            </div>
-        </a>
-    </Link>
+      <div className={styles.details}>
+        <div className={styles.title}>{item.name}</div>
+        <div className={styles.category}>Enter</div>
+        <div className={styles.line}>
+          <div className={styles.price}>{item.rewards[0]}</div>
+          <div className={styles.price}>{item.state}</div>
+          {/* <Users items={item.users} /> */}
+        </div>
+      </div>
+    </a>
+  </Link>
 );
 
 export default Token;

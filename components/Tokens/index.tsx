@@ -24,18 +24,17 @@ const Tokens = ({ items, titleUsers, users, theme, setTheme }: TokensProps) => {
     }
     return 0; // the order doesn't matter
   });
-  console.log(sortedItems);
   return (
     <>
       <div className={styles.head}>
-        <Users
+        {/* <Users
           classUsersItem={styles.user}
           classUsersCounter={styles.counter}
           title={titleUsers}
           items={users}
           dark={theme}
           border
-        />
+        /> */}
         {/*     <Actions
                     sortingValue={sorting}
                     setSortingValue={setSorting}

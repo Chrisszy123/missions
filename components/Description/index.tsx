@@ -23,6 +23,7 @@ type DescriptionProps = {
     title: string;
     date: string;
     children: React.ReactNode;
+    missionData?: any
 };
 
 const Description = ({
@@ -39,6 +40,7 @@ const Description = ({
     title,
     date,
     children,
+    missionData
 }: DescriptionProps) => {
     const router = useRouter();
 
@@ -59,7 +61,7 @@ const Description = ({
                 <div className={styles.col}>
                     <Preview image={image} alt={title} />
                     <Statistics className={styles.box} items={statistics} />
-                    <div className={styles.box}>
+                    {/* <div className={styles.box}>
                         <div className={cn("h4", styles.stage)}>Details</div>
                         <div className={styles.content}>{content}</div>
                         {links && <Links items={links} />}
@@ -75,11 +77,11 @@ const Description = ({
                             </button>
                         )}
                         {tags && <Tags tags={tags} />}
-                    </div>
+                    </div> */}
                     {provenance && (
                         <div className={styles.box}>
                             <div className={cn("h4", styles.stage)}>
-                                Provenance
+                                Users
                             </div>
                             <Provenance
                                 action={provenanceAction}
@@ -90,7 +92,7 @@ const Description = ({
                 </div>
                 <div className={styles.col}>
                     <div className={styles.wrap}>
-                        {!captionHide && <Caption title={title} date={date} />}
+                        {!captionHide && <Caption title={title} date={date} data={missionData}/>}
                         {children}
                     </div>
                 </div>

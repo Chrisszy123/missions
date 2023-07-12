@@ -13,12 +13,12 @@ const Spotlight = ({}: SpotlightProps) => {
   const [sorting, setSorting] = useState<string>("1-days");
   const [missions, setMissions] = useState<any>();
 
-  useEffect(() => {
+  useEffect(()=>{
     getMissions().then((m) => {
-      setMissions(m.data);
+      setMissions(m?.data);
     });
-  }, []);
-  console.log(missions);
+  }, [])
+
   return (
     <>
       {missions?.length === 0 ? (

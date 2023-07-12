@@ -14,9 +14,10 @@ import { getUsers, updateMission } from "@/utils/axios";
 type CaptionProps = {
   title?: string;
   date?: string;
+  data?: any;
 };
 
-const Caption = ({ title, date }: CaptionProps) => {
+const Caption = ({ title, date, data }: CaptionProps) => {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [name, setName] = useState<string>("");
   const [rewards, setRewards] = useState<string>("");
@@ -24,21 +25,14 @@ const Caption = ({ title, date }: CaptionProps) => {
   const [desc, setDesc] = useState<string>("");
   const [error, setError] = useState<any>(false);
 
-  const [userId, setUserId] = useState<any>();
+  const owner = data[0]?.community?.ownerId;
 
   const { user }: any = useContext(AuthContext);
-  console.log(user)
-  const useremail = user?.email;
-  // getUsers().then((e: any) => {
-  //   const filteredUser = e.message.data.filter(
-  //     (user: any) => user.email === useremail
-  //   );
-  //   console.log(filteredUser);
-  //   setUserId(filteredUser[0]?.id);
-  // });
-
+  const userId = user?.message?.data?.id;
+  console.log(userId);
   const router = useRouter();
-  const missionId = router.query.Id;
+  const missionId = router.query.MissionId;
+  const communityId = data[0]?.community?.ownerId;
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -50,14 +44,14 @@ const Caption = ({ title, date }: CaptionProps) => {
         desc: desc,
         userId: userId,
         id: missionId,
-        communityId: "90ba9d4b-83eb-4668-a944-4ee7486d4349",
+        communityId: communityId,
       };
       const mission = await updateMission(missionData);
       // use data to redirect
       if (mission?.status === true) {
         setError(true);
-      }else{
-        router.push(`/missions/${missionId}`)
+      } else {
+        router.push(`/missions/${missionId}`);
       }
     } catch (err: any) {
       throw new Error("errors submitting mission data" + err);
@@ -74,12 +68,16 @@ const Caption = ({ title, date }: CaptionProps) => {
       <div className={styles.line}>
         <div className={cn("h2", styles.title)}>{title}</div>
         <div className={styles.actions}>
-          <button
-            className={cn("button-circle button-medium", styles.button)}
-            onClick={openModal}
-          >
-            <Icon name="edit" />
-          </button>
+          {owner !== userId ? (
+            <div> </div>
+          ) : (
+            <button
+              className={cn("button-circle button-medium", styles.button)}
+              onClick={openModal}
+            >
+              <Icon name="edit" />
+            </button>
+          )}
           <ReactModal
             isOpen={modalIsOpen}
             onRequestClose={closeModal}

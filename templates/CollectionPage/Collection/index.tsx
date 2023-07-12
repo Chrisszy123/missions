@@ -39,17 +39,13 @@ type ProfileProps = {
 };
 
 const Profile = ({ item }: ProfileProps) => {
-  // const [image, setImage] = useState("/images/nfts/image-1.jpg");
-  const router = useRouter();
-  const communityId = router.query.Id;
-
   const [sorting, setSorting] = useState<string>("nfts");
   const [theme, setTheme] = useState<boolean>(false);
   const tabs = [
     {
       title: "Missions",
       value: "nfts",
-      counter: "35",
+      counter: "",
     },
     {
       title: "Leaderboard",
@@ -60,7 +56,7 @@ const Profile = ({ item }: ProfileProps) => {
     {
       title: "Users",
       value: "owners",
-      counter: "16",
+      counter: "",
       onClick: () => setTheme(false),
     },
   ];
@@ -94,8 +90,8 @@ const Profile = ({ item }: ProfileProps) => {
               setTheme={setTheme}
             />
           )}
-          {sorting === "activity" && <Activity items={activity} />}
-          {sorting === "owners" && <Owners items={followers} />}
+          {sorting === "activity" && <Activity items={item?.users} />}
+          {sorting === "owners" && <Owners items={item?.users} />}
           <div className={styles.foot}>
             <Link href="#">
               <a className={styles.link}>How to enter a Mission</a>

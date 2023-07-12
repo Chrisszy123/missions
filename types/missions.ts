@@ -5,9 +5,9 @@ export const missionSchema = z
     id: z.string(),
     desc: z.string().min(10),
     name: z.string().min(5),
-    rewards: z.string(),
+    rewards: z.any(),
     userId: z.string(),
-    communityId: z.string(),
+    communityId: z.any(),
     state: z.enum(["DRAFT", "PENDING", "OPEN", "CLOSED"]),
     submissionType: z.enum([
       "URL",

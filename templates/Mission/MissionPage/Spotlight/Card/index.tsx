@@ -10,11 +10,11 @@ type CardProps = {
 };
 
 const Card = ({ className, item }: CardProps) => (
-    <Link href={`missions/${item.id}`}>
+    <Link href={`communities/${item?.communityId}/missions/${item?.id}`}>
         <a className={cn(styles.card, className)}>
             <div className={styles.preview}>
                 <Image
-                    src="/images/projects/image-1.jpg"
+                    src={item ? item?.community?.image : "/images/projects/image-1.jpg"}
                     layout="fill"
                     objectFit="cover"
                     alt="missionlogo"

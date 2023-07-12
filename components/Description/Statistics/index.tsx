@@ -35,11 +35,11 @@ const Statistics = ({ className, items }: StatisticsProps) => (
                                     @{item.login}
                                 </div>
                             )}
-                            {item.category && (
-                                <div className={styles.category}>
-                                    {item.category}
+                            {item.category && item.category.map((c: any) => (
+                                <div className={styles.category} style={{marginLeft: '4px'}}>
+                                    {c}
                                 </div>
-                            )}
+                            ))}
                         </div>
                     </div>
                 </div>

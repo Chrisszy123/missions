@@ -42,7 +42,7 @@ const provenance = [
         history: true,
         content: (
             <>
-                Bid placed by <span>0x56C1...8eCC</span>
+                 <span>0x56C1...8eCC</span>
             </>
         ),
         price: "5.00 ETH",

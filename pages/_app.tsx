@@ -12,6 +12,7 @@ import { publicProvider } from "wagmi/providers/public";
 import { WalletContext } from "context/WalletContext";
 import { AuthContext } from "context/AuthContext";
 import { useState } from "react";
+import { WalletConnectConnector } from "wagmi/dist/connectors/walletConnect";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
@@ -26,7 +27,7 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
 
 const { connectors } = getDefaultWallets({
   appName: "RainbowKit App",
-  projectId: "YOUR_PROJECT_ID",
+  projectId: "df9b17276ce0127b50a6d526f70c072c",
   chains,
 });
 const wagmiConfig = createConfig({
@@ -48,6 +49,10 @@ function MyApp({ Component, pageProps }: AppProps) {
   const [commImage, setCommImage] = useState("");
   const [commDesc, setCommDesc] = useState("");
   const [commTags, setCommTags] = useState([]);
+  const [missionName, setMissionName] = useState("");
+  const [missionRewards, SetMissionRewards] = useState("");
+  const [mDesc, setMDesc] = useState("");
+  
   return (
     <WagmiConfig config={wagmiConfig}>
       <RainbowKitProvider chains={chains}>
@@ -79,6 +84,12 @@ function MyApp({ Component, pageProps }: AppProps) {
               setCommDesc,
               commTags,
               setCommTags,
+              setMissionName,
+              missionName,
+              SetMissionRewards,
+              missionRewards,
+              mDesc,
+              setMDesc
             }}
           >
             <UserProvider>

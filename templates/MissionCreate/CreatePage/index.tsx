@@ -10,6 +10,7 @@ import Field from "@/components/Field";
 import Preview from "./Preview";
 import { createMission, getUsers } from "@/utils/axios";
 import { AuthContext } from "context/AuthContext";
+import { WalletContext } from "context/WalletContext";
 import { z } from "zod";
 import { missionSchema } from "@/types/missions";
 
@@ -21,12 +22,13 @@ const CreatPage = () => {
   const [rewards, setRewards] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [desc, setDesc] = useState<string>("");
-  const [error, setError] = useState<object[] | null>(null);
+  const [error, setError] = useState<object[] | null>([]);
   const [userId, setUserId] = useState<any>("");
   const [communityId, setCommunityId] = useState<string>("");
 
-  const { user }: any = useContext(AuthContext);
-  const useremail = user?.email;
+  const { account }: any = useContext(WalletContext);
+  // create a new user
+  const walletAddress = account?.toString().toLowerCase();
 
   const router = useRouter();
   const slug = router.asPath;
@@ -42,18 +44,20 @@ const CreatPage = () => {
       console.log("Substring not found");
     }
   };
-  console.log(slug);
   useEffect(() => {
     getUsers().then((e) => {
       const filteredUser = e?.message?.data.filter(
-        (user: any) => user.email === useremail
+        (user: any) => user?.walletAddress === walletAddress
       );
       console.log(filteredUser);
       setUserId(filteredUser[0]?.id);
     });
     extractSubstring();
-  }, [useremail]);
-  
+  }, [walletAddress]);
+
+  const { setMissionName, SetMissionRewards, setMDesc }: any =
+    useContext(AuthContext);
+
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     try {
@@ -72,10 +76,9 @@ const CreatPage = () => {
         router.push("/congrats");
       }
     } catch (err: any) {
-      setError(JSON.parse(err.message));
+      setError(err.message);
     }
   };
-  console.log(error)
   return (
     <Layout layoutNoOverflow footerHide noRegistration>
       <LayoutCreate
@@ -102,7 +105,10 @@ const CreatPage = () => {
                 placeholder="Name"
                 icon="profile"
                 value={name}
-                onChange={(e: any) => setName(e.target.value)}
+                onChange={(e: any) => {
+                  setName(e.target.value);
+                  setMissionName(e.target.value);
+                }}
                 large
                 required
               />
@@ -111,7 +117,10 @@ const CreatPage = () => {
                 placeholder="Rewards"
                 icon="profile"
                 value={rewards}
-                onChange={(e: any) => setRewards(e.target.value)}
+                onChange={(e: any) => {
+                  setRewards(e.target.value);
+                  SetMissionRewards(e.target.value);
+                }}
                 large
                 required
               />
@@ -130,7 +139,10 @@ const CreatPage = () => {
                 icon="email"
                 type="text"
                 value={desc}
-                onChange={(e: any) => setDesc(e.target.value)}
+                onChange={(e: any) => {
+                  setDesc(e.target.value);
+                  setMDesc(e.target.value);
+                }}
                 large
                 required
                 textarea
@@ -141,10 +153,10 @@ const CreatPage = () => {
                   <Icon name="arrow-right" />
                 </a>
               </button>
-              {error &&
+              {/* {error &&
                 error.map((err: any) => (
                   <span style={{color: 'red', textAlign: 'center', marginTop: '10px'}}>{err.path[0]}: {err.message}</span>
-                ))}
+                ))} */}
             </form>
           </>
         }

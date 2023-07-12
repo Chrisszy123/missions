@@ -58,7 +58,7 @@ const Tokens = ({ items, titleUsers, users, theme, setTheme }: TokensProps) => {
           />
         ))}
       </div>
-      <Spinner dark={theme} />
+      {/* <Spinner dark={theme} /> */}
     </>
   );
 };

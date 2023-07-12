@@ -60,7 +60,7 @@ const Header = ({
     const user = {
       walletAddress,
     };
-    if(!user) return
+    if(user.walletAddress === '' || undefined || null) return
     createUser(user)
     .then((u) => {}).catch((e) => {});
 

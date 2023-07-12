@@ -78,9 +78,10 @@ const MintNFTPage = ({ mission }: any) => {
   const statistics = [
     {
       label: "Community",
-      image: "/images/robot.jpg",
+      image: mission ? mission[0]?.community?.image :"/images/robot.jpg",
       title: mission ? mission[0]?.community?.name : "",
       category: mission ? mission[0]?.community?.tags[0].name : "",
+      link: mission ? `/communities/${mission[0]?.community?.id}` : "#"
     },
   ];
   console.log(mission)

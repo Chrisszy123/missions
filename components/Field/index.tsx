@@ -21,6 +21,7 @@ type FieldProps = {
     large?: boolean;
     label?: string;
     error?: any;
+    style?: any;
 };
 
 const Field = ({
@@ -41,6 +42,7 @@ const Field = ({
     onClick,
     onBlur,
     error,
+    style,
 }: FieldProps) => (
     <div
         className={cn(

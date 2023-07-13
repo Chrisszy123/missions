@@ -15,7 +15,7 @@ const withAuth = <T extends object>(WrappedComponent: React.ComponentType<T>) =>
         // Redirect to home page
         router.push('/');
       }
-    }, [connected]);
+    }, [connected, router]);
 
     // Render the wrapped component if authenticated, otherwise return null or a loading state
     return connected ? <WrappedComponent {...props} /> :<div> You need to be authenticated</div>;

@@ -6,33 +6,39 @@ import { Connect } from "@/components/connectButton/ConnectButton";
 import { useContext } from "react";
 import { WalletContext } from "context/WalletContext";
 import { AuthContext } from "context/AuthContext";
+import truncateEthAddress from "truncate-eth-address";
 
 type WalletProps = {
-    onDisconnect: () => void;
+  onDisconnect: () => void;
 };
 
 const Wallet = ({ onDisconnect }: WalletProps) => {
-    const {connected, account, walletBalance}: any = useContext(WalletContext)
-    // const {user}: any = useContext(AuthContext)
-    // const actions = [
-    //     {
-    //         title: `${user ? "Logout" : "Web2 Login"}`,
-    //         icon: "logout",
-    //         url: `${user ? "/api/auth/logout" : "/api/auth/login"}`,
-    //     },
-    //     // {
-    //     //     title: "Disconnect",
-    //     //     icon: "close-square",
-    //     //     onClick: onDisconnect,
-    //     // },
-    // ];
+  const { connected, account, walletBalance }: any = useContext(WalletContext);
+  // const {user}: any = useContext(AuthContext)
+  // const actions = [
+  //     {
+  //         title: `${user ? "Logout" : "Web2 Login"}`,
+  //         icon: "logout",
+  //         url: `${user ? "/api/auth/logout" : "/api/auth/login"}`,
+  //     },
+  //     // {
+  //     //     title: "Disconnect",
+  //     //     icon: "close-square",
+  //     //     onClick: onDisconnect,
+  //     // },
+  // ];
 
-    return (
-        <div className={styles.wallet}>
-            <div className={styles.head}>
-                <div className={styles.title}><Connect image="/" text={connected ? "connected" : "Connect Wallet"}/></div>
-                <div className={styles.actions}>
-                    {/* {actions.map((action: any, index: number) =>
+  return (
+    <div className={styles.wallet}>
+      <div className={styles.head}>
+        <div className={styles.title}>
+          <Connect
+            image="/"
+            text={connected ? "connected" : "Connect Wallet"}
+          />
+        </div>
+        <div className={styles.actions}>
+          {/* {actions.map((action: any, index: number) =>
                         action.onClick ? (
                             <button
                                 className={styles.action}
@@ -51,17 +57,22 @@ const Wallet = ({ onDisconnect }: WalletProps) => {
                             </Link>
                         )
                     )} */}
-                </div>
-            </div>
-            <div className={styles.details}>
-                <div className={styles.code}>{account}</div>
-                <div className={cn("h3", styles.line)}>
-                    <div className={styles.crypto}>{walletBalance}</div>
-                    <div className={styles.price}></div>
-                </div>
-            </div>
         </div>
-    );
+      </div>
+      <div className={styles.details}>
+        {account ? (
+          <div className={styles.code}>{truncateEthAddress(account)}</div>
+        ) : (
+          ""
+        )}
+
+        <div className={cn("h3", styles.line)}>
+          <div className={styles.crypto}>{walletBalance}</div>
+          <div className={styles.price}></div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default Wallet;

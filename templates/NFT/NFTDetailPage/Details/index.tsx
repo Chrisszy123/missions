@@ -43,7 +43,7 @@ const Details = ({ mission }: DetailsProps) => {
         </div>
       </div>
       {toggleSubmit ? (
-        <div className={styles.foot}>
+        <div className={styles.foot} style={{flexDirection: 'column'}}>
           <Field
             className={style.field}
             placeholder="Enter Answer"
@@ -52,6 +52,7 @@ const Details = ({ mission }: DetailsProps) => {
             large
             required
             textarea
+            style='100%'
           />
           <Link href="/make-offer">
             <a

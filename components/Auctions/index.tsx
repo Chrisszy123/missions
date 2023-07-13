@@ -24,7 +24,7 @@ const Auctions = ({ color, items }: AuctionsProps) => (
         <div className={styles.col} style={{ backgroundColor: color }}>
             <div className={styles.wrap}>
                 <div className={cn("h1", styles.title)}>
-                    Auctions ending soon
+                    Missions ending soon
                 </div>
                 <Link href="/discover">
                     <a
@@ -33,7 +33,7 @@ const Auctions = ({ color, items }: AuctionsProps) => (
                             styles.button
                         )}
                     >
-                        explorer more
+                        explore more
                         <span>109</span>
                     </a>
                 </Link>
@@ -66,16 +66,16 @@ const Auctions = ({ color, items }: AuctionsProps) => (
                                 <div className={styles.line}>
                                     <div className={styles.box}>
                                         <div className={styles.category}>
-                                            Current bid
+                                            Rewards pool
                                         </div>
                                         <div
                                             className={cn("h3", styles.crypto)}
                                         >
                                             {item.crypto}
                                         </div>
-                                        <div className={styles.price}>
+                                        {/* <div className={styles.price}>
                                             {item.price}
-                                        </div>
+                                        </div> */}
                                     </div>
                                     <div className={styles.box}>
                                         <div className={styles.category}>

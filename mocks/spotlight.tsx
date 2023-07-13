@@ -86,40 +86,4 @@ export const spotlight = [
             "/images/users/avatar-3.jpg",
         ],
     },
-    {
-        title: "Mars",
-        price: "12.29 ETH",
-        image: "/images/projects/image-9.jpg",
-        url: "/nft",
-        users: [
-            "/images/users/avatar-3.jpg",
-            "/images/users/avatar-4.jpg",
-            "/images/users/avatar-5.jpg",
-        ],
-    },
-    {
-        title: "CutePlanet®",
-        price: "12.29 ETH",
-        image: "/images/projects/image-10.jpg",
-        url: "/nft",
-        users: ["/images/users/avatar-1.jpg", "/images/users/avatar-3.jpg"],
-    },
-    {
-        title: "The Currency",
-        price: "12.29 ETH",
-        image: "/images/projects/image-11.jpg",
-        url: "/nft",
-        users: [
-            "/images/users/avatar-1.jpg",
-            "/images/users/avatar-2.jpg",
-            "/images/users/avatar-3.jpg",
-        ],
-    },
-    {
-        title: "The Currency",
-        price: "12.29 ETH",
-        image: "/images/projects/image-12.jpg",
-        url: "/nft",
-        users: ["/images/users/avatar-2.jpg", "/images/users/avatar-3.jpg"],
-    },
 ];

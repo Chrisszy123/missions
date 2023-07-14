@@ -11,18 +11,21 @@ import Newsletter from "@/components/Newsletter";
 import { auctions } from "@/mocks/auctions";
 
 const HomePage = () => {
-    return (
-        <Layout layoutNoOverflow noRegistration>
-            <Main />
-            <Hot />
-            <Dream />
-            <Collections />
-            <Auctions items={auctions} />
-            <Spotlight />
-            <Creativity />
-            {/* <Newsletter /> */}
-        </Layout>
-    );
+  return (
+    <Layout layoutNoOverflow noRegistration>
+      <Main />
+      <Dream />
+      <Collections />
+      <Spotlight />
+      <Hot />
+      <Auctions items={auctions} />
+
+
+
+      <Creativity />
+      {/* <Newsletter /> */}
+    </Layout>
+  );
 };
 
 export default HomePage;

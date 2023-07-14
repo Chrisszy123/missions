@@ -53,26 +53,30 @@ const Header = ({
   //const {user, error, isLoading} = useUser()
   const { connected, account }: any = useContext(WalletContext);
   const { setUser }: any = useContext(AuthContext);
+  
   // create a new user
-  const walletAddress = account?.toString().toLowerCase()
+  const walletAddress = account?.toString().toLowerCase();
 
   const CreateUser = () => {
     const user = {
       walletAddress,
     };
-    if(user.walletAddress === '' || undefined || null) return
+    if (user.walletAddress === "" || undefined || null) return;
     createUser(user)
-    .then((u) => {}).catch((e) => {});
+      .then((u) => {})
+      .catch((e) => {});
+  };
 
-  }
   const GetUser = () => {
-    if(!walletAddress) return
-    getOneUser(walletAddress).then((u) => setUser(u))
-  }
+    getOneUser(walletAddress).then((u) => setUser(u));
+    return;
+  };
+
   useEffect(() => {
-    CreateUser()
-    GetUser()
-  }, [walletAddress])
+    if (!walletAddress) return;
+    GetUser();
+    CreateUser();
+  }, [walletAddress]);
 
   // const handleClick = () => {
   //   setConnect(false);
@@ -143,11 +147,7 @@ const Header = ({
                   styles.connect
                 )}
               >
-                {connected ? (
-                  <div>{account}</div>
-                ) : (
-                    <Connect /> 
-                )}
+                {connected ? <div>{account}</div> : <Connect />}
               </div>
               <Link href="#">
                 <a className={cn(styles.notification, styles.active)}>

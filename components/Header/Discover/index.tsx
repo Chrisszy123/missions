@@ -47,7 +47,6 @@ const Discover = ({ className, light, isCommunity }: DiscoverProps) => {
         gap: "2rem",
       }}
     >
-      <OutsideClickHandler onOutsideClick={() => setDVisible(false)}>
         <div
           className={cn(
             styles.discover,
@@ -60,9 +59,14 @@ const Discover = ({ className, light, isCommunity }: DiscoverProps) => {
             className={styles.head}
             onClick={() => setDVisible(!visibleD)}
           >
-            Discover <Icon name="arrow-down" />
+            <Link href="/communities">
+            communities
+            {/*  <Icon name="arrow-down" /> */}
+            </Link>
+           
           </button>
-          <div className={styles.body}>
+
+          {/* <div className={styles.body}>
             <div className={styles.list}>
               {discover.map((item, index) => (
                 <Link href={item.url} key={index}>
@@ -73,9 +77,9 @@ const Discover = ({ className, light, isCommunity }: DiscoverProps) => {
                 </Link>
               ))}
             </div>
-          </div>
+          </div> */}
         </div>
-      </OutsideClickHandler>
+      
       <OutsideClickHandler onOutsideClick={() => setVisible(false)}>
         <div
           className={cn(
@@ -109,6 +113,39 @@ const Discover = ({ className, light, isCommunity }: DiscoverProps) => {
           </div>
         </div>
       </OutsideClickHandler>
+     
+        <div
+          className={cn(
+            styles.discover,
+            { [styles.active]: visibleD },
+            { [styles.light]: light },
+            className
+          )}
+        >
+          <button
+            className={styles.head}
+            onClick={() => setDVisible(!visibleD)}
+          >
+            <Link href="/about">
+            about
+            {/*  <Icon name="arrow-down" /> */}
+            </Link>
+           
+          </button>
+
+          {/* <div className={styles.body}>
+            <div className={styles.list}>
+              {discover.map((item, index) => (
+                <Link href={item.url} key={index}>
+                  <a className={styles.item}>
+                    {item.title}
+                    <Icon name="arrow-right-thin" />
+                  </a>
+                </Link>
+              ))}
+            </div>
+          </div> */}
+        </div>
     </div>
   );
 };

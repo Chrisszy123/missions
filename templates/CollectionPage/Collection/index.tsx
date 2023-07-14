@@ -9,11 +9,6 @@ import Tokens from "@/components/Tokens";
 import Owners from "@/components/Owners";
 import Activity from "../Activity";
 
-import { nfts } from "@/mocks/tokens";
-import { followers } from "@/mocks/followers";
-import { activity } from "@/mocks/activity";
-import { useRouter } from "next/router";
-import { getImage } from "@/utils/axios";
 
 const detailsList = [
   {

@@ -23,10 +23,10 @@ const menu = [
     title: "Communities",
     url: "/communities", // change to dashboar,
   },
-  {
-    title: "About",
-    url: "#",
-  },
+  // {
+  //   title: "About",
+  //   url: "#",
+  // },
 ];
 
 type HeaderProps = {
@@ -149,7 +149,7 @@ const Header = ({
                     <Connect /> 
                 )}
               </div>
-              <Link href="/notification">
+              <Link href="#">
                 <a className={cn(styles.notification, styles.active)}>
                   <Icon name="flash" />
                 </a>

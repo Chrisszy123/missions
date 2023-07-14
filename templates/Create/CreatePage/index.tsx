@@ -27,9 +27,9 @@ const CreatePage = () => {
   const [link, setLink] = useState<string>("");
   const [image, setImage] = useState<any>("");
   const [desc, setDesc] = useState<string>("");
-  const [error, setError] = useState<any>(false);
+  const [error, setError] = useState<object[] | null>([]);
   const [userId, setUserId] = useState<any>();
-  const router = useRouter()
+  const router = useRouter();
   const [dataArray, setDataArray] = useState<string[]>([]);
   const [inputData, setInputData] = useState<string>("");
 
@@ -43,7 +43,6 @@ const CreatePage = () => {
   };
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputData(event.target.value);
-    
   };
 
   const {
@@ -80,6 +79,7 @@ const CreatePage = () => {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     try {
+      setError(null);
       const communityData = {
         name: name,
         tags: dataArray,
@@ -87,18 +87,19 @@ const CreatePage = () => {
         image: image,
         desc: desc,
         userId: user?.message?.data?.id,
-        ownerId: user?.message?.data?.id
+        ownerId: user?.message?.data?.id,
       };
       const comm = await createCommunity(communityData);
-      console.log(comm)
       // use data to redirect
       if (comm?.status === true) {
         router.push("/congrats");
       }
     } catch (err: any) {
-      throw new Error("errors submitting community data" + err);
+      setError(err);
+      console.log(err);
     }
   };
+  console.log(error)
   return (
     <Layout layoutNoOverflow footerHide noRegistration>
       <LayoutCreate
@@ -156,7 +157,11 @@ const CreatePage = () => {
                 large
                 required
               />
-              <div style={{ display: "flex", alignItems: 'center', gap: '1rem' }}> Tags:
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "1rem" }}
+              >
+                {" "}
+                Tags:
                 {dataArray.map((e: any, index) => (
                   <div key={index}>{e}</div>
                 ))}
@@ -189,12 +194,10 @@ const CreatePage = () => {
                   <Icon name="arrow-right" />
                 </a>
               </button>
-
-              {error ? (
-                <div style={{ color: "red" }}>Error creating Community</div>
-              ) : (
-                ""
-              )}
+              {/* {error &&
+                error.map((err: any) => (
+                  <span className="text-xs text-red-500">{err.message}</span>
+                ))} */}
             </form>
           </>
         }

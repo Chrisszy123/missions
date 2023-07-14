@@ -1,4 +1,4 @@
-import { getAllCommunities, getOneCommunity } from "models/commuinity";
+import { getAllCommunities, getOneCommunity } from "models/community";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function(req: NextApiRequest,  res: NextApiResponse) {

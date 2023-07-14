@@ -13,13 +13,13 @@ const CommunitySchema = z
     link: z.string().url(),
     image: z.string().url(),
     userId: z.string(),
-    ownerId: z.string()
+    ownerId: z.string(),
   })
   .partial({
     user: true,
     id: true,
     tags: true,
-    missions: true
+    missions: true,
   });
 type CommunityData = z.infer<typeof CommunitySchema>;
 
@@ -27,7 +27,8 @@ type CommunityData = z.infer<typeof CommunitySchema>;
 export const createCommunity = async (data: CommunityData) => {
   const communityData = CommunitySchema.parse(data);
   try {
-    if(!communityData.userId) throw new Error('only users can create a community')
+    if (!communityData.userId)
+      throw new Error("only users can create a community");
     const community = await prisma.community.create({
       data: {
         name: communityData.name,
@@ -37,18 +38,17 @@ export const createCommunity = async (data: CommunityData) => {
         ownerId: communityData.ownerId,
         users: {
           connect: {
-            id: communityData.userId
-          }
+            id: communityData.userId,
+          },
         },
         tags: {
           create: {
-            name: communityData.tags
-          }
-        }
-        
+            name: communityData.tags,
+          },
+        },  
       },
     });
-    return {status: true, message: community}
+    return { status: true, message: community };
   } catch (err: any) {
     throw new Error("error creating community" + err);
   }
@@ -59,16 +59,19 @@ export const updateCommunity = async (data: CommunityData) => {
   try {
     // check if user is the creator of the community
     const community = await prisma.community.findFirst({
-      where: { users: {
-        some: {
-          id: communityData.userId 
-        }
-      }},
+      where: {
+        users: {
+          some: {
+            id: communityData.userId,
+          },
+        },
+      },
       include: {
-        users: true
-      }
+        users: true,
+      },
     });
-    if(communityData.userId !== community?.ownerId) throw new Error('not a creator of this community')
+    if (communityData.userId !== community?.ownerId)
+      throw new Error("not a creator of this community");
     const updatedCommunity = await prisma.community.update({
       where: { id: communityData.id },
       data: {
@@ -79,7 +82,7 @@ export const updateCommunity = async (data: CommunityData) => {
     });
     return updatedCommunity;
   } catch (err: any) {
-   throw new Error('error updating community' + err)
+    throw new Error("error updating community" + err);
   }
 };
 
@@ -104,8 +107,8 @@ export const getAllCommunities = async () => {
       include: {
         users: true,
         tags: true,
-        owner: true
-      }
+        owner: true,
+      },
     });
     if (!community) return { message: "cannot get communities", status: false };
     return community;
@@ -122,17 +125,72 @@ export const getOneCommunity = async (communityId: any) => {
         users: {
           include: {
             level: true,
-            reviews: true
-          }
+            reviews: true,
+          },
         },
         missions: true,
         tags: true,
-        owner: true
-      }
+        owner: true,
+      },
     });
-    if (!community) throw new Error('community does not exist')
+    if (!community) throw new Error("community does not exist");
     return community;
   } catch (err: any) {
     throw new Error(`error getting community ${communityId}` + err);
+  }
+};
+export const joinCommunity = async (data: any) => {
+  //const communityData = CommunitySchema.parse(data);
+  try {
+    const user = await prisma.community.findFirst({
+      where: {id: data.id,
+        users: {
+        some: {
+          id: data.userId
+        }
+      }}
+    })
+    if(user) throw new Error("user is already a memeber of community")
+    const community = await prisma.community.update({
+      where: { id: data.id },
+      data: {
+        users: {
+          connect: {
+            id: data.userId
+          }
+        }
+      },
+    });
+    return {status: true, message: community}
+  } catch (err: any) {
+    throw new Error("Error joining community" + err);
+  }
+};
+
+export const leaveCommunity = async (data: any) => {
+  //const communityData = CommunitySchema.parse(data);
+  try {
+    const user = await prisma.community.findFirst({
+      where: {id: data.id,
+        users: {
+        some: {
+          id: data.userId
+        }
+      }}
+    })
+    if(!user) throw new Error("user is not a memeber of community")
+    const community = await prisma.community.update({
+      where: { id: data.id },
+      data: {
+        users: {
+          disconnect: {
+            id: data.userId
+          }
+        }
+      },
+    });
+    return community
+  } catch (err: any) {
+    throw new Error("Error leaving community" + err);
   }
 };

@@ -54,7 +54,7 @@ const Details = ({ mission }: DetailsProps) => {
             textarea
             style='100%'
           />
-          <Link href="/make-offer">
+          <Link href="#">
             <a
               className={cn("button-stroke-grey button-medium", styles.button)}
             >

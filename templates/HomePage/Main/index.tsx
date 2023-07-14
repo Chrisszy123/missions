@@ -41,7 +41,7 @@ const Main = ({}: MainProps) => (
     <>
         <div className={styles.row}>
             <div className={styles.col}>
-                <h1 className={cn("hero", styles.title)}>Curated Artwork.</h1>
+                <h1 className={cn("hero", styles.title)}>Complete Missions</h1>
                 <Arrow className={styles.arrow} />
             </div>
             <div className={styles.col}>
@@ -49,7 +49,7 @@ const Main = ({}: MainProps) => (
                     We are laying the groundwork for web3 — the next generation
                     of the internet full of limitless possibilities.
                 </div>
-                <Link href="/discover">
+                <Link href="/communities">
                     <a className={cn("button-empty", styles.search)}>
                         start your search
                     </a>

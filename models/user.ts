@@ -94,7 +94,7 @@ export const getOneUser = async (walletAddress : any) => {
     if (!user) throw new Error("user missing");
     return user;
   } catch (err: any) {
-    throw new Error("error getting user" + err);
+    return {status: false, message: err}
   }
 };
 // enter a mission

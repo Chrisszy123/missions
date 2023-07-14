@@ -7,7 +7,6 @@ import styles from "./Discover.module.sass";
 import Icon from "@/components/Icon";
 import { useRouter } from "next/router";
 
-
 export const discover = [
   {
     title: "Communities",
@@ -19,7 +18,7 @@ export const discover = [
   },
   {
     title: "About",
-    url: "/about",
+    url: "/#",
   },
 ];
 
@@ -30,8 +29,8 @@ type DiscoverProps = {
 };
 
 const Discover = ({ className, light, isCommunity }: DiscoverProps) => {
-  const router = useRouter()
-  const slug = router.query.Id
+  const router = useRouter();
+  const slug = router.query.Id;
 
   const [visible, setVisible] = useState<boolean>(false);
   const [visibleD, setDVisible] = useState<boolean>(false);
@@ -47,26 +46,22 @@ const Discover = ({ className, light, isCommunity }: DiscoverProps) => {
         gap: "2rem",
       }}
     >
-        <div
-          className={cn(
-            styles.discover,
-            { [styles.active]: visibleD },
-            { [styles.light]: light },
-            className
-          )}
-        >
-          <button
-            className={styles.head}
-            onClick={() => setDVisible(!visibleD)}
-          >
-            <Link href="/communities">
+      <div
+        className={cn(
+          styles.discover,
+          { [styles.active]: visibleD },
+          { [styles.light]: light },
+          className
+        )}
+      >
+        <button className={styles.head} onClick={() => setDVisible(!visibleD)}>
+          <Link href="/communities">
             communities
             {/*  <Icon name="arrow-down" /> */}
-            </Link>
-           
-          </button>
+          </Link>
+        </button>
 
-          {/* <div className={styles.body}>
+        {/* <div className={styles.body}>
             <div className={styles.list}>
               {discover.map((item, index) => (
                 <Link href={item.url} key={index}>
@@ -78,8 +73,8 @@ const Discover = ({ className, light, isCommunity }: DiscoverProps) => {
               ))}
             </div>
           </div> */}
-        </div>
-      
+      </div>
+
       <OutsideClickHandler onOutsideClick={() => setVisible(false)}>
         <div
           className={cn(
@@ -94,58 +89,40 @@ const Discover = ({ className, light, isCommunity }: DiscoverProps) => {
           </button>
           <div className={styles.body}>
             <div className={styles.list}>
-              
-                <Link href="/communities/create">
-                  <a className={styles.item}>
-                    Create Community
-                    <Icon name="arrow-right-thin" />
-                  </a>
-                </Link>
-                {isCommunity ? (
-                  <Link href={`/communities/${slug}/missions/create`}>
+              <Link href="/communities/create">
+                <a className={styles.item}>
+                  Create Community
+                  <Icon name="arrow-right-thin" />
+                </a>
+              </Link>
+              {isCommunity ? (
+                <Link href={`/communities/${slug}/missions/create`}>
                   <a className={styles.item}>
                     Create Mission
                     <Icon name="arrow-right-thin" />
                   </a>
                 </Link>
-                ): null}
+              ) : null}
             </div>
           </div>
         </div>
       </OutsideClickHandler>
-     
-        <div
-          className={cn(
-            styles.discover,
-            { [styles.active]: visibleD },
-            { [styles.light]: light },
-            className
-          )}
-        >
-          <button
-            className={styles.head}
-            onClick={() => setDVisible(!visibleD)}
-          >
-            <Link href="/about">
+
+      <div
+        className={cn(
+          styles.discover,
+          { [styles.active]: visibleD },
+          { [styles.light]: light },
+          className
+        )}
+      >
+        <button className={styles.head} onClick={() => setDVisible(!visibleD)}>
+          <Link href="#">
             about
             {/*  <Icon name="arrow-down" /> */}
-            </Link>
-           
-          </button>
-
-          {/* <div className={styles.body}>
-            <div className={styles.list}>
-              {discover.map((item, index) => (
-                <Link href={item.url} key={index}>
-                  <a className={styles.item}>
-                    {item.title}
-                    <Icon name="arrow-right-thin" />
-                  </a>
-                </Link>
-              ))}
-            </div>
-          </div> */}
-        </div>
+          </Link>
+        </button>
+      </div>
     </div>
   );
 };

@@ -8,7 +8,7 @@ import Icon from "@/components/Icon";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import Modal from "react-modal";
-import Preview from "@/templates/Create/CreatePage/Preview";
+import Preview from "@/components/Preview";
 import LayoutCreate from "@/components/LayoutCreate";
 import Field from "@/components/Field";
 import { AuthContext } from "context/AuthContext";

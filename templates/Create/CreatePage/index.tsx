@@ -6,7 +6,7 @@ import Layout from "@/components/Layout";
 import LayoutCreate from "@/components/LayoutCreate";
 import Icon from "@/components/Icon";
 import Field from "@/components/Field";
-import Preview from "./Preview";
+import Preview from "@/components/Preview";
 import { createCommunity, getUsers } from "@/utils/axios";
 import { storage } from "@/utils/firebase";
 import { v4 } from "uuid";
@@ -19,21 +19,114 @@ import {
   list,
 } from "firebase/storage";
 import { useRouter } from "next/router";
+
+import type { FieldError } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import useFilePreview from "@/hooks/useFilePreview";
+/* import CommunityPreview from "@/components/CommunityPreview"; */
 //modal
 
+const MAX_FILE_SIZE = 500000;
+const ACCEPTED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+];
+
+const formatErrors = (errors: Record<string, FieldError>) =>
+  Object.keys(errors).map((key) => ({
+    key,
+    message: errors[key].message,
+  }));
+
+/* ---------- Some UI components ----------*/
+
+type AlertType = "error" | "warning" | "success";
+
+// Global Alert div.
+const Alert = ({ children, type }: { children: string; type: AlertType }) => {
+  const backgroundColor =
+    type === "error" ? "tomato" : type === "warning" ? "orange" : "powderBlue";
+
+  return <div style={{ padding: "0 10", backgroundColor }}>{children}</div>;
+};
+
+// Use role="alert" to announce the error message.
+const AlertInput = ({ children }: { children: React.ReactNode }) =>
+  Boolean(children) ? (
+    <span role="alert" style={{ color: "tomato" }}>
+      {children}
+    </span>
+  ) : null;
+
+const CommunitySchema = z.object({
+  desc: z.string().min(5),
+  name: z.string().min(5),
+  link: z.string().url(),
+  image: z
+    .any()
+    .refine((files) => files?.length == 1, "Image is required.")
+    .refine(
+      (files) => files?.[0]?.size <= MAX_FILE_SIZE,
+      `Max file size is 5MB.`
+    )
+    .refine(
+      (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
+      ".jpg, .jpeg, .png and .webp files are accepted."
+    ),
+});
+
+type CommunityType = z.infer<typeof CommunitySchema>;
+
 const CreatePage = () => {
-  const [name, setName] = useState<string>("");
   const [tags, setTags] = useState<any>([]);
   const [link, setLink] = useState<string>("");
   const [image, setImage] = useState<any>("");
-  const [desc, setDesc] = useState<string>("");
   const [error, setError] = useState<any>(false);
   const [userId, setUserId] = useState<any>();
-  const router = useRouter()
+  const router = useRouter();
   const [dataArray, setDataArray] = useState<string[]>([]);
   const [inputData, setInputData] = useState<string>("");
 
-  const handleClick = () => {
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors, isSubmitting, isSubmitted },
+  } = useForm<CommunityType>({
+    resolver: zodResolver(CommunitySchema),
+  });
+
+  const imageWatch = useWatch({
+    control,
+    name: "image",
+    defaultValue: null,
+  });
+
+  const name = useWatch({
+    control,
+    name: "name",
+    defaultValue: "",
+  });
+
+  const desc = useWatch({
+    control,
+    name: "desc",
+    defaultValue: "",
+  });
+
+  const { imageUrl } = useFilePreview(imageWatch);
+
+  /* 
+  const { file } = watch("image");
+
+  console.log("file", file);
+  const { imageUrl } = useFilePreview(file);
+ */
+  /*  const handleClick = () => {
     if (inputData.trim() !== "") {
       setDataArray((prevDataArray) => [...prevDataArray, inputData]);
       setInputData("");
@@ -43,8 +136,7 @@ const CreatePage = () => {
   };
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputData(event.target.value);
-    
-  };
+  }; */
 
   const {
     user,
@@ -54,16 +146,9 @@ const CreatePage = () => {
     setCommLink,
     setCommTags,
   }: any = useContext(AuthContext);
+
   const walletAddress = user?.walletAddress;
-  //
-  // getUsers().then((e: any) => {
-  //   const filteredUser = e?.message?.data?.filter(
-  //     (user: any) => user.walletAddress === walletAddress
-  //   );
-  //   if (!filteredUser) return;
-  //   setUserId(filteredUser[0]?.id);
-  // });
-  //
+
   const uploadFile = (img: any) => {
     if (img == null) return;
     const imageRef = ref(storage, `communities/${img.name + v4()}`);
@@ -77,7 +162,7 @@ const CreatePage = () => {
     });
   };
 
-  const handleSubmit = async (e: any) => {
+  /*    const handleSubmit = async (e: any) => {
     e.preventDefault();
     try {
       const communityData = {
@@ -87,10 +172,10 @@ const CreatePage = () => {
         image: image,
         desc: desc,
         userId: user?.message?.data?.id,
-        ownerId: user?.message?.data?.id
+        ownerId: user?.message?.data?.id,
       };
       const comm = await createCommunity(communityData);
-      console.log(comm)
+      console.log(comm);
       // use data to redirect
       if (comm?.status === true) {
         router.push("/congrats");
@@ -98,7 +183,18 @@ const CreatePage = () => {
     } catch (err: any) {
       throw new Error("errors submitting community data" + err);
     }
+  }; */
+
+  const onSubmit = async (community: CommunityType) => {
+    await uploadFile(image);
+    return new Promise(async (resolve, reject) => {
+      console.log("dans onSubmit", community);
+      setTimeout(() => {
+        resolve(true);
+      }, 3000);
+    });
   };
+
   return (
     <Layout layoutNoOverflow footerHide noRegistration>
       <LayoutCreate
@@ -119,44 +215,45 @@ const CreatePage = () => {
             </div>
             <form
               className={styles.form}
-              action=""
-              onSubmit={(e) => handleSubmit(e)}
+              onSubmit={handleSubmit(onSubmit)}
+              noValidate
             >
               <Field
                 className={styles.field}
                 type="file"
                 icon="profile"
-                onChange={(e: any) => {
+                /*                 onChange={(e: any) => {
                   uploadFile(e.target.files[0]);
-                }} // change to cloudinary url
+                }} // change to cloudinary url */
                 large
                 required
+                register={register("image")}
               />
+              <AlertInput>{errors?.image?.message?.toString()}</AlertInput>
               <Field
                 className={styles.field}
                 placeholder="Name"
                 icon="profile"
-                value={name}
-                onChange={(e: any) => {
-                  setName(e.target.value);
-                  setCommName(e.target.value);
-                }}
                 large
-                required
+                register={register("name")}
+                aria-invalid={Boolean(errors.name)}
               />
+              <AlertInput>{errors?.name?.message}</AlertInput>
+
               <Field
                 className={styles.field}
                 placeholder="URL"
                 icon="profile"
-                value={link}
-                onChange={(e: any) => {
-                  setLink(e.target.value);
-                  setCommLink(e.target.value);
-                }}
                 large
-                required
+                register={register("link")}
               />
-              <div style={{ display: "flex", alignItems: 'center', gap: '1rem' }}> Tags:
+              <AlertInput>{errors?.link?.message}</AlertInput>
+
+              {/*               <div
+                style={{ display: "flex", alignItems: "center", gap: "1rem" }}
+              >
+                {" "}
+                Tags:
                 {dataArray.map((e: any, index) => (
                   <div key={index}>{e}</div>
                 ))}
@@ -169,26 +266,34 @@ const CreatePage = () => {
                 onChange={handleInputChange}
                 onClick={handleClick}
                 large
-              />
+              /> */}
               <Field
                 className={styles.field}
                 placeholder="Description"
                 icon="email"
                 textarea
-                value={desc}
-                onChange={(e: any) => {
-                  setDesc(e.target.value);
-                  setCommDesc(e.target.value);
-                }}
                 large
-                required
+                register={register("desc")}
               />
+              <AlertInput>{errors?.desc?.message}</AlertInput>
+
               <button type="submit">
                 <a className={cn("button-large", styles.button)}>
                   <span>Continue</span>
                   <Icon name="arrow-right" />
                 </a>
               </button>
+
+              {isSubmitting && (
+                <Alert type="success">Creating Community...</Alert>
+              )}
+
+              {Boolean(Object.keys(errors)?.length) && (
+                <div>
+                  There are errors, please correct them before submitting the
+                  form
+                </div>
+              )}
 
               {error ? (
                 <div style={{ color: "red" }}>Error creating Community</div>
@@ -199,7 +304,8 @@ const CreatePage = () => {
           </>
         }
       >
-        <Preview />
+        <Preview imageUrl={imageUrl} name={name} desc={desc} />
+        {/*     <CommunityPreview imageUrl={imageUrl} /> */}
       </LayoutCreate>
     </Layout>
   );

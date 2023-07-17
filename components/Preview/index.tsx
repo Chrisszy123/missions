@@ -4,9 +4,9 @@ import { useContext } from "react";
 import { AuthContext } from "context/AuthContext";
 
 type PreviewProps = {
-  imageUrl: string | null;
-  name: string;
-  desc: string;
+  imageUrl?: string | null;
+  name?: string;
+  desc?: string;
 };
 
 const Preview = ({ imageUrl, name, desc }: PreviewProps) => {

@@ -79,7 +79,6 @@ type CommunityType = z.infer<typeof CommunitySchema>;
 
 const CreatePage = () => {
   const [image, setImage] = useState<any>("");
-  const [error, setError] = useState<any>(false);
   const router = useRouter();
   const [dataArray, setDataArray] = useState<string[]>([]);
   const [inputData, setInputData] = useState<string>("");
@@ -99,7 +98,7 @@ const CreatePage = () => {
     defaultValue: null,
   });
 
-  const name = useWatch({
+  const name = useWatch({ 
     control,
     name: "name",
     defaultValue: "",
@@ -271,12 +270,6 @@ const CreatePage = () => {
                   There are errors, please correct them before submitting the
                   form
                 </div>
-              )}
-
-              {error ? (
-                <div style={{ color: "red" }}>Error creating Community</div>
-              ) : (
-                ""
               )}
             </form>
           </>

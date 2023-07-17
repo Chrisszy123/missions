@@ -41,22 +41,14 @@ const Main = ({}: MainProps) => (
     <>
         <div className={styles.row}>
             <div className={styles.col}>
-<<<<<<< HEAD
-                <h1 className={cn("hero", styles.title)}>Complete Missions</h1>
-=======
                 <h1 className={cn("hero", styles.title)}>Engage in Curated Missions.</h1>
->>>>>>> dd7be93c4f55bee33631f64db1ac7d74f210e217
                 <Arrow className={styles.arrow} />
             </div>
             <div className={styles.col}>
                 <div className={styles.content}>
                 We're shaping the future of decentralized communities, where boundless opportunities await. Step into a world where collaboration and achievement take center stage, as community owners create captivating missions and users embark on thrilling quests.
                 </div>
-<<<<<<< HEAD
-                <Link href="/communities">
-=======
                 <Link href="/help">
->>>>>>> dd7be93c4f55bee33631f64db1ac7d74f210e217
                     <a className={cn("button-empty", styles.search)}>
                         learn more
                     </a>

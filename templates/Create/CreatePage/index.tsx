@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useContext } from "react";
 import Link from "next/link";
 import cn from "classnames";
 import styles from "./CreateStep1Page.module.sass";
@@ -7,7 +7,7 @@ import LayoutCreate from "@/components/LayoutCreate";
 import Icon from "@/components/Icon";
 import Field from "@/components/Field";
 import Preview from "@/components/Preview";
-import { createCommunity, getUsers } from "@/utils/axios";
+import { createCommunity } from "@/utils/axios";
 import { storage } from "@/utils/firebase";
 import { v4 } from "uuid";
 import { AuthContext } from "context/AuthContext";
@@ -15,18 +15,13 @@ import {
   ref,
   uploadBytes,
   getDownloadURL,
-  listAll,
-  list,
 } from "firebase/storage";
 import { useRouter } from "next/router";
-
-import type { FieldError } from "react-hook-form";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import useFilePreview from "@/hooks/useFilePreview";
-/* import CommunityPreview from "@/components/CommunityPreview"; */
-//modal
+
 
 const MAX_FILE_SIZE = 500000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -36,11 +31,11 @@ const ACCEPTED_IMAGE_TYPES = [
   "image/webp",
 ];
 
-const formatErrors = (errors: Record<string, FieldError>) =>
-  Object.keys(errors).map((key) => ({
-    key,
-    message: errors[key].message,
-  }));
+// const formatErrors = (errors: Record<string, FieldError>) =>
+//   Object.keys(errors).map((key) => ({
+//     key,
+//     message: errors[key].message,
+//   }));
 
 /* ---------- Some UI components ----------*/
 
@@ -77,21 +72,14 @@ const CommunitySchema = z.object({
       (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
       ".jpg, .jpeg, .png and .webp files are accepted."
     ),
+  // tags: z.string().array(),
 });
 
 type CommunityType = z.infer<typeof CommunitySchema>;
 
 const CreatePage = () => {
-  const [tags, setTags] = useState<any>([]);
-  const [link, setLink] = useState<string>("");
   const [image, setImage] = useState<any>("");
-<<<<<<< HEAD
-  const [desc, setDesc] = useState<string>("");
-  const [error, setError] = useState<object[] | null>([]);
-=======
   const [error, setError] = useState<any>(false);
->>>>>>> dd7be93c4f55bee33631f64db1ac7d74f210e217
-  const [userId, setUserId] = useState<any>();
   const router = useRouter();
   const [dataArray, setDataArray] = useState<string[]>([]);
   const [inputData, setInputData] = useState<string>("");
@@ -125,13 +113,8 @@ const CreatePage = () => {
 
   const { imageUrl } = useFilePreview(imageWatch);
 
-  /* 
-  const { file } = watch("image");
 
-  console.log("file", file);
-  const { imageUrl } = useFilePreview(file);
- */
-  /*  const handleClick = () => {
+  const handleClick = () => {
     if (inputData.trim() !== "") {
       setDataArray((prevDataArray) => [...prevDataArray, inputData]);
       setInputData("");
@@ -141,22 +124,13 @@ const CreatePage = () => {
   };
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputData(event.target.value);
-<<<<<<< HEAD
   };
-=======
-  }; */
->>>>>>> dd7be93c4f55bee33631f64db1ac7d74f210e217
 
   const {
     user,
-    setCommName,
     setCommImage,
-    setCommDesc,
-    setCommLink,
     setCommTags,
   }: any = useContext(AuthContext);
-
-  const walletAddress = user?.walletAddress;
 
   const uploadFile = (img: any) => {
     if (img == null) return;
@@ -171,48 +145,32 @@ const CreatePage = () => {
     });
   };
 
-  /*    const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    try {
-      setError(null);
+  const onSubmit = async (community: CommunityType) => {
+    await uploadFile(community.image[0]);
+    return new Promise(async (resolve, reject) => {
+
       const communityData = {
-        name: name,
+        name: community.name,
         tags: dataArray,
-        link: link,
+        link: community.link,
         image: image,
-        desc: desc,
+        desc: community.desc,
         userId: user?.message?.data?.id,
         ownerId: user?.message?.data?.id,
       };
+      if(communityData.image === "" || undefined || null) return
       const comm = await createCommunity(communityData);
-<<<<<<< HEAD
-=======
       console.log(comm);
->>>>>>> dd7be93c4f55bee33631f64db1ac7d74f210e217
       // use data to redirect
       if (comm?.status === true) {
         router.push("/congrats");
       }
-    } catch (err: any) {
-      setError(err);
-      console.log(err);
-    }
-  }; */
-
-  const onSubmit = async (community: CommunityType) => {
-    await uploadFile(image);
-    return new Promise(async (resolve, reject) => {
       console.log("dans onSubmit", community);
       setTimeout(() => {
         resolve(true);
       }, 3000);
     });
   };
-<<<<<<< HEAD
-  console.log(error)
-=======
-
->>>>>>> dd7be93c4f55bee33631f64db1ac7d74f210e217
   return (
     <Layout layoutNoOverflow footerHide noRegistration>
       <LayoutCreate
@@ -240,9 +198,6 @@ const CreatePage = () => {
                 className={styles.field}
                 type="file"
                 icon="profile"
-                /*                 onChange={(e: any) => {
-                  uploadFile(e.target.files[0]);
-                }} // change to cloudinary url */
                 large
                 required
                 register={register("image")}
@@ -265,13 +220,9 @@ const CreatePage = () => {
                 large
                 register={register("link")}
               />
-<<<<<<< HEAD
-              <div
-=======
               <AlertInput>{errors?.link?.message}</AlertInput>
 
-              {/*               <div
->>>>>>> dd7be93c4f55bee33631f64db1ac7d74f210e217
+              <div
                 style={{ display: "flex", alignItems: "center", gap: "1rem" }}
               >
                 {" "}
@@ -284,11 +235,16 @@ const CreatePage = () => {
                 className={styles.field}
                 placeholder="Tags"
                 icon="plus"
+                // register={register("tags")}
                 value={inputData}
                 onChange={handleInputChange}
                 onClick={handleClick}
                 large
-              /> */}
+              />
+              {/* <AlertInput>{errors?.tags?.message}</AlertInput> */}
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "1rem" }}
+              ></div>
               <Field
                 className={styles.field}
                 placeholder="Description"
@@ -305,12 +261,6 @@ const CreatePage = () => {
                   <Icon name="arrow-right" />
                 </a>
               </button>
-<<<<<<< HEAD
-              {/* {error &&
-                error.map((err: any) => (
-                  <span className="text-xs text-red-500">{err.message}</span>
-                ))} */}
-=======
 
               {isSubmitting && (
                 <Alert type="success">Creating Community...</Alert>
@@ -328,13 +278,11 @@ const CreatePage = () => {
               ) : (
                 ""
               )}
->>>>>>> dd7be93c4f55bee33631f64db1ac7d74f210e217
             </form>
           </>
         }
       >
         <Preview imageUrl={imageUrl} name={name} desc={desc} />
-        {/*     <CommunityPreview imageUrl={imageUrl} /> */}
       </LayoutCreate>
     </Layout>
   );

@@ -1,14 +1,14 @@
 import cn from "classnames";
 import styles from "./DetailsCollection.module.sass";
 import styled from "@/components/Description/Description.module.sass";
-import sty from '@/components/Description/Description.module.sass'
+import sty from "@/components/Description/Description.module.sass";
 import Statistics from "./Statistics";
 import style from "@/templates/Create/CreatePage/CreateStep1Page.module.sass";
 import Icon from "@/components/Icon";
 import { useRouter } from "next/router";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import Modal from "react-modal";
-import Preview from "@/templates/Create/CreatePage/Preview";
+import Preview from "@/components/Preview";
 import LayoutCreate from "@/components/LayoutCreate";
 import Field from "@/components/Field";
 import { AuthContext } from "context/AuthContext";
@@ -16,8 +16,7 @@ import { WalletContext } from "context/WalletContext";
 import Links from "./Links";
 import Tags from "./Tags";
 
-
-import { getTags, getTag, updateCommunity, getOneUser } from "@/utils/axios";
+import {updateCommunity, getOneUser, joinCommunity, leaveCommunity } from "@/utils/axios";
 
 type DetailsType = {
   name: string;
@@ -32,7 +31,7 @@ type DetailsProps = {
 };
 
 const Details = ({ details }: any) => {
-  const creator = details?.ownerId
+  const creator = details?.ownerId;
   const [modalIsOpen, setIsOpen] = useState(false);
   const [name, setName] = useState<string>("");
   const [tags, setTags] = useState<any>([]);
@@ -40,16 +39,24 @@ const Details = ({ details }: any) => {
   const [uniqueTags, setUniqueTags] = useState<string>("");
   const [desc, setDesc] = useState<string>("");
   const [error, setError] = useState<any>(false);
+  const [isMember, setIsMember] = useState<any>(false);
 
   const [userId, setUserId] = useState<any>();
 
- // const { user }: any = useContext(AuthContext);
-  const {connected, account}: any = useContext(WalletContext)
+  // const { user }: any = useContext(AuthContext);
+  const { connected, account }: any = useContext(WalletContext);
   //const useremail = user?.email;
   const router = useRouter();
   const communityId = router.query.Id;
-  const walletAddress = account?.toString().toLowerCase()
-
+  const walletAddress = account?.toString().toLowerCase();
+  //check if user is already a memeber
+  useMemo(() => {
+    details?.users.filter((e: any) => {
+      if(e?.id === userId){
+        setIsMember(true)
+      }
+    })
+  }, [userId])
   getOneUser(walletAddress).then((e: any) => {
     setUserId(e?.message?.data?.id);
   });
@@ -67,7 +74,7 @@ const Details = ({ details }: any) => {
       };
       const comm = await updateCommunity(communityData);
       //use data to redirect
-      if (comm?.status === true) {
+      if (comm?.status !== true) {
         setError(true);
       } else {
         router.push(`/communities/${communityId}`);
@@ -76,6 +83,36 @@ const Details = ({ details }: any) => {
       throw new Error("errors submitting community data" + err);
     }
   };
+  const handleJoin = async () => { 
+    try{
+      const data = {
+        id: communityId,
+        userId
+      }
+      const join = await joinCommunity(data)
+      if(join.status === true){
+        router.reload()
+      }
+    }catch(err: any){
+      throw new Error("error joining community"+ err )
+    }
+   
+  }
+  const handleLeave = async () => { 
+    try{ 
+      const data = {
+        id: communityId,
+        userId
+      }
+      const leave = await leaveCommunity(data)
+      if(leave.status === true){
+        router.reload()
+      }
+    }catch(err: any){
+      throw new Error("error leaving community"+ err )
+    }
+   
+  }
   const openModal = () => {
     setIsOpen(true);
   };
@@ -86,7 +123,9 @@ const Details = ({ details }: any) => {
     <div className={styles.details}>
       <div className={styles.head}>
         <div className={styles.box}>
-          <div className={cn("h2", styles.user)} style={{fontSize: '30px'}}>{details?.name}</div>
+          <div className={cn("h2", styles.user)} style={{ fontSize: "30px" }}>
+            {details?.name}
+          </div>
           <div className={styles.line}>
             <div className={styles.code}>
               {details?.link}
@@ -97,25 +136,56 @@ const Details = ({ details }: any) => {
           </div>
         </div>
         <div>
-          { creator !== userId ? (<></>): (
+          {creator !== userId ? (
+            <></>
+          ) : (
             <button
-            className={cn("button-stroke-grey button-medium", styles.button)}
-            onClick={openModal}
-            style={{paddingLeft: '0.5rem', paddingRight: '0.6rem', marginLeft: '0px'}}
-          >
-            <Icon name="edit" />
-          </button>
+              className={cn("button-stroke-grey button-medium", styles.button)}
+              onClick={openModal}
+              style={{
+                paddingLeft: "0.5rem",
+                paddingRight: "0.6rem",
+                marginLeft: "0px",
+              }}
+            >
+              <Icon name="edit" />
+            </button>
           )}
           {connected ? (
-            <button
-            className={cn("button-stroke-grey button-medium", styles.button)}
-            onClick={() => {}}
-            style={{paddingLeft: '0.5rem', paddingRight: '0.6rem', marginLeft: '0px'}}
-          >
-            <Icon name="share" />
-          </button>
-          ): null}
-          
+            <>
+              {isMember ? (
+                <button
+                className={cn(
+                  "button-stroke-grey button-medium",
+                  styles.button
+                )}
+                onClick={handleLeave}
+                style={{
+                  paddingLeft: "0.5rem",
+                  paddingRight: "0.6rem",
+                  marginLeft: "0px",
+                }}
+              >
+                <Icon name="logout" />
+              </button>
+              ) : (
+                <button
+                  className={cn(
+                    "button-stroke-grey button-medium",
+                    styles.button
+                  )}
+                  onClick={handleJoin}
+                  style={{
+                    paddingLeft: "0.5rem",
+                    paddingRight: "0.6rem",
+                    marginLeft: "0px",
+                  }}
+                >
+                  <Icon name="plus" />
+                </button>
+              )}
+            </>
+          ) : null}
         </div>
         <Modal
           isOpen={modalIsOpen}
@@ -123,7 +193,7 @@ const Details = ({ details }: any) => {
           contentLabel="Example Modal"
           style={{
             overlay: {
-              zIndex: "1",
+              zIndex: "100",
             },
           }}
         >
@@ -203,7 +273,7 @@ const Details = ({ details }: any) => {
           </LayoutCreate>
         </Modal>
       </div>
-      <div className={styles.list} style={{marginBottom: "1rem"}}>
+      <div className={styles.list} style={{ marginBottom: "1rem" }}>
         <div className={styles.item}>
           <div className={styles.label}>
             <Icon name="profile-fat" /> Users
@@ -214,15 +284,22 @@ const Details = ({ details }: any) => {
           <div className={styles.label}>
             <Icon name="profile-fat" /> Missions
           </div>
-          <div className={cn("h4", styles.value)}>{details?.missions?.length}</div>
+          <div className={cn("h4", styles.value)}>
+            {details?.missions?.length}
+          </div>
         </div>
       </div>
       <Statistics items={details} className={styled.box} />
-      <div className={sty.box} style={{padding: '0', paddingTop: '1rem',marginTop: '2rem'}}>
-                        <div className={cn("h4", sty.stage)}>Description</div>
-                        <div className={sty.content} style={{fontSize: '14px'}}>{details.desc}</div>
-                        {details?.links && <Links items={details} />}
-                        {/* {addTags && (
+      <div
+        className={sty.box}
+        style={{ padding: "0", paddingTop: "1rem", marginTop: "2rem" }}
+      >
+        <div className={cn("h4", sty.stage)}>Description</div>
+        <div className={sty.content} style={{ fontSize: "14px" }}>
+          {details.desc}
+        </div>
+        {details?.links && <Links items={details} />}
+        {/* {addTags && (
                             <button
                                 className={cn(
                                     "button-stroke-grey button-medium",
@@ -233,8 +310,8 @@ const Details = ({ details }: any) => {
                                 <Icon name="plus" />
                             </button>
                         )} */}
-                        {details?.tags && <Tags tags={details?.tags[0].name} />}
-                    </div>
+        {details?.tags && <Tags tags={details?.tags[0].name} />}
+      </div>
       {/* <div className={styles.foot}>
         <div className={styles.stage}>Description</div>
         <div className={styles.content}>{details?.desc}</div>

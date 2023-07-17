@@ -88,7 +88,7 @@ const CreatPage = () => {
               <div className={cn("h1", styles.title)}>
                 Create a <br></br>Mission.
               </div>
-              <Link href="">
+              <Link href={`/communities/${communityId}`}>
                 <a className={cn("button-circle", styles.back)}>
                   <Icon name="arrow-left" />
                 </a>

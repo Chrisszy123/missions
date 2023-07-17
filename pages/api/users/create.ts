@@ -9,6 +9,6 @@ export default async function(req: NextApiRequest, res: NextApiResponse){
         res.status(200).send(user)
         return{ status: true, message: "user"}
     }catch(err: any){
-        throw new Error("Error creating user" + err)
+        return res.status(500)
     }
 }

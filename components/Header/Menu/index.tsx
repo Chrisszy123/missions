@@ -32,12 +32,16 @@ const menu = [
     url: "/communities",
   },
   {
+    title: "Missions",
+    url: "/missions",
+  },
+  {
     title: "Help center",
-    url: "/#",
+    url: "#",
   },
   {
     title: "Blog",
-    url: "/#",
+    url: "#",
   },
 ];
 

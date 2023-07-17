@@ -24,7 +24,7 @@ const Card = ({ className, item }: CardProps) => (
                 <div className={styles.details}>
                     <div className={styles.title}>{item.title}</div>
                     <div className={styles.price}>
-                        <span>Buy now</span> {item.price}
+                        <span>Rewards pool</span> {item.price}
                     </div>
                 </div>
                 <Users className={styles.users} items={item.users} />

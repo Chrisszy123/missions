@@ -12,7 +12,7 @@ type CollectionsProps = {};
 
 const Collections = ({}: CollectionsProps) => (
     <div className={styles.collections}>
-        <div className={cn("h1", styles.title)}>Curated collections.</div>
+        <div className={cn("h1", styles.title)}>Curated communities.</div>
         <div className={styles.wrapper}>
             <Swiper
                 navigation={true}

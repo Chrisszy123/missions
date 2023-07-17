@@ -32,7 +32,7 @@ const Collection = ({ item }: CollectionProps) => (
             <div className={styles.details}>
                 <div className={styles.box}>
                     <div className={styles.subtitle}>{item.title}</div>
-                    <div className={styles.author}>
+                    {/* <div className={styles.author}>
                         <div className={styles.avatar}>
                             <Image
                                 src={item.avatar}
@@ -42,12 +42,12 @@ const Collection = ({ item }: CollectionProps) => (
                             />
                         </div>
                         @{item.login}
-                    </div>
+                    </div> */}
                 </div>
-                <div className={styles.box}>
+            {/*     <div className={styles.box}>
                     <div className={styles.text}>Floor price</div>
                     <div className={styles.price}>{item.price}</div>
-                </div>
+                </div> */}
             </div>
         </a>
     </Link>

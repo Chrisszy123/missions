@@ -1,0 +1,64 @@
+@import @/styles/helpers
+
+.title
+    margin-bottom: rem(48)
+    +body1
+    color: $n5
+    +m
+        margin-bottom: rem(32)
+        +body1S
+
+.preview
+    position: relative
+    display: flex
+    justify-content: space-between
+    align-items: flex-start
+    height: rem(360)
+    margin-bottom: rem(32)
+    padding: rem(24)
+    border-radius: rem(20)
+    background: $o3
+    overflow: hidden
+    & > span img
+        border-radius: rem(20)
+
+.image,
+.category
+    position: relative
+    z-index: 2
+    border-radius: rem(12)
+
+.image
+    min-width: rem(98)
+    min-height: rem(48)
+    background: $n1
+    +body1
+    &:empty
+        background: rgba($n4, .3)
+
+.category
+    min-width: rem(98)
+    min-height: rem(48)
+    background: $n1
+    +body1
+    &:empty
+        background: rgba($n4, .3)
+
+.head
+    min-width: rem(98)
+    min-height: rem(48)
+    background: $n1
+    +body1
+    &:empty
+        background: rgba($n4, .3)
+
+.subtitle
+    &:empty
+        width: rem(200)
+        height: rem(12)
+        border-radius: rem(4)
+        background: $n3
+
+.price
+    +title
+    color: $n4

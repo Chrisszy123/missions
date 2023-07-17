@@ -115,7 +115,7 @@ export const getTag = async(communityId: any) => {
     }
 }
 // 
-export const getImage = async(communityId: any) => {
+export const getImage = async(communityId: string) => {
     try{
         const tags = await axios.post('/api/communityImage', communityId)
         return {status: true, message: tags}
@@ -129,5 +129,22 @@ export const createImage = async(imageData: any) => {
         return {status: true, message: tags}
     }catch(err){
         throw new Error('error creating Image' + err)
+    }
+}
+// 
+export const joinCommunity = async(data: any) => {
+    try{
+        const community = await axios.post('/api/community/join', data)
+        return {status: true, message: community}
+    }catch(err: any){
+        throw new Error('error joining community' +  err)
+    }
+}
+export const leaveCommunity = async(data: any) => {
+    try{
+        const community = await axios.post('/api/community/leave', data)
+        return {status: true, message: community}
+    }catch(err: any){
+        throw new Error('error leaving community' +  err)
     }
 }

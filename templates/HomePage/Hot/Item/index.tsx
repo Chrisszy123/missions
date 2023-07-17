@@ -23,7 +23,7 @@ const Item = ({ item, number }: ItemProps) => (
             </div>
             <div className={styles.login}>@{item.login}</div>
             <div className={styles.total}>
-                Total sale <span>{item.total}</span>
+                Total rewards <span>{item.total}</span>
             </div>
         </a>
     </Link>

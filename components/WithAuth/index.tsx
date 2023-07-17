@@ -2,23 +2,24 @@ import { useRouter } from "next/router";
 import { useContext, useEffect } from "react";
 import { getAccount } from "@wagmi/core";
 import { WalletContext } from "context/WalletContext";
+import { useAccount} from "wagmi"
 
 const withAuth = <T extends object>(
   WrappedComponent: React.ComponentType<T>
 ) => {
   const Wrapper: React.FC<T> = (props) => {
     const router = useRouter();
-    const { connected } = useContext(WalletContext);
-
+    const  {isConnected} = useAccount()
+    
     useEffect(() => {
-      if (!connected) {
+      if (!isConnected) {
         // Redirect to home page
         router.push("/");
       }
-    }, [connected, router]);
+    }, [isConnected, router]);
 
     // Render the wrapped component if authenticated, otherwise return null or a loading state
-    return connected ? (
+    return isConnected ? (
       <WrappedComponent {...props} />
     ) : (
       <div> You need to be authenticated</div>

@@ -1,10 +1,48 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useContext } from "react";
 import { WalletContext } from "context/WalletContext";
+import { SiweMessage } from "siwe"
+import { getCsrfToken, signIn, useSession } from "next-auth/react"
+import { useAccount, useConnect, useNetwork, useSignMessage } from "wagmi"
+import { useEffect } from "react"
 
 export const Connect = (props: any) => {
   const { setConnected, setAccount, setWalletBalance }: any =
     useContext(WalletContext);
+    const { data: session, status } = useSession()
+    const { signMessageAsync } = useSignMessage()
+    const { address, isConnected } = useAccount()
+    const { chain } = useNetwork()
+    const handleLogin = async () => {
+      try {
+        const callbackUrl = "/protected"
+        const message = new SiweMessage({
+          domain: window.location.host,
+          address: address,
+          statement: "Sign in with Ethereum to the app.",
+          uri: window.location.origin,
+          version: "1",
+          chainId: chain?.id,
+          nonce: await getCsrfToken(),
+        })
+        const signature = await signMessageAsync({
+          message: message.prepareMessage(),
+        })
+        signIn("credentials", {
+          message: JSON.stringify(message),
+          redirect: false,
+          signature,
+          callbackUrl,
+        })
+      } catch (error) {
+        window.alert(error)
+      }
+    }
+    useEffect(() => {
+      if (isConnected && !session) {
+        handleLogin()
+      }
+    }, [isConnected])
   return (
     <ConnectButton.Custom>
       {({
@@ -41,7 +79,12 @@ export const Connect = (props: any) => {
               if (!connected) {
                 return (
                   <button
-                    onClick={openConnectModal}
+                    onClick={(e) => {
+                      e.preventDefault()
+                     
+                        openConnectModal()
+                      
+                    }}
                     type="button"
                     style={{ fontSize: '16px'}}
                   >

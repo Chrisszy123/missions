@@ -9,24 +9,25 @@ import { AuthContext } from "context/AuthContext";
 import truncateEthAddress from "truncate-eth-address";
 
 type WalletProps = {
-  onDisconnect: () => void;
+  onDisconnect: any;
 };
 
 const Wallet = ({ onDisconnect }: WalletProps) => {
   const { connected, account, walletBalance }: any = useContext(WalletContext);
   // const {user}: any = useContext(AuthContext)
-  // const actions = [
-  //     {
-  //         title: `${user ? "Logout" : "Web2 Login"}`,
-  //         icon: "logout",
-  //         url: `${user ? "/api/auth/logout" : "/api/auth/login"}`,
-  //     },
-  //     // {
-  //     //     title: "Disconnect",
-  //     //     icon: "close-square",
-  //     //     onClick: onDisconnect,
-  //     // },
-  // ];
+  const actions = [
+      // {
+      //     title: `${user ? "Logout" : "Web2 Login"}`,
+      //     icon: "logout",
+      //     url: `${user ? "/api/auth/logout" : "/api/auth/login"}`,
+      // },
+      {
+          title: "Disconnect",
+          icon: "close-square",
+          onClick: onDisconnect,
+          url: '/api/auth/signout'
+      },
+  ];
 
   return (
     <div className={styles.wallet}>
@@ -38,7 +39,7 @@ const Wallet = ({ onDisconnect }: WalletProps) => {
           />
         </div>
         <div className={styles.actions}>
-          {/* {actions.map((action: any, index: number) =>
+          {actions.map((action: any, index: number) =>
                         action.onClick ? (
                             <button
                                 className={styles.action}
@@ -56,7 +57,7 @@ const Wallet = ({ onDisconnect }: WalletProps) => {
                                 </a>
                             </Link>
                         )
-                    )} */}
+                    )}
         </div>
       </div>
       <div className={styles.details}>

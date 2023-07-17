@@ -9,6 +9,8 @@ import Icon from "@/components/Icon";
 import Wallet from "./Wallet";
 import { WalletContext } from "context/WalletContext";
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
+import { signOut } from "next-auth/react"
+import { useDisconnect } from "wagmi"
 
 const menu = [
   {
@@ -44,7 +46,7 @@ const Profile = ({
       visible ? disablePageScroll() : enablePageScroll();
     }
   }, [visible]);
-
+  const { disconnect } = useDisconnect()
   return (
     <OutsideClickHandler onOutsideClick={onClose}>
       <div
@@ -77,7 +79,11 @@ const Profile = ({
                             <div className={styles.login}>{user?.email}</div>
                         </div> */}
           </div>
-          <Wallet onDisconnect={onClose} />
+          <Wallet onDisconnect={(e: any) => {
+                  e.preventDefault()
+                  disconnect()
+                  signOut()
+                }} />
           <div className={styles.menu}>
             {menu.map((link, index) => (
               <NavLink

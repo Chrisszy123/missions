@@ -1,6 +1,5 @@
 import { useState, useContext, useEffect, useCallback } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { useUser } from "@auth0/nextjs-auth0/client";
 import Link from "next/link";
 import cn from "classnames";
 import styles from "./Header.module.sass";

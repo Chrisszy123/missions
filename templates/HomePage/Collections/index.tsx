@@ -24,7 +24,7 @@ const Collections = ({}: CollectionsProps) => (
                 modules={[Navigation, Scrollbar]}
                 className="collections-swiper"
             >
-                {curatedCollections.map((collection, index) => (
+                {curatedCollections.map((collection:any, index: any) => (
                     <SwiperSlide key={index}>
                         <Collection item={collection} />
                     </SwiperSlide>

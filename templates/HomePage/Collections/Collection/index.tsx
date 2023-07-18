@@ -18,6 +18,7 @@ const Collection = ({ item }: CollectionProps) => (
                             objectFit="cover"
                             alt="Collection item"
                         />
+                    
                     </div>
                 ))}
                 <div

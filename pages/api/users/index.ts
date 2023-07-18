@@ -1,4 +1,4 @@
-import { getAllUsers, getOneUser } from "models/user";
+import { getAllUsers } from "models/user";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function(req: NextApiRequest,  res: NextApiResponse) {

@@ -44,7 +44,9 @@
     "uuid": "^9.0.0",
     "viem": "~1.0.6",
     "wagmi": "~1.2.0",
-    "zod": "^3.21.4"
+    "zod": "^3.21.4",
+    "@moralisweb3/next": "^2.22.4",
+    "moralis": "^2.22.4"
   },
   "devDependencies": {
     "@types/node": "17.0.35",

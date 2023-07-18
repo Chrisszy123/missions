@@ -1,48 +1,43 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useContext } from "react";
 import { WalletContext } from "context/WalletContext";
-import { SiweMessage } from "siwe"
-import { getCsrfToken, signIn, useSession } from "next-auth/react"
-import { useAccount, useConnect, useNetwork, useSignMessage } from "wagmi"
-import { useEffect } from "react"
+import { signIn, useSession } from "next-auth/react";
+import { useAccount, useNetwork, useSignMessage } from "wagmi";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import { useAuthRequestChallengeEvm } from "@moralisweb3/next";
 
 export const Connect = (props: any) => {
   const { setConnected, setAccount, setWalletBalance }: any =
     useContext(WalletContext);
-    const { data: session, status } = useSession()
-    const { signMessageAsync } = useSignMessage()
-    const { address, isConnected } = useAccount()
-    const { chain } = useNetwork()
-    const handleLogin = async () => {
-      try {
-        const callbackUrl = "/protected"
-        const message = new SiweMessage({
-          domain: window.location.host,
-          address: address,
-          statement: "Sign in with Ethereum to the app.",
-          uri: window.location.origin,
-          version: "1",
-          chainId: chain?.id,
-          nonce: await getCsrfToken(),
-        })
-        const signature = await signMessageAsync({
-          message: message.prepareMessage(),
-        })
-        signIn("credentials", {
-          message: JSON.stringify(message),
-          redirect: false,
-          signature,
-          callbackUrl,
-        })
-      } catch (error) {
-        window.alert(error)
-      }
+  const { data: session, status } = useSession();
+  const { signMessageAsync } = useSignMessage();
+  const { isConnected, address }: any = useAccount();
+  const { requestChallengeAsync } = useAuthRequestChallengeEvm();
+  const { chain }: any = useNetwork();
+  const { push, reload } = useRouter();
+
+  useEffect(() => {
+    if (isConnected && status === "unauthenticated") {
+      console.log("mm")
+      handleLogin();
     }
-    useEffect(() => {
-      if (isConnected && !session) {
-        handleLogin()
-      }
-    }, [isConnected])
+  }, [isConnected]);
+
+  const handleLogin = async () => {
+    const { message }: any = await requestChallengeAsync({
+      address: address,
+      chainId: chain.id,
+    });
+    const signature = await signMessageAsync({ message });
+    // redirect user after success authentication to '/dashboard' page
+    signIn("moralis-auth", {
+      message,
+      signature,
+      redirect: false,
+      callbackUrl: "/", //redirect to user dashboard
+    });
+  };
   return (
     <ConnectButton.Custom>
       {({
@@ -80,13 +75,12 @@ export const Connect = (props: any) => {
                 return (
                   <button
                     onClick={(e) => {
-                      e.preventDefault()
-                     
-                        openConnectModal()
-                      
+                      e.preventDefault();
+
+                      openConnectModal();
                     }}
                     type="button"
-                    style={{ fontSize: '16px'}}
+                    style={{ fontSize: "16px" }}
                   >
                     Connect Wallet
                   </button>
@@ -96,10 +90,7 @@ export const Connect = (props: any) => {
               }
               if (chain.unsupported) {
                 return (
-                  <button
-                    onClick={openChainModal}
-                    type="button"
-                  >
+                  <button onClick={openChainModal} type="button">
                     Wrong network
                   </button>
                 );

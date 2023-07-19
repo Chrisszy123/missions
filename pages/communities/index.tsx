@@ -1,14 +1,46 @@
-import type { NextPage } from "next";
+import type { NextPage, GetServerSidePropsContext } from "next";
 import CommunitiesPage from "@/templates/Communities/DiscoverPage";
-import { getCommunities } from "@/utils/axios";
 import ErrorBoundary from "pages/_error";
+import { getSession } from "next-auth/react";
+import { getAllCommunities } from "models/community";
+import { Community } from "@prisma/client";
 
-const Discover: NextPage = () => {
-    return <CommunitiesPage/>;
-};
-const WithErrorBoundary: React.FC = () => (
+interface Props {
+  communities?: Community[];
+}
+
+const Discover: NextPage<Props> = ({ communities }) => {
+  return (
     <ErrorBoundary>
-      <Discover />
+      <CommunitiesPage communities={communities}/>
     </ErrorBoundary>
   );
-export default WithErrorBoundary;
+};
+export default Discover;
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = await getSession(context);
+  if (session) {
+    const communities: any = await getAllCommunities();
+    const serializedCommunities = communities.map((community: any) => ({
+      ...community,
+      createdAt: community?.createdAt.toISOString(),
+      updatedAt: community?.updatedAt.toISOString(),
+      owner: {
+        ...community.owner,
+        createdAt: community?.owner.createdAt.toISOString(),
+        updatedAt: community?.owner.updatedAt.toISOString(),
+      },
+      users: community?.users.map((user: any) => ({
+        ...user,
+        createdAt: user?.createdAt.toISOString(),
+        updatedAt: user?.updatedAt.toISOString(),
+      })),
+    }));
+    return {
+      props: {
+        communities: serializedCommunities,
+      },
+    };
+  }
+}

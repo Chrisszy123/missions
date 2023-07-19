@@ -11,7 +11,6 @@ type ProvenanceProps = {
 };
 
 const Provenance = ({ action, items }: ProvenanceProps) => {
-  console.log(items);
   return (
     <div className={styles.provenance}>
       {action && (
@@ -43,12 +42,11 @@ const Provenance = ({ action, items }: ProvenanceProps) => {
         </div>
       )}
       <div className={styles.list}>
-        {items.map((item: any, index: number) => (
-          <div className={styles.item} key={index}>
+          <div className={styles.item}>
              <Jazzicon
                 diameter={40}
                 seed={jsNumberForAddress(
-                  item?.users[0]?.walletAddress
+                  items.users[0]?.walletAddress
                 )}
               /> 
             {/* <div
@@ -59,10 +57,10 @@ const Provenance = ({ action, items }: ProvenanceProps) => {
              
             </div> */}
             <div className={styles.details} style={{marginLeft: '8px'}}>
-              <div className={styles.content}>{truncateEthAddress(item?.users[0]?.walletAddress)}</div>
-              <div className={styles.date}>{item?.createdAt.slice(0, 10)}</div>
+              <div className={styles.content}>{truncateEthAddress(items.users[0]?.walletAddress)}</div>
+              <div className={styles.date}>{items.createdAt.slice(0, 10)}</div>
             </div>
-            {item.price && <div className={styles.price}>pending</div>}
+            {items.price && <div className={styles.price}>pending</div>}
             <a
               className={styles.link}
               href="#"
@@ -72,7 +70,7 @@ const Provenance = ({ action, items }: ProvenanceProps) => {
               <Icon name="external-link" />
             </a>
           </div>
-        ))}
+      
       </div>
     </div>
   );

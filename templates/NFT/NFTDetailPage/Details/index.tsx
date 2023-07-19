@@ -17,7 +17,7 @@ const Details = ({ mission }: DetailsProps) => {
       <div className={styles.row}>
         <div className={styles.col}>
           <div className={styles.label}>Reward</div>
-          <div className={cn("h4", styles.value)}>{mission[0].rewards[0]}</div>
+          <div className={cn("h4", styles.value)}>{mission.rewards[0]}</div>
           <Link href="#">
             <a
               className={cn("button-medium button-wide", styles.button)}
@@ -29,7 +29,7 @@ const Details = ({ mission }: DetailsProps) => {
         </div>
         <div className={styles.col}>
           <div className={styles.label}>State</div>
-          <div className={cn("h4", styles.value)}>{mission[0].state}</div>
+          <div className={cn("h4", styles.value)}>{mission.state}</div>
           <Link href="#">
             <a
               className={cn(

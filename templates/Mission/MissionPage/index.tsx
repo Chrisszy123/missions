@@ -3,13 +3,15 @@ import Layout from "@/components/Layout";
 //import Main from "./Main";
 import Spotlight from "./Spotlight";
 //import Newsletter from "@/components/Newsletter";
-
-const HomePage = () => {
+interface MissionPageProps {
+    missions:  any
+}
+const HomePage = ({missions}: MissionPageProps) => {
     //const scrollToAll = useRef<any>(null);
     return (
         <Layout layoutNoOverflow noRegistration>
             {/* <Main scrollToRef={scrollToAll} /> */}
-            <Spotlight />
+            <Spotlight missions={missions}/>
             {/* <Newsletter /> */}
         </Layout>
     );

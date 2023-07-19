@@ -1,24 +1,16 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef} from "react";
 import Layout from "@/components/Layout";
-import Main from "./Main";
 import Catalog from "@/components/CommunityCatalog";
-import Newsletter from "@/components/Newsletter";
 import { tabsTime, nfts, statuses } from "@/mocks/nfts";
-//
-import { getCommunities, getMissions } from "@/utils/axios";
 
-const HomePage = () => {
-  const [communities, setCommunities] = useState<any>([]);
+interface Props{
+  communities: any
+}
+const HomePage = ({communities}: Props) => {
   const scrollToAll = useRef<any>(null);
   const scrollToCommunities = useRef<any>(null);
   const scrollToMissions = useRef<any>(null);
   const scrollToArtist = useRef<any>(null);
-
-  useEffect(() => {
-    getCommunities().then((res) => {
-      setCommunities(res.data);
-    });
-  }, []);
 
   const tabsSorting = [
     {

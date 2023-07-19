@@ -1,24 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import cn from "classnames";
 import styles from "./Spotlight.module.sass";
 import Tabs from "@/components/Tabs";
 import Card from "./Card";
+import { tabs } from "@/mocks/spotlight";
 
-import { tabs, spotlight } from "@/mocks/spotlight";
-import { getMissions } from "@/utils/axios";
+type SpotlightProps = {
+  missions: any
+};
 
-type SpotlightProps = {};
-
-const Spotlight = ({}: SpotlightProps) => {
+const Spotlight = ({missions}: SpotlightProps) => {
   const [sorting, setSorting] = useState<string>("1-days");
-  const [missions, setMissions] = useState<any>();
-
-  useEffect(()=>{
-    getMissions().then((m) => {
-      setMissions(m?.data);
-    });
-  }, [])
-
   return (
     <>
       {missions?.length === 0 ? (

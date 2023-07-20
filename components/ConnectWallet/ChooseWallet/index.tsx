@@ -60,12 +60,12 @@ const ChooseWallet = ({ onScan, onClickWallet }: ChooseWalletProps) => {
       <div className={styles.wallets}>
         {wallets.map((wallet, index) => (
           <Connect
-            key={index}
-            className={styles.wallet}
-            innerClass={styles.inner}
-            Iconclass={styles.icon}
-            image={wallet.image}
-            text={wallet.title}
+            // key={index}
+            // className={styles.wallet}
+            // innerClass={styles.inner}
+            // Iconclass={styles.icon}
+            // image={wallet.image}
+            // text={wallet.title}
            
           />
         ))}

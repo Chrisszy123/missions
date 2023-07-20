@@ -1,15 +1,19 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['www.shutterstock.com', 'firebasestorage.googleapis.com', 'static.vecteezy.com']
+    domains: [
+      "www.shutterstock.com",
+      "firebasestorage.googleapis.com",
+      "static.vecteezy.com",
+    ],
   },
   reactStrictMode: true,
-  swcMinify: true,
+  swcMinify: false,
   future: {
-   webpack5: true,
-   },
- webpack(config) {
-   config.resolve.fallback = {
+    webpack5: true,
+  },
+  webpack(config) {
+    config.resolve.fallback = {
       ...config.resolve.fallback,
       fs: false,
       net: false,
@@ -18,6 +22,6 @@ const nextConfig = {
 
     return config;
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

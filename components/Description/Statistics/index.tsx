@@ -2,6 +2,7 @@ import cn from "classnames";
 import styles from "./Statistics.module.sass";
 import Image from "@/components/Image";
 import Link from "next/link";
+import { AnyAaaaRecord } from "dns";
 
 type StatisticsProps = {
   className?: string;
@@ -15,7 +16,7 @@ const Statistics = ({ className, items }: StatisticsProps) => {
       <div className={styles.list}>
         {items.map((item: any, index: number) => (
           <Link href={item.link} key={index}>
-            <div className={styles.item} style={{cursor: "pointer"}}>
+            <div className={styles.item} style={{ cursor: "pointer" }}>
               <div className={styles.label}>{item.label}</div>
               <div className={styles.flex}>
                 <div
@@ -38,8 +39,9 @@ const Statistics = ({ className, items }: StatisticsProps) => {
                     <div className={styles.login}>@{item.login}</div>
                   )}
                   {item?.category &&
-                    item?.category.map((c: any) => (
+                    item?.category.map((c: any, index: any) => (
                       <div
+                        key={index}
                         className={styles.category}
                         style={{ marginLeft: "4px" }}
                       >

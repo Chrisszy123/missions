@@ -63,12 +63,12 @@ const Menu = ({ classBurger, resultSearch }: MenuProps) => {
         className={cn(styles.burger, classBurger)}
         onClick={() => setVisibleMenu(true)}
       ></button>
-      {/* <Modal
+      <Modal
         className={styles.modal}
         closeClassName={styles.close}
         visible={visibleMenu}
         onClose={() => setVisibleMenu(false)}
-      > */}
+      >
         <div className={styles.row}>
           <div className={styles.col}>
             <div className={cn("h1", styles.title)}>

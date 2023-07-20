@@ -25,14 +25,14 @@ const Caption = ({ title, date, data }: CaptionProps) => {
   const [desc, setDesc] = useState<string>("");
   const [error, setError] = useState<any>(false);
 
-  const owner = data[0]?.community?.ownerId;
+  const owner = data?.community?.ownerId;
 
   const { user }: any = useContext(AuthContext);
   const userId = user?.message?.data?.id;
   console.log(userId);
   const router = useRouter();
   const missionId = router.query.MissionId;
-  const communityId = data[0]?.community?.ownerId;
+  const communityId = data?.community?.ownerId;
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();

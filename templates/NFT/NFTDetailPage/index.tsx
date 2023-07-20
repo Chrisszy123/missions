@@ -78,24 +78,24 @@ const MintNFTPage = ({ mission }: any) => {
   const statistics = [
     {
       label: "Community",
-      image: mission ? mission[0]?.community?.image :"/images/robot.jpg",
-      title: mission ? mission[0]?.community?.name : "",
-      category: mission ? mission[0]?.community?.tags[0].name : "",
-      link: mission ? `/communities/${mission[0]?.community?.id}` : "#"
+      image: mission ? mission?.community?.image :"/images/robot.jpg",
+      title: mission ? mission?.community?.name : "",
+      category: mission ? mission?.community?.tags[0].name : "",
+      link: mission ? `/communities/${mission?.community?.id}` : "#"
     },
   ];
   console.log(mission)
   return (
     <Layout layoutNoOverflow footerHide noRegistration>
-      {mission?.length > 0 ? (
+      {mission ? (
         <>
           <Description
-            image={mission? mission[0]?.community?.image : "/images/cute-planet-large.jpg"}
-            title={mission[0].name}
-            date={`created at ${mission[0].createdAt.slice(0, 10)}`}
+            image={mission ? mission?.community?.image :"/images/robot.jpg"}
+            title={mission.name}
+            date={`created at ${mission.createdAt.slice(0, 10)}`}
             statistics={statistics}
             links={links}
-            tags={mission[0].category}
+            tags={mission.category}
             // provenanceAction={{
             //   avatar: "/images/avatar.jpg",
             //   history: true,
@@ -119,7 +119,7 @@ const MintNFTPage = ({ mission }: any) => {
             //   linkUrl: "#",
             // }}
             provenance={mission}
-            content={mission[0].desc}
+            content={mission.desc}
             missionData={mission}
           >
             <Details mission={mission} />

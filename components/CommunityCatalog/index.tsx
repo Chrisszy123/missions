@@ -32,7 +32,6 @@ const Catalog = ({
     dark,
     scrollToRef,
 }: CatalogProps) => {
-    const [sorting, setSorting] = useState<string>("all");
     const [time, setTime] = useState<string>("1-days");
     const [theme, setTheme] = useState<any>(false);
     const [filter, setFilter] = useState<any>(false);

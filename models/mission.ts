@@ -60,7 +60,7 @@ export const updateOneMission = async (data: MissionData) => {
   }
 };
 // get all missions
-export const getAllMission = async () => {
+export const getAllMissions = async () => {
   try {
     const missions = await prisma.mission.findMany({
       orderBy: { createdAt: "desc" },
@@ -84,19 +84,22 @@ export const getAllMission = async () => {
 };
 
 //get one mission
-export const getOneMission = async (data: MissionData) => {
-  const missionData = missionSchema.parse(data);
+export const getOneMission = async (missionId: any) => {
   try {
     const mission = await prisma.mission.findFirst({
-      where: { id: missionData.id },
+      where: { id: missionId },
       include: {
         users: true,
-        community: true
+        community: {
+          include: {
+            tags: true
+          }
+        }
       }
     });
     if (!mission)
       return {
-        message: `mission by id ${missionData.id} does not exist`,
+        message: `mission by id ${missionId} does not exist`,
         status: false,
       };
     return mission;

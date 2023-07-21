@@ -84,7 +84,6 @@ const MintNFTPage = ({ mission }: any) => {
       link: mission ? `/communities/${mission?.community?.id}` : "#"
     },
   ];
-  console.log(mission)
   return (
     <Layout layoutNoOverflow footerHide noRegistration>
       {mission ? (

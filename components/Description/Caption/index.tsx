@@ -29,7 +29,6 @@ const Caption = ({ title, date, data }: CaptionProps) => {
 
   const { user }: any = useContext(AuthContext);
   const userId = user?.message?.data?.id;
-  console.log(userId);
   const router = useRouter();
   const missionId = router.query.MissionId;
   const communityId = data?.community?.ownerId;

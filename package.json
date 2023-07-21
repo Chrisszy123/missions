@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "seed": "node prisma/seed.js"
@@ -20,7 +20,6 @@
     "@types/scroll-lock": "^2.1.0",
     "@wagmi/core": "^1.3.7",
     "next-auth": "latest",
-    "siwe": "^2.1.4",
     "axios": "^1.4.0",
     "classnames": "^2.3.1",
     "d": "^1.0.1",

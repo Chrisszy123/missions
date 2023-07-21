@@ -11,6 +11,7 @@ const NextImage = ({ className, ...props }: ImageProps) => {
             className={cn(styles.image, { [styles.loaded]: loaded }, className)}
             onLoadingComplete={() => setLoaded(true)}
             {...props}
+            alt=""
         />
     );
 };

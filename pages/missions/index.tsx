@@ -20,8 +20,6 @@ export default Discover;
 export const getServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
-  const session = await getSession(context);
-  if (session) {
     const missions: any = await getAllMissions()
     const serializedMissions = missions.map((mission: any) => ({
       ...mission,
@@ -43,5 +41,4 @@ export const getServerSideProps = async (
         missions: serializedMissions
       }
     }
-  }
 };

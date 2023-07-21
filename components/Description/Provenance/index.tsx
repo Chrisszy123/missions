@@ -42,35 +42,40 @@ const Provenance = ({ action, items }: ProvenanceProps) => {
         </div>
       )}
       <div className={styles.list}>
-          <div className={styles.item}>
-             <Jazzicon
-                diameter={40}
-                seed={jsNumberForAddress(
-                  items.users[0]?.walletAddress
-                )}
-              /> 
-            {/* <div
+        <div className={styles.item}>
+          {items?.users.length > 0 ? (
+            <Jazzicon
+              diameter={40}
+              seed={jsNumberForAddress(items.users[0]?.walletAddress)}
+            />
+          ) : null}
+
+          {/* <div
               className={cn(styles.avatar, {
                 [styles.history]: item.history,
               })}
             >
              
             </div> */}
-            <div className={styles.details} style={{marginLeft: '8px'}}>
-              <div className={styles.content}>{truncateEthAddress(items.users[0]?.walletAddress)}</div>
-              <div className={styles.date}>{items.createdAt.slice(0, 10)}</div>
-            </div>
-            {items.price && <div className={styles.price}>pending</div>}
-            <a
-              className={styles.link}
-              href="#"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Icon name="external-link" />
-            </a>
+          <div className={styles.details} style={{ marginLeft: "8px" }}>
+            {items?.users.length > 0 ? (
+              <div className={styles.content}>
+                {truncateEthAddress(items.users[0]?.walletAddress)}
+              </div>
+            ) : null}
+
+            <div className={styles.date}>{items.createdAt.slice(0, 10)}</div>
           </div>
-      
+          {items.price && <div className={styles.price}>pending</div>}
+          <a
+            className={styles.link}
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Icon name="external-link" />
+          </a>
+        </div>
       </div>
     </div>
   );

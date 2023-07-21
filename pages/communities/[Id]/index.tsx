@@ -28,8 +28,6 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
   const communityId = context.query.Id;
-  const session = await getSession(context);
-  if (session) {
     const community: any = await getOneCommunity(communityId);
     const serializedCommunity = {
       ...community,
@@ -56,5 +54,4 @@ export const getServerSideProps = async (
         community: serializedCommunity
       },
     };
-  }
 };

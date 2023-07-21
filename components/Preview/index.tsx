@@ -16,6 +16,7 @@ const Preview = ({ imageUrl, name, desc }: PreviewProps) => {
         <div className="relative">
           <div className="relative h-80 w-full overflow-hidden rounded-lg">
             <Image
+              alt="communityImage"
               src={imageUrl !== null ? `${imageUrl}` : "/images/gray.jpg"}
               layout="fill"
               priority={true}

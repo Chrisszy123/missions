@@ -34,8 +34,8 @@ const Wallet = ({ onDisconnect }: WalletProps) => {
       <div className={styles.head}>
         <div className={styles.title}>
           <Connect
-            image="/"
-            text={connected ? "connected" : "Connect Wallet"}
+            // image="/"
+            // text={connected ? "connected" : "Connect Wallet"}
           />
         </div>
         <div className={styles.actions}>

@@ -10,7 +10,6 @@ type StatisticsProps = {
 };
 
 const Statistics = ({ className, items }: StatisticsProps) => {
-  console.log(items);
   return (
     <div className={cn(styles.statistics, className)}>
       <div className={styles.list}>

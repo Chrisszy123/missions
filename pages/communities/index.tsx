@@ -19,8 +19,6 @@ const Discover: NextPage<Props> = ({ communities }) => {
 export default Discover;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getSession(context);
-  if (session) {
     const communities: any = await getAllCommunities();
     const serializedCommunities = communities.map((community: any) => ({
       ...community,
@@ -42,5 +40,4 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         communities: serializedCommunities,
       },
     };
-  }
 }

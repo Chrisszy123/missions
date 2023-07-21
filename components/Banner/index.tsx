@@ -1,4 +1,3 @@
-import { XMarkIcon } from '@heroicons/react/20/solid'
 
 export default function Example() {
   return (
@@ -15,7 +14,7 @@ export default function Example() {
       <div className="flex flex-1 justify-end">
         <button type="button" className="-m-3 p-3 focus-visible:outline-offset-[-4px]">
           <span className="sr-only">Dismiss</span>
-          <XMarkIcon className="h-5 w-5 text-white" aria-hidden="true" />
+          <div className="h-5 w-5 text-white" aria-hidden="true"> x </div>
         </button>
       </div>
     </div>

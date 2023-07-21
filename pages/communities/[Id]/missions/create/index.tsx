@@ -1,95 +1,219 @@
-import type { NextPage } from "next";
-import CreatePage from "@/templates/MissionCreate/CreatePage";
-import { useSession } from "next-auth/react";
-import Layout from "@/components/Layout";
 import AccessDenied from "@/components/AccessDenied/AccessDenied";
-import { useState, useEffect, useContext } from "react";
-import { useRouter } from "next/router";
-import Link from "next/link";
-import cn from "classnames";
-import styles from "./CreateStep1Page.module.sass";
-import LayoutCreate from "@/components/LayoutCreate";
+import Congrats from "@/components/Congrats";
+import Field from "@/components/Field";
 import Icon from "@/components/Icon";
-import Field from "@/components/Field"; 
-import Preview from "@/components/MissionDetails/Preview";
+import Layout from "@/components/Layout";
+import LayoutCreate from "@/components/LayoutCreate";
+import Preview from "@/components/Preview";
+
+import useFilePreview from "@/hooks/useFilePreview";
+
 import { createMission, getUsers } from "@/utils/axios";
+import { storage } from "@/utils/firebase";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import cn from "classnames";
 import { AuthContext } from "context/AuthContext";
-import { WalletContext } from "context/WalletContext";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import type { NextPage } from "next";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { useContext, useState, useEffect } from "react";
+import { useForm, useWatch } from "react-hook-form";
+import { v4 } from "uuid";
 import { z } from "zod";
-import { missionSchema } from "@/types/missions";
+import styles from "./CreateStep1Page.module.sass";
+
+import { PhotoIcon } from "@heroicons/react/24/solid";
+import { useRouter } from "next/router";
+
+const MAX_FILE_SIZE = 500000;
+const ACCEPTED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+];
+
+type AlertType = "error" | "warning" | "success";
+
+// Global Alert div.
+const Alert = ({ children, type }: { children: string; type: AlertType }) => {
+  const backgroundColor =
+    type === "error" ? "tomato" : type === "warning" ? "orange" : "powderBlue";
+
+  return <div style={{ padding: "0 10", backgroundColor }}>{children}</div>;
+};
+
+// Use role="alert" to announce the error message.
+const AlertInput = ({ children }: { children: React.ReactNode }) =>
+  Boolean(children) ? (
+    <span role="alert" style={{ color: "tomato" }}>
+      {children}
+    </span>
+  ) : null;
+
+const MissionSchema = z
+  .object({
+    desc: z.string().min(5),
+    name: z.string().min(5),
+    rewards: z.string(),
+    image: z
+      .any()
+      .refine((files) => files?.length == 1, "Image is required.")
+      .refine(
+        (files) => files?.[0]?.size <= MAX_FILE_SIZE,
+        `Max file size is 5MB.`
+      )
+      .refine(
+        (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
+        ".jpg, .jpeg, .png and .webp files are accepted."
+      ),
+    // tags: z.string().array(),
+  })
+  .partial({
+    image: true,
+  });
+
+type MissionType = z.infer<typeof MissionSchema>;
 
 const Create: NextPage = () => {
-    const { status } = useSession();
-    const [name, setName] = useState<string>("");
-    const [rewards, setRewards] = useState<string>("");
-    const [category, setCategory] = useState<string>("");
-    const [desc, setDesc] = useState<string>("");
-    const [error, setError] = useState<object[] | null>([]);
-    const [userId, setUserId] = useState<any>("");
-    const [communityId, setCommunityId] = useState<string>("");
-  
-    const { account }: any = useContext(WalletContext);
-    // create a new user
-    const walletAddress = account?.toString().toLowerCase();
-  
-    const router = useRouter();
-    const slug = router.asPath;
-  
-    const extractSubstring = () => {
-      const regex = /\/communities\/([^/]+)\//;
-      const match = slug.match(regex);
-  
-      if (match && match[1]) {
-        const extractedString = match[1];
-        setCommunityId(extractedString);
-      } else {
-        console.log("Substring not found");
-      }
-    };
-    useEffect(() => {
-      getUsers().then((e) => {
-        const filteredUser = e?.message?.data.filter(
-          (user: any) => user?.walletAddress === walletAddress
-        );
-        console.log(filteredUser);
-        setUserId(filteredUser[0]?.id);
-      });
-      extractSubstring();
-    }, [walletAddress]);
-  
-    const { setMissionName, SetMissionRewards, setMDesc }: any =
-      useContext(AuthContext);
-  
-    const handleSubmit = async (e: any) => {
-      e.preventDefault();
-      try {
-        setError(null);
-        const data = {
-          name: name,
-          rewards: rewards,
-          desc: desc,
-          userId: userId,
-          communityId: communityId,
-        };
-        const missionData = missionSchema.parse(data);
-        const mission = await createMission(missionData);
-        // use data to redirect
-        if (mission?.status === true) {
-          router.push("/congrats");
-        }
-      } catch (err: any) {
-        setError(err.message);
-      }
-    };
-  if (status === 'unauthenticated') {
+  const { status, data: sessionData }: any = useSession();
+  const [createdMission, setCreatedMission] = useState<any>(undefined);
+  const [dataArray, setDataArray] = useState<string[]>([]);
+  const [inputData, setInputData] = useState<string>("");
+  const [communityId, setCommunityId] = useState<string>("");
+
+  console.log("SESSION DATA", sessionData);
+  console.log("SESSION STATUS", status);
+
+  const router = useRouter();
+  const slug = router.asPath;
+
+  const extractSubstring = () => {
+    const regex = /\/communities\/([^/]+)\//;
+    const match = slug.match(regex);
+
+    if (match && match[1]) {
+      const extractedString = match[1];
+      setCommunityId(extractedString);
+    } else {
+      console.log("Substring not found");
+    }
+  };
+  useEffect(() => {
+    extractSubstring()
+  }, [slug])
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors, isSubmitting, isSubmitSuccessful },
+  } = useForm<MissionType>({
+    resolver: zodResolver(MissionSchema),
+  });
+
+  const imageWatch = useWatch({
+    control,
+    name: "image",
+    defaultValue: null,
+  });
+
+  const name = useWatch({
+    control,
+    name: "name",
+    defaultValue: "",
+  });
+
+  const desc = useWatch({
+    control,
+    name: "desc",
+    defaultValue: "",
+  });
+  const rewards = useWatch({
+    control,
+    name: "rewards",
+    defaultValue: "",
+  });
+
+  const { imageUrl } = useFilePreview(imageWatch);
+  const { user }: any = useContext(AuthContext);
+
+  if (status === "unauthenticated" || sessionData === null) {
     return (
       <Layout layoutNoOverflow footerHide noRegistration>
-        <AccessDenied message="You need to be signed in to create mission"/>
+        <AccessDenied message="You need to be signed in to create mission" />
       </Layout>
     );
   }
+
+  const uploadFile = async (img: any) => {
+    try {
+      if (img == null) throw new Error("No file was uploaded.");
+      const imageRef = ref(storage, `missions/${img.name + v4()}`);
+
+      const snapshot = await uploadBytes(imageRef, img);
+      const url = await getDownloadURL(snapshot.ref);
+      return url;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const onSubmit = async (mission: MissionType) => {
+    //const uploadedImageUrl = await uploadFile(mission.image[0]);
+
+    const data = {
+      name: mission.name,
+      rewards: mission.rewards,
+      //image: uploadedImageUrl,
+      desc: mission.desc,
+      userId: sessionData.user.id,
+      communityId: communityId,
+    };
+
+    const createdMission = await createMission(data);
+
+    console.log("MISSIOn", createdMission);
+
+    // use data to redirect
+    if (createdMission?.status === true) {
+      setCreatedMission(createdMission.message);
+      console.log("CREATED mission");
+    }
+  };
+
+  if (createdMission) {
     return (
       <Layout layoutNoOverflow footerHide noRegistration>
+        <Congrats
+          title="Congrats"
+          content={
+            <>
+              You&apos;ve now created your mission! <br></br>This is an
+              important first step for all creators to make to allow users join
+              in on your mission
+            </>
+          }
+          links={
+            <>
+              <Link
+                href={`/communities/${communityId}/missions/${createdMission.id}`}
+              >
+                <a className={cn("button-large", styles.button)}>
+                  View Mission
+                </a>
+              </Link>
+            </>
+          }
+        />
+      </Layout>
+    );
+  }
+
+  return (
+    <Layout layoutNoOverflow footerHide noRegistration>
       <LayoutCreate
         left={
           <>
@@ -97,83 +221,90 @@ const Create: NextPage = () => {
               <div className={cn("h1", styles.title)}>
                 Create a <br></br>Mission.
               </div>
-              <Link href={`/communities/${communityId}`}>
+              <Link href="">
                 <a className={cn("button-circle", styles.back)}>
                   <Icon name="arrow-left" />
                 </a>
               </Link>
             </div>
-            <div className={styles.info}>Create a Mission on o1Node</div>
+            <div className={styles.info}>
+              Create a Mission on o1Node to allow users join.
+            </div>
             <form
               className={styles.form}
-              action=""
-              onSubmit={(e) => handleSubmit(e)}
+              onSubmit={handleSubmit(onSubmit)}
+              noValidate
             >
+              {/* <label>
+                <div className="w-full h-40 flex flex-col gap-2 items-center justify-center border-4 border-dashed border-gray-300 rounded-xl cursor-pointer hover:bg-gray-200 transition-all">
+                  <PhotoIcon className="h-12 text-gray-400" />
+                  Select image
+                </div>
+                <Field
+                  className={(styles.field, "hidden")}
+                  type="file"
+                  icon="profile"
+                  large
+                  required
+                  register={register("image")}
+                />
+                <AlertInput>{errors?.image?.message?.toString()}</AlertInput>
+              </label> */}
+
               <Field
                 className={styles.field}
                 placeholder="Name"
                 icon="profile"
-                value={name}
-                onChange={(e: any) => {
-                  setName(e.target.value);
-                  setMissionName(e.target.value);
-                }}
                 large
-                required
+                register={register("name")}
+                aria-invalid={Boolean(errors.name)}
               />
+              <AlertInput>{errors?.name?.message}</AlertInput>
+
               <Field
                 className={styles.field}
                 placeholder="Rewards"
                 icon="profile"
-                value={rewards}
-                onChange={(e: any) => {
-                  setRewards(e.target.value);
-                  SetMissionRewards(e.target.value);
-                }}
                 large
-                required
+                register={register("rewards")}
               />
-              {/* <Field
-                className={styles.field}
-                placeholder="Missions Category"
-                icon="profile"
-                value={category}
-                onChange={(e: any) => setCategory(e.target.value)}
-                large
-                required
-              /> */}
+              <AlertInput>{errors?.rewards?.message}</AlertInput>
+             
               <Field
                 className={styles.field}
                 placeholder="Description"
                 icon="email"
-                type="text"
-                value={desc}
-                onChange={(e: any) => {
-                  setDesc(e.target.value);
-                  setMDesc(e.target.value);
-                }}
-                large
-                required
                 textarea
+                large
+                register={register("desc")}
               />
+              <AlertInput>{errors?.desc?.message}</AlertInput>
+
               <button type="submit">
                 <a className={cn("button-large", styles.button)}>
-                  <span>Continue</span>
+                  <span>Create Mission</span>
                   <Icon name="arrow-right" />
                 </a>
               </button>
-              {/* {error &&
-                error.map((err: any) => (
-                  <span style={{color: 'red', textAlign: 'center', marginTop: '10px'}}>{err.path[0]}: {err.message}</span>
-                ))} */}
+
+              {isSubmitting && (
+                <Alert type="success">Creating mission...</Alert>
+              )}
+
+              {Boolean(Object.keys(errors)?.length) && (
+                <div>
+                  There are errors, please correct them before submitting the
+                  form
+                </div>
+              )}
             </form>
           </>
         }
       >
-        <Preview />
+        <Preview imageUrl={imageUrl} name={name} desc={desc} rewards={rewards} />
       </LayoutCreate>
     </Layout>
-    );
-}
+  );
+};
 
 export default Create;

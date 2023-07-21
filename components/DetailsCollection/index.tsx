@@ -269,7 +269,7 @@ const Details = ({ details }: any) => {
               </>
             }
           >
-            <Preview />
+            <Preview imageUrl="/"/>
           </LayoutCreate>
         </Modal>
       </div>

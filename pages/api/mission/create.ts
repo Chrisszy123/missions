@@ -8,6 +8,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
   if (session) {
     try {
       const data = req.body;
+      console.log(data)
       const mission = await createMission(data);
       return res.json(mission);
     } catch (err: any) {

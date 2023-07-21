@@ -7,9 +7,10 @@ type PreviewProps = {
   imageUrl?: string | null;
   name?: string;
   desc?: string;
+  rewards?: string;
 };
 
-const Preview = ({ imageUrl, name, desc }: PreviewProps) => {
+const Preview = ({ imageUrl, name, desc, rewards }: PreviewProps) => {
   return (
     <div className="w-full">
       <div>
@@ -31,6 +32,7 @@ const Preview = ({ imageUrl, name, desc }: PreviewProps) => {
             />
             <p className="relative text-xl font-extrabold text-white">{name}</p>
             <p className="relative text-sm font-thin text-white">{desc}</p>
+            <p className="relative text-sm font-thin text-white">{rewards}</p>
           </div>
         </div>
       </div>

@@ -20,7 +20,7 @@ const Profile: NextPage<Props> = ({ community }) => {
             {community && community ? (
               <>
                 <Background />
-                <Collection item={community} />
+                <Collection item={community} /> 
               </>
             ) : (
               <div>data loading...</div>

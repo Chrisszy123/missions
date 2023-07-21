@@ -1,17 +1,19 @@
 import type { GetServerSidePropsContext, NextPage } from "next";
-import MissionsPage from "@/templates/Mission/MissionPage";
 import ErrorBoundary from "pages/_error";
 import { getAllMissions } from "models/mission";
-import { getSession } from "next-auth/react";
 import { Mission } from "@prisma/client";
+import Layout from "@/components/Layout";
+import Spotlight from "@/components/Spotlight";
 
 interface Props{
-  missions?: Mission[]
+  missions?: Mission[] | any
 }
 const Discover: NextPage<Props> = ({missions}) => {
   return (
     <ErrorBoundary>
-      <MissionsPage missions={missions}/>
+      <Layout layoutNoOverflow noRegistration>
+            <Spotlight missions={missions}/>
+        </Layout>
     </ErrorBoundary>
   );
 };

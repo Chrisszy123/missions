@@ -43,7 +43,7 @@ const Details = ({ mission }: DetailsProps) => {
         </div>
       </div>
       {toggleSubmit ? (
-        <div className={styles.foot} style={{flexDirection: 'column'}}>
+        <div className={styles.foot} style={{ flexDirection: "column" }}>
           <Field
             className={style.field}
             placeholder="Enter Answer"
@@ -52,15 +52,20 @@ const Details = ({ mission }: DetailsProps) => {
             large
             required
             textarea
-            style='100%'
+            style="100%"
           />
-          <Link href="#">
-            <a
-              className={cn("button-stroke-grey button-medium", styles.button)}
-            >
-              submit
-            </a>
-          </Link>
+          {mission?.state !== "OPEN" ? <div> can only submit open mission</div> : (
+            <Link href="#">
+              <a
+                className={cn(
+                  "button-stroke-grey button-medium",
+                  styles.button
+                )}
+              >
+                submit
+              </a>
+            </Link>
+          )}
         </div>
       ) : null}
     </div>

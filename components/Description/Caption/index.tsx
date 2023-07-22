@@ -159,7 +159,7 @@ const Caption = ({ title, date, data }: CaptionProps) => {
                 </>
               }
             >
-              <Preview />
+              <Preview imageUrl="/"/>
             </LayoutCreate>
           </ReactModal>
           <a

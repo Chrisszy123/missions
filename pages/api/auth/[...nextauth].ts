@@ -80,6 +80,7 @@ export default NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
+        console.log(token.user)
         token.user = user;
       }
       return token;

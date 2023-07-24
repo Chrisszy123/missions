@@ -54,7 +54,9 @@ const Details = ({ mission }: DetailsProps) => {
             textarea
             style="100%"
           />
-          {mission?.state !== "OPEN" ? <div> can only submit open mission</div> : (
+          {mission?.state !== "OPEN" ? (
+            <div> can only submit open mission</div>
+          ) : (
             <Link href="#">
               <a
                 className={cn(

@@ -40,6 +40,16 @@ export const updateCommunity = async (communityData: any) => {
         throw new Error('axios patch community error' + err)
     }
 }
+export const deleteCommunity = async (communityId: string) => {
+    try {
+        await axios.put('/api/community/delete', {
+            communityId
+        })
+        return { status: true, message: "community successfully deleted" }
+    } catch (err: any) {
+        throw new Error('axios delete community error' + err)
+    }
+}
 
 // missions
 export const getMissions = async () => {

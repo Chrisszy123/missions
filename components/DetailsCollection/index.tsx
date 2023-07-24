@@ -16,7 +16,13 @@ import { WalletContext } from "context/WalletContext";
 import Links from "./Links";
 import Tags from "./Tags";
 
-import {updateCommunity, getOneUser, joinCommunity, leaveCommunity } from "@/utils/axios";
+import {
+  updateCommunity,
+  getOneUser,
+  joinCommunity,
+  leaveCommunity,
+  deleteCommunity
+} from "@/utils/axios";
 
 type DetailsType = {
   name: string;
@@ -33,6 +39,7 @@ type DetailsProps = {
 const Details = ({ details }: any) => {
   const creator = details?.ownerId;
   const [modalIsOpen, setIsOpen] = useState(false);
+  const [deletemModalIsOpen, setDeleteModal] = useState(false);
   const [name, setName] = useState<string>("");
   const [tags, setTags] = useState<any>([]);
   const [link, setLink] = useState<string>("");
@@ -52,15 +59,27 @@ const Details = ({ details }: any) => {
   //check if user is already a memeber
   useMemo(() => {
     details?.users.filter((e: any) => {
-      if(e?.id === userId){
-        setIsMember(true)
+      if (e?.id === userId) {
+        setIsMember(true);
       }
-    })
-  }, [userId])
+    });
+  }, [userId]);
   getOneUser(walletAddress).then((e: any) => {
     setUserId(e?.message?.data?.id);
   });
-
+  const customStyles = {
+    content: {
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-50%",
+      transform: "translate(-50%, -50%)",
+    },
+    overlay: {
+      zIndex: "100",
+    },
+  };
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     try {
@@ -83,41 +102,51 @@ const Details = ({ details }: any) => {
       throw new Error("errors submitting community data" + err);
     }
   };
-  const handleJoin = async () => { 
-    try{
+  const handleJoin = async () => {
+    try {
       const data = {
         id: communityId,
-        userId
+        userId,
+      };
+      const join = await joinCommunity(data);
+      if (join.status === true) {
+        router.reload();
       }
-      const join = await joinCommunity(data)
-      if(join.status === true){
-        router.reload()
-      }
-    }catch(err: any){
-      throw new Error("error joining community"+ err )
+    } catch (err: any) {
+      throw new Error("error joining community" + err);
     }
-   
-  }
-  const handleLeave = async () => { 
-    try{ 
+  };
+  const handleLeave = async () => {
+    try {
       const data = {
         id: communityId,
-        userId
+        userId,
+      };
+      const leave = await leaveCommunity(data);
+      if (leave.status === true) {
+        router.reload();
       }
-      const leave = await leaveCommunity(data)
-      if(leave.status === true){
-        router.reload()
-      }
-    }catch(err: any){
-      throw new Error("error leaving community"+ err )
+    } catch (err: any) {
+      throw new Error("error leaving community" + err);
     }
-   
+  };
+  const handleDelete = async() => {
+    const deletedCommunity = await deleteCommunity(communityId as string)
+    if(deletedCommunity.status === true){
+      setDeleteModal(false)
+    }
   }
   const openModal = () => {
     setIsOpen(true);
   };
   const closeModal = () => {
     setIsOpen(false);
+  };
+  const openDeleteModal = () => {
+    setDeleteModal(true);
+  };
+  const closeDeleteModal = () => {
+    setDeleteModal(false);
   };
   return (
     <div className={styles.details}>
@@ -139,35 +168,54 @@ const Details = ({ details }: any) => {
           {creator !== userId ? (
             <></>
           ) : (
-            <button
-              className={cn("button-stroke-grey button-medium", styles.button)}
-              onClick={openModal}
-              style={{
-                paddingLeft: "0.5rem",
-                paddingRight: "0.6rem",
-                marginLeft: "0px",
-              }}
-            >
-              <Icon name="edit" />
-            </button>
-          )}
-          {connected ? (
             <>
-              {isMember ? (
-                <button
+              <button
                 className={cn(
                   "button-stroke-grey button-medium",
                   styles.button
                 )}
-                onClick={handleLeave}
+                onClick={openDeleteModal}
                 style={{
                   paddingLeft: "0.5rem",
                   paddingRight: "0.6rem",
                   marginLeft: "0px",
                 }}
               >
-                <Icon name="logout" />
+                <Icon name="delete" />
               </button>
+              <button
+                className={cn(
+                  "button-stroke-grey button-medium",
+                  styles.button
+                )}
+                onClick={openModal}
+                style={{
+                  paddingLeft: "0.5rem",
+                  paddingRight: "0.6rem",
+                  marginLeft: "2px",
+                }}
+              >
+                <Icon name="edit" />
+              </button>
+            </>
+          )}
+          {connected ? (
+            <>
+              {isMember ? (
+                <button
+                  className={cn(
+                    "button-stroke-grey button-medium",
+                    styles.button
+                  )}
+                  onClick={handleLeave}
+                  style={{
+                    paddingLeft: "0.5rem",
+                    paddingRight: "0.6rem",
+                    marginLeft: "2px",
+                  }}
+                >
+                  <Icon name="logout" />
+                </button>
               ) : (
                 <button
                   className={cn(
@@ -187,6 +235,30 @@ const Details = ({ details }: any) => {
             </>
           ) : null}
         </div>
+        <Modal
+          isOpen={deletemModalIsOpen}
+          onRequestClose={closeDeleteModal}
+          contentLabel="Example Modal"
+          style={customStyles}
+        >
+          <div className="flex flex-col justify-center items-center h-[200px] w-[300px]">
+            <div>confirm delete </div>
+            <div className="flex justify-center items-center gap-2">
+              <button
+                onClick={closeDeleteModal}
+                className="p-4 w-[100px] bg-cyan-500 rounded-lg"
+              >
+                Close
+              </button>
+              <button
+                onClick={handleDelete}
+                className="p-4 w-[100px] bg-red-600 rounded-lg"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </Modal>
         <Modal
           isOpen={modalIsOpen}
           onRequestClose={closeModal}
@@ -269,7 +341,7 @@ const Details = ({ details }: any) => {
               </>
             }
           >
-            <Preview imageUrl="/"/>
+            <Preview imageUrl="/" />
           </LayoutCreate>
         </Modal>
       </div>

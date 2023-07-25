@@ -16,11 +16,12 @@ export const createMission = async (data: MissionData) => {
       throw new Error("You cannot create a mission outside a community");
     if (!missionData.userId)
       throw new Error("Not Authenticated to create mission");
-    await prisma.mission.create({
+    const mission = await prisma.mission.create({
       data: {
         name: missionData.name,
         desc: missionData.desc,
         rewards: missionData.rewards,
+        image: missionData.image,
         community: {
           connect: {
             id: missionData.communityId,
@@ -36,6 +37,7 @@ export const createMission = async (data: MissionData) => {
         community: true,
       },
     });
+    return { status: true, message: mission };
   } catch (err: any) {
     throw new Error("error creating mission" + err);
   }

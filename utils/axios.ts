@@ -60,7 +60,7 @@ export const createMission = async (data: any) => {
     try {
         const mission = await axios.post('/api/mission/create', data)
         if (!mission) throw new Error('error')
-        return { status: true, message: mission }
+        return mission.data
     } catch (err: any) {
         throw new Error("error creating mission" + err)
     }

@@ -5,32 +5,33 @@ import Image from "@/components/Image";
 import Users from "@/components/Users";
 
 type CardProps = {
-    className?: string;
-    item: any;
+  className?: string;
+  item: any;
 };
 
-const Card = ({ className, item }: CardProps) => (
+const Card = ({ className, item }: CardProps) => {
+  return (
     <Link href={`communities/${item?.communityId}/missions/${item?.id}`}>
-        <a className={cn(styles.card, className)}>
-            <div className={styles.preview}>
-                <Image
-                    src={item ? item?.community?.image : "/images/projects/image-1.jpg"}
-                    layout="fill"
-                    objectFit="cover"
-                    alt="missionlogo"
-                />
+      <a className={cn(styles.card, className)}>
+        <div className={styles.preview}>
+          <Image
+            src={item?.image ? item?.image : "/images/projects/image-1.jpg"}
+            layout="fill"
+            objectFit="cover"
+            alt="missionlogo"
+          />
+        </div>
+        <div className={styles.line}>
+          <div className={styles.details}>
+            <div className={styles.title}>{item.name}</div>
+            <div className={styles.price}>
+              <span>Enter</span> {item.rewards}
             </div>
-            <div className={styles.line}>
-                <div className={styles.details}>
-                    <div className={styles.title}>{item.name}</div>
-                    <div className={styles.price}>
-                        <span>Enter</span> {item.rewards}
-                    </div>
-                </div>
-                {/* <Users className={styles.users} items={item.users} /> */}
-            </div>
-        </a>
+          </div>
+          {/* <Users className={styles.users} items={item.users} /> */}
+        </div>
+      </a>
     </Link>
-);
-
+  );
+};
 export default Card;

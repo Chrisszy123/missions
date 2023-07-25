@@ -162,20 +162,18 @@ const Create: NextPage = () => {
   };
 
   const onSubmit = async (mission: MissionType) => {
-    //const uploadedImageUrl = await uploadFile(mission.image[0]);
+    const uploadedImageUrl = await uploadFile(mission.image[0]);
 
     const data = {
       name: mission.name,
       rewards: mission.rewards,
-      //image: uploadedImageUrl,
+      image: uploadedImageUrl,
       desc: mission.desc,
-      userId: sessionData.user.id,
+      userId: user?.message?.data.id,
       communityId: communityId,
     };
 
     const createdMission = await createMission(data);
-
-    console.log("MISSIOn", createdMission);
 
     // use data to redirect
     if (createdMission?.status === true) {
@@ -235,7 +233,7 @@ const Create: NextPage = () => {
               onSubmit={handleSubmit(onSubmit)}
               noValidate
             >
-              {/* <label>
+              <label>
                 <div className="w-full h-40 flex flex-col gap-2 items-center justify-center border-4 border-dashed border-gray-300 rounded-xl cursor-pointer hover:bg-gray-200 transition-all">
                   <PhotoIcon className="h-12 text-gray-400" />
                   Select image
@@ -249,7 +247,7 @@ const Create: NextPage = () => {
                   register={register("image")}
                 />
                 <AlertInput>{errors?.image?.message?.toString()}</AlertInput>
-              </label> */}
+              </label>
 
               <Field
                 className={styles.field}

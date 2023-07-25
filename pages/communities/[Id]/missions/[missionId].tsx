@@ -45,7 +45,7 @@ const NFTDetail: NextPage<Props> = ({ mission }) => {
         {mission ? (
           <>
             <Description
-              image={mission ? mission?.community?.image : "/images/robot.jpg"}
+              image={mission?.image ? mission?.image : "/images/robot.jpg"}
               title={mission.name}
               date={`created at ${mission.createdAt.slice(0, 10)}`}
               statistics={statistics}

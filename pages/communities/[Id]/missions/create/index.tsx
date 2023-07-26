@@ -8,14 +8,14 @@ import Preview from "@/components/Preview";
 
 import useFilePreview from "@/hooks/useFilePreview";
 
-import { createMission, getUsers } from "@/utils/axios";
+import { createMission } from "@/utils/axios";
 import { storage } from "@/utils/firebase";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import cn from "classnames";
 import { AuthContext } from "context/AuthContext";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import type { NextPage } from "next";
+import type { GetServerSidePropsContext, NextPage } from "next";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useContext, useState, useEffect } from "react";
@@ -26,6 +26,7 @@ import styles from "./CreateStep1Page.module.sass";
 
 import { PhotoIcon } from "@heroicons/react/24/solid";
 import { useRouter } from "next/router";
+import { getOneCommunity } from "models/community";
 
 const MAX_FILE_SIZE = 500000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -77,15 +78,10 @@ const MissionSchema = z
 
 type MissionType = z.infer<typeof MissionSchema>;
 
-const Create: NextPage = () => {
+const Create = ({ ownerId }: any) => {
   const { status, data: sessionData }: any = useSession();
   const [createdMission, setCreatedMission] = useState<any>(undefined);
-  const [dataArray, setDataArray] = useState<string[]>([]);
-  const [inputData, setInputData] = useState<string>("");
   const [communityId, setCommunityId] = useState<string>("");
-
-  console.log("SESSION DATA", sessionData);
-  console.log("SESSION STATUS", status);
 
   const router = useRouter();
   const slug = router.asPath;
@@ -102,8 +98,8 @@ const Create: NextPage = () => {
     }
   };
   useEffect(() => {
-    extractSubstring()
-  }, [slug])
+    extractSubstring();
+  }, [slug]);
 
   const {
     register,
@@ -139,7 +135,7 @@ const Create: NextPage = () => {
 
   const { imageUrl } = useFilePreview(imageWatch);
   const { user }: any = useContext(AuthContext);
-
+  const userId = user?.message?.data?.id;
   if (status === "unauthenticated" || sessionData === null) {
     return (
       <Layout layoutNoOverflow footerHide noRegistration>
@@ -267,7 +263,7 @@ const Create: NextPage = () => {
                 register={register("rewards")}
               />
               <AlertInput>{errors?.rewards?.message}</AlertInput>
-             
+
               <Field
                 className={styles.field}
                 placeholder="Description"
@@ -278,12 +274,16 @@ const Create: NextPage = () => {
               />
               <AlertInput>{errors?.desc?.message}</AlertInput>
 
-              <button type="submit">
-                <a className={cn("button-large", styles.button)}>
-                  <span>Create Mission</span>
-                  <Icon name="arrow-right" />
-                </a>
-              </button>
+              {userId === ownerId ? (
+                <button type="submit">
+                  <a className={cn("button-large", styles.button)}>
+                    <span>Create Mission</span>
+                    <Icon name="arrow-right" />
+                  </a>
+                </button>
+              ) : (
+                <div>only owners can create missions</div>
+              )}
 
               {isSubmitting && (
                 <Alert type="success">Creating mission...</Alert>
@@ -299,10 +299,26 @@ const Create: NextPage = () => {
           </>
         }
       >
-        <Preview imageUrl={imageUrl} name={name} desc={desc} rewards={rewards} />
+        <Preview
+          imageUrl={imageUrl}
+          name={name}
+          desc={desc}
+          rewards={rewards}
+        />
       </LayoutCreate>
     </Layout>
   );
 };
 
 export default Create;
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const communityId = context.query.Id;
+  const community: any = await getOneCommunity(communityId);
+  const ownerId = community?.ownerId;
+  return {
+    props: {
+      ownerId,
+    },
+  };
+}

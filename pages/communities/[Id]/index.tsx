@@ -5,18 +5,23 @@ import { Community } from "@prisma/client";
 import Layout from "@/components/Layout";
 import Background from "@/components/Background";
 import Collection from "@/components/CommunityCollection";
+import { useContext } from "react";
+import { AuthContext } from "context/AuthContext";
 
 interface Props {
-  community?: Community[];
+  community?: Community[] | any;
 }
 const Profile: NextPage<Props> = ({ community }) => {
+  const {user}: any = useContext(AuthContext)
+  const userId = user?.message?.data?.id
+  const ownerId = community?.ownerId
   return (
     <>
       {community?.length === 0 ? (
         <div>Community data Loading...</div>
       ) : (
         <ErrorBoundary>
-          <Layout layoutNoOverflow footerHide noRegistration isCommunity={true}>
+          <Layout layoutNoOverflow footerHide noRegistration isCommunity={userId === ownerId ?  true : false}>
             {community && community ? (
               <>
                 <Background />

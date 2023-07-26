@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import styles from "./Collection.module.sass";
 import Icon from "@/components/Icon";
@@ -31,9 +31,10 @@ const detailsList = [
 
 type ProfileProps = {
   item: any;
+  setDeleted?:   Dispatch<SetStateAction<boolean>> | any;
 };
 
-const Profile = ({ item }: ProfileProps) => {
+const Profile = ({ item , setDeleted}: ProfileProps) => {
   const [sorting, setSorting] = useState<string>("nfts");
   const [theme, setTheme] = useState<boolean>(false);
   const tabs = [
@@ -67,7 +68,7 @@ const Profile = ({ item }: ProfileProps) => {
             alt="Avatar"
           />
         </div>
-        <DetailsCollection details={item} />
+        <DetailsCollection details={item} setDeleted={setDeleted}/>
       </div>
       <div className={styles.col}>
         <List

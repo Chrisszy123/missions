@@ -2,11 +2,12 @@ import cn from "classnames";
 import styles from "./DetailsCollection.module.sass";
 import styled from "@/components/Description/Description.module.sass";
 import sty from "@/components/Description/Description.module.sass";
+import s from "@/components/Header/Menu/Menu.module.sass"
 import Statistics from "./Statistics";
 import style from "@/templates/Create/CreatePage/CreateStep1Page.module.sass";
 import Icon from "@/components/Icon";
 import { useRouter } from "next/router";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from "react";
 import Modal from "react-modal";
 import Preview from "@/components/Preview";
 import LayoutCreate from "@/components/LayoutCreate";
@@ -23,6 +24,9 @@ import {
   leaveCommunity,
   deleteCommunity
 } from "@/utils/axios";
+import Layout from "../Layout";
+import Congrats from "../Congrats";
+import Link from "next/link";
 
 type DetailsType = {
   name: string;
@@ -33,10 +37,11 @@ type DetailsType = {
 };
 
 type DetailsProps = {
-  details: DetailsType[];
+  details: DetailsType[] | any;
+  setDeleted?:  Dispatch<SetStateAction<boolean>> | any
 };
 
-const Details = ({ details }: any) => {
+const Details = ({ details, setDeleted }: DetailsProps) => {
   const creator = details?.ownerId;
   const [modalIsOpen, setIsOpen] = useState(false);
   const [deletemModalIsOpen, setDeleteModal] = useState(false);
@@ -74,7 +79,9 @@ const Details = ({ details }: any) => {
       right: "auto",
       bottom: "auto",
       marginRight: "-50%",
+      backgroundColor: "rgb(168 85 247)",
       transform: "translate(-50%, -50%)",
+      borderRadius: "10px"
     },
     overlay: {
       zIndex: "100",
@@ -134,6 +141,7 @@ const Details = ({ details }: any) => {
     const deletedCommunity = await deleteCommunity(communityId as string)
     if(deletedCommunity.status === true){
       setDeleteModal(false)
+      setDeleted(true)
     }
   }
   const openModal = () => {
@@ -241,20 +249,33 @@ const Details = ({ details }: any) => {
           contentLabel="Example Modal"
           style={customStyles}
         >
-          <div className="flex flex-col justify-center items-center h-[200px] w-[300px]">
-            <div>confirm delete </div>
+          <div className="flex flex-col justify-center items-center h-96 w-96 rounded-lg capitalize gap-4">
+            <div className={cn("h2", styles.user, "text-[30px]")}>Delete <span className="text-white">{details?.name}</span> </div>
             <div className="flex justify-center items-center gap-2">
               <button
                 onClick={closeDeleteModal}
-                className="p-4 w-[100px] bg-cyan-500 rounded-lg"
+                className="p-4 w-[150px] bg-white rounded-lg border-slate-600 hover:text-white hover:bg-neutral-300"
               >
-                Close
+                <a
+                 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                   Close
+                </a>
+               
               </button>
               <button
                 onClick={handleDelete}
-                className="p-4 w-[100px] bg-red-600 rounded-lg"
+                className="p-4 w-[150px] bg-black text-white rounded-lg hover:text-white hover:bg-neutral-500"
               >
-                Delete
+                <a
+                  
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                   Delete
+                </a>
               </button>
             </div>
           </div>

@@ -5,16 +5,46 @@ import { Community } from "@prisma/client";
 import Layout from "@/components/Layout";
 import Background from "@/components/Background";
 import Collection from "@/components/CommunityCollection";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "context/AuthContext";
+import Congrats from "@/components/Congrats";
+import Link from "next/link";
+import styles from "@/components/DetailsCollection/DetailsCollection.module.sass";
+import cn from "classnames";
 
 interface Props {
   community?: Community[] | any;
 }
 const Profile: NextPage<Props> = ({ community }) => {
   const {user}: any = useContext(AuthContext)
+  const [deleted, setDeleted] = useState (false);
   const userId = user?.message?.data?.id
   const ownerId = community?.ownerId
+  if (deleted) {
+    return (
+      <Layout layoutNoOverflow footerHide noRegistration>
+        <Congrats
+          title="Success"
+          content={
+            <>
+              You&apos;ve now deleted your community! {community?.name}<br></br>click below to go back to your dashboard
+            </>
+          }
+          links={
+            <>
+              <Link
+                href={`/communities`}
+              >
+                <a className={cn("button-large", styles.button)}>
+                  View Communities
+                </a>
+              </Link>
+            </>
+          }
+        />
+      </Layout>
+    );
+  }
   return (
     <>
       {community?.length === 0 ? (
@@ -25,7 +55,7 @@ const Profile: NextPage<Props> = ({ community }) => {
             {community && community ? (
               <>
                 <Background />
-                <Collection item={community} /> 
+                <Collection item={community} setDeleted={setDeleted}/> 
               </>
             ) : (
               <div>data loading...</div>

@@ -153,8 +153,8 @@ const Create: NextPage = () => {
       link: community.link,
       image: uploadedImageUrl,
       desc: community.desc,
-      userId: sessionData.user.id,
-      ownerId: sessionData.user.id,
+      userId:  user?.message?.data.id,
+      ownerId:  user?.message?.data.id,
     };
 
     const comm = await createCommunity(communityData);
@@ -203,7 +203,7 @@ const Create: NextPage = () => {
               <div className={cn("h1", styles.title)}>
                 Create a <br></br>Community.
               </div>
-              <Link href="">
+              <Link href="/communities">
                 <a className={cn("button-circle", styles.back)}>
                   <Icon name="arrow-left" />
                 </a>

@@ -8,16 +8,16 @@ type CongratsProps = {
   title: string;
   content: any;
   links?: any;
+  onClick?: any;
 };
 
-const Congrats = ({ title, content, links }: CongratsProps) => (
+const Congrats = ({ title, content, links, onClick }: CongratsProps) => (
   <div className={styles.congrats}>
     <div className={styles.wrapper}>
-      <Link href="/">
-        <a className={cn("button-circle", styles.close)}>
-          <Icon name="close" />
-        </a>
-      </Link>
+      <a className={cn("button-circle", styles.close)} onClick={onClick}>
+        <Icon name="close" />
+      </a>
+
       <div className={styles.inner}>
         <div className={styles.preview}>
           <div className={styles.image}>
@@ -53,10 +53,7 @@ const Congrats = ({ title, content, links }: CongratsProps) => (
         <div className={styles.details}>
           <div className={cn("h1", styles.title)}>{title}</div>
           <div className={styles.content}>{content}</div>
-          <div className={styles.btns}>
-            {links}
-            
-          </div>
+          <div className={styles.btns}>{links}</div>
         </div>
       </div>
     </div>

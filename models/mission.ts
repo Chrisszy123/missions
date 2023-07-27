@@ -54,9 +54,14 @@ export const updateOneMission = async (data: MissionData) => {
     //   throw new Error("You cannot edit this mission");
     const updatedMission = await prisma.mission.update({
       where: { id: missionData.id },
-      data: missionData,
+      data: {
+        name: missionData.name,
+        desc: missionData.desc,
+        rewards: missionData.rewards,
+        image: missionData.image,
+      },
     });
-    return updatedMission;
+    return { status: true, message: updatedMission };
   } catch (err: any) {
     return { status: false, message: "error updating mission" };
   }

@@ -32,10 +32,10 @@ export const createCommunity = async (communityData: any) => {
 export const updateCommunity = async (communityData: any) => {
     try {
 
-        await axios.put('/api/community/edit', {
+       const response =  await axios.put('/api/community/edit', {
             communityData
         })
-        return { status: true, message: "community successfully updated" }
+        return response.data
     } catch (err: any) {
         throw new Error('axios patch community error' + err)
     }
@@ -68,10 +68,10 @@ export const createMission = async (data: any) => {
 export const updateMission = async (missionData: any) => {
     try {
 
-        await axios.put('/api/mission/edit', {
+        const response = await axios.put('/api/mission/edit', {
             missionData
         })
-        return { status: true, message: "Mission successfully updated" }
+        return response.data
     } catch (err: any) {
         throw new Error('axios patch mission error' + err)
     }

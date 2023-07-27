@@ -78,9 +78,15 @@ export const updateCommunity = async (data: CommunityData) => {
         name: communityData.name,
         desc: communityData.desc,
         link: communityData.link,
+        image: communityData.image,
+        tags: {
+          create: {
+            name: communityData.tags
+          }
+        }
       },
     });
-    return updatedCommunity;
+    return { status: true, message: updatedCommunity };
   } catch (err: any) {
     throw new Error("error updating community" + err);
   }

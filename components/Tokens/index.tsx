@@ -54,18 +54,16 @@ const Tokens = ({
             </span>
             <div className="flex justify-center items-center gap-2">
               <Link href={`/communities/${communityId}/missions/create`}>
-                <a
+                <div
                   className={cn(
                     "button-white",
                     styles.button,
                     "m-0 cursor-pointer"
                   )}
-                  target="_blank"
-                  rel="noopener noreferrer"
                 >
                   <span>Create Mission</span>
                   <Icon name="arrow-right" />
-                </a>
+                </div>
               </Link>
             </div>
           </>

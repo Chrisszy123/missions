@@ -6,56 +6,157 @@ import style from "@/templates/Create/CreatePage/CreateStep1Page.module.sass";
 import ReactModal from "react-modal";
 import LayoutCreate from "@/components/LayoutCreate";
 import Field from "@/components/Field";
+
+import useFilePreview from "@/hooks/useFilePreview";
 import { useContext, useState } from "react";
 import { useRouter } from "next/router";
 import { AuthContext } from "context/AuthContext";
-import { getUsers, updateMission } from "@/utils/axios";
+import { updateMission } from "@/utils/axios";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { storage } from "@/utils/firebase";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
+import { useForm, useWatch } from "react-hook-form";
+import { v4 } from "uuid";
+import { z } from "zod";
+
+import { PhotoIcon } from "@heroicons/react/24/solid"
+import Congrats from "@/components/Congrats";
+import Layout from "@/components/Layout";
 
 type CaptionProps = {
   title?: string;
   date?: string;
   data?: any;
 };
+const MAX_FILE_SIZE = 500000;
+const ACCEPTED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+];
+
+type AlertType = "error" | "warning" | "success";
+
+// Global Alert div.
+const Alert = ({ children, type }: { children: string; type: AlertType }) => {
+  const backgroundColor =
+    type === "error" ? "tomato" : type === "warning" ? "orange" : "powderBlue";
+
+  return <div style={{ padding: "0 10", backgroundColor , marginTop: "2rem"}}>{children}</div>;
+};
+
+// Use role="alert" to announce the error message.
+const AlertInput = ({ children }: { children: React.ReactNode }) =>
+  Boolean(children) ? (
+    <span role="alert" style={{ color: "tomato" }}>
+      {children}
+    </span>
+  ) : null;
+
+const MissionSchema = z
+  .object({
+    desc: z.string().min(5),
+    name: z.string().min(5),
+    rewards: z.string(),
+    image: z
+      .any()
+      .refine((files) => files?.length == 1, "Image is required.")
+      .refine(
+        (files) => files?.[0]?.size <= MAX_FILE_SIZE,
+        `Max file size is 5MB.`
+      )
+      .refine(
+        (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
+        ".jpg, .jpeg, .png and .webp files are accepted."
+      ),
+    // tags: z.string().array(),
+  })
+  .partial({
+    image: true,
+  });
+
+type MissionType = z.infer<typeof MissionSchema>;
 
 const Caption = ({ title, date, data }: CaptionProps) => {
   const [modalIsOpen, setIsOpen] = useState(false);
-  const [name, setName] = useState<string>("");
-  const [rewards, setRewards] = useState<string>("");
-  const [category, setCategory] = useState<string>("");
-  const [desc, setDesc] = useState<string>("");
-  const [error, setError] = useState<any>(false);
 
+  const [editedMission, setEditedMission] = useState<any>(undefined);
   const owner = data?.community?.ownerId;
+  const router = useRouter();
+  const communityId = router.query.Id;
+  const missionId = router.query.missionId;
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors, isSubmitting, isSubmitSuccessful },
+  } = useForm<MissionType>({
+    resolver: zodResolver(MissionSchema),
+  });
 
+  const imageWatch = useWatch({
+    control,
+    name: "image",
+    defaultValue: null,
+  });
+
+  const name = useWatch({
+    control,
+    name: "name",
+    defaultValue: "",
+  });
+
+  const desc = useWatch({
+    control,
+    name: "desc",
+    defaultValue: "",
+  });
+  const rewards = useWatch({
+    control,
+    name: "rewards",
+    defaultValue: "",
+  });
+
+  const { imageUrl } = useFilePreview(imageWatch);
   const { user }: any = useContext(AuthContext);
   const userId = user?.message?.data?.id;
-  const router = useRouter();
-  const missionId = router.query.MissionId;
-  const communityId = data?.community?.ownerId;
-
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
+  const uploadFile = async (img: any) => {
     try {
-      const missionData = {
-        name: name,
-        rewards: rewards,
-        category: category,
-        desc: desc,
-        userId: userId,
-        id: missionId,
-        communityId: communityId,
-      };
-      const mission = await updateMission(missionData);
-      // use data to redirect
-      if (mission?.status === true) {
-        setError(true);
-      } else {
-        router.push(`/missions/${missionId}`);
-      }
-    } catch (err: any) {
-      throw new Error("errors submitting mission data" + err);
+      if (img == null) throw new Error("No file was uploaded.");
+      const imageRef = ref(storage, `missions/${img.name + v4()}`);
+
+      const snapshot = await uploadBytes(imageRef, img);
+      const url = await getDownloadURL(snapshot.ref);
+      return url;
+    } catch (error) {
+      console.error(error);
     }
   };
+
+  const onSubmit = async (mission: MissionType) => {
+    const uploadedImageUrl = await uploadFile(mission.image[0]);
+
+    const data = {
+      id: missionId,
+      name: mission.name,
+      rewards: mission.rewards,
+      image: uploadedImageUrl,
+      desc: mission.desc,
+      userId: user?.message?.data.id,
+      communityId: communityId,
+    };
+
+    const createdMission = await updateMission(data);
+
+    // use data to redirect
+    if (createdMission?.status === true) {
+      setEditedMission(createdMission.message);
+      router.reload()
+    }
+  };
+
   const openModal = () => {
     setIsOpen(true);
   };
@@ -63,7 +164,7 @@ const Caption = ({ title, date, data }: CaptionProps) => {
     setIsOpen(false);
   };
   return (
-    <div className={styles.caption} style={{marginBottom: "4rem"}}>
+    <div className={styles.caption} style={{ marginBottom: "4rem" }}>
       <div className={styles.line}>
         <div className={cn("h2", styles.title)}>{title}</div>
         <div className={styles.actions}>
@@ -92,75 +193,121 @@ const Caption = ({ title, date, data }: CaptionProps) => {
                 <Icon name="arrow-left" />
               </a>
             </button>
-            <LayoutCreate
+            {editedMission ? (
+              <Layout layoutNoOverflow footerHide noRegistration>
+              <Congrats
+                title="Success"
+                content={
+                  <>
+                    You&apos;ve now edited your mission! <br></br> please wait a moment to see the updated mission
+                  </>
+                }
+                // links={
+                //   <>
+                //     <Link
+                //       href={`/communities/${communityId}/missions/${editedMission.id}`}
+                //     >
+                //       <a className={cn("button-large", styles.button)}>
+                //         View Mission
+                //       </a>
+                //     </Link>
+                //   </>
+                // }
+              />
+            </Layout>
+            ): (
+              <LayoutCreate
               left={
                 <>
-                  <div className={style.head}>
-                    <div className={cn("h1", style.title)}>
-                      Edit <br></br>Mission.
+                  <div className={styles.head}>
+                    <div className={cn("h1", styles.title)}>
+                      Edit  <br></br>Mission.
                     </div>
+                    
                   </div>
-                  <div className={style.info}>Edit Mission</div>
+                  <div className={styles.info} style={{marginBottom: "2rem"}}>
+                    Edit Mission on o1Node
+                  </div>
                   <form
-                    className={style.form}
-                    action=""
-                    onSubmit={(e) => handleSubmit(e)}
+                    className={styles.form}
+                    onSubmit={handleSubmit(onSubmit)}
+                    noValidate
                   >
+                    <label>
+                      <div className="w-full h-40 flex flex-col gap-2 items-center justify-center border-4 border-dashed border-gray-300 rounded-xl cursor-pointer hover:bg-gray-200 transition-all">
+                        <PhotoIcon className="h-12 text-gray-400" />
+                        Select image
+                      </div>
+                      <Field
+                        className={(styles.field, "hidden")}
+                        type="file"
+                        icon="profile"
+                        large
+                        required
+                        register={register("image")}
+                      />
+                      <AlertInput>{errors?.image?.message?.toString()}</AlertInput>
+                    </label>
+      
                     <Field
-                      className={style.field}
-                      placeholder="Mission name"
+                      className={styles.field}
+                      placeholder="Name"
                       icon="profile"
-                      value={name}
-                      onChange={(e: any) => setName(e.target.value)}
                       large
-                      required
+                      register={register("name")}
+                      aria-invalid={Boolean(errors.name)}
                     />
+                    <AlertInput>{errors?.name?.message}</AlertInput>
+      
                     <Field
-                      className={style.field}
-                      placeholder="Mission Category"
+                      className={styles.field}
+                      placeholder="Rewards"
                       icon="profile"
-                      value={category}
-                      onChange={(e: any) => setCategory(e.target.value)}
                       large
-                      required
+                      register={register("rewards")}
                     />
+                    <AlertInput>{errors?.rewards?.message}</AlertInput>
+      
                     <Field
-                      className={style.field}
-                      placeholder="Mission Rewards"
-                      icon="profile"
-                      value={rewards}
-                      onChange={(e: any) => setRewards(e.target.value)}
-                      large
-                      required
-                    />
-                    <Field
-                      className={style.field}
-                      placeholder="Mission Desc"
+                      className={styles.field}
+                      placeholder="Description"
                       icon="email"
-                      type="text"
-                      value={desc}
-                      onChange={(e: any) => setDesc(e.target.value)}
+                      textarea
                       large
-                      required
+                      register={register("desc")}
                     />
-                    <button type="submit">
-                      <a className={cn("button-large", style.button)}>
-                        <span>Continue</span>
-                        <Icon name="arrow-right" />
-                      </a>
-                    </button>
-
-                    {error ? (
-                      <div style={{ color: "red" }}>Error updating mission</div>
-                    ) : (
-                      ""
+                    <AlertInput>{errors?.desc?.message}</AlertInput>
+      
+                    <button type="submit" className="mt-4 w-full">
+                        <a className={cn("button-large", styles.button)}>
+                          <span>Edit Mission</span>
+                          <Icon name="arrow-right" />
+                        </a>
+                      </button>
+      
+                    {isSubmitting && (
+                      <Alert type="success">Updating mission...</Alert>
+                    )}
+      
+                    {Boolean(Object.keys(errors)?.length) && (
+                      <div>
+                        There are errors, please correct them before submitting the
+                        form
+                      </div>
                     )}
                   </form>
                 </>
               }
             >
-              <Preview imageUrl="/"/>
+              <Preview
+                imageUrl={imageUrl}
+                name={name}
+                desc={desc}
+                rewards={rewards}
+              />
             </LayoutCreate>
+            )}
+          
           </ReactModal>
           <a
             className={cn("button-circle button-medium", styles.button)}

@@ -136,6 +136,7 @@ const Create = ({ ownerId }: any) => {
   const { imageUrl } = useFilePreview(imageWatch);
   const { user }: any = useContext(AuthContext);
   const userId = user?.message?.data?.id;
+  
   if (status === "unauthenticated" || sessionData === null) {
     return (
       <Layout layoutNoOverflow footerHide noRegistration>

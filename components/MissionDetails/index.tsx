@@ -4,14 +4,12 @@ import styles from "./Details.module.sass";
 import Image from "@/components/Image";
 import Field from "@/components/Field";
 import style from "./CreateStep1Page.module.sass";
-import { useState } from "react";
 
 type DetailsProps = {
   mission: any;
 };
 
 const Details = ({ mission }: DetailsProps) => {
-  const [toggleSubmit, setToggleSubmit] = useState(false);
   return (
     <div className={styles.details}>
       <div className={styles.row}>

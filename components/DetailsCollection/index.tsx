@@ -23,6 +23,7 @@ import { AuthContext } from "context/AuthContext";
 import { WalletContext } from "context/WalletContext";
 import Links from "./Links";
 import Tags from "./Tags";
+import useFilePreview from "@/hooks/useFilePreview";
 
 import {
   updateCommunity,
@@ -34,6 +35,14 @@ import {
 import Layout from "../Layout";
 import Congrats from "../Congrats";
 import Link from "next/link";
+import { useForm, useWatch } from "react-hook-form";
+import { v4 } from "uuid";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { storage } from "@/utils/firebase";
+import { PhotoIcon } from "@heroicons/react/24/solid";
+import Spinner from "../Spinner";
 
 type DetailsType = {
   name: string;
@@ -47,18 +56,60 @@ type DetailsProps = {
   details: DetailsType[] | any;
   setDeleted?: Dispatch<SetStateAction<boolean>> | any;
 };
+const MAX_FILE_SIZE = 500000;
+const ACCEPTED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+];
+
+type AlertType = "error" | "warning" | "success";
+
+// Global Alert div.
+const Alert = ({ children, type }: { children: string; type: AlertType }) => {
+  const backgroundColor =
+    type === "error" ? "tomato" : type === "warning" ? "orange" : "powderBlue";
+
+  return <div style={{ padding: "0 10", backgroundColor }}>{children}</div>;
+};
+
+// Use role="alert" to announce the error message.
+const AlertInput = ({ children }: { children: React.ReactNode }) =>
+  Boolean(children) ? (
+    <span role="alert" style={{ color: "tomato" }}>
+      {children}
+    </span>
+  ) : null;
+
+const CommunitySchema = z.object({
+  desc: z.string().min(5),
+  name: z.string().min(5),
+  link: z.string().url(),
+  image: z
+    .any()
+    .refine((files) => files?.length == 1, "Image is required.")
+    .refine(
+      (files) => files?.[0]?.size <= MAX_FILE_SIZE,
+      `Max file size is 5MB.`
+    )
+    .refine(
+      (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
+      ".jpg, .jpeg, .png and .webp files are accepted."
+    ),
+  // tags: z.string().array(),
+});
+
+type CommunityType = z.infer<typeof CommunitySchema>;
 
 const Details = ({ details, setDeleted }: DetailsProps) => {
   const creator = details?.ownerId;
   const [modalIsOpen, setIsOpen] = useState(false);
   const [deletemModalIsOpen, setDeleteModal] = useState(false);
-  const [name, setName] = useState<string>("");
-  const [tags, setTags] = useState<any>([]);
-  const [link, setLink] = useState<string>("");
-  const [uniqueTags, setUniqueTags] = useState<string>("");
-  const [desc, setDesc] = useState<string>("");
-  const [error, setError] = useState<any>(false);
   const [isMember, setIsMember] = useState<any>(false);
+  const [editedCommunity, setEditedCommunity] = useState<any>(undefined);
+  const [dataArray, setDataArray] = useState<string[]>([]);
+  const [inputData, setInputData] = useState<string>("");
 
   const [userId, setUserId] = useState<any>();
 
@@ -96,26 +147,80 @@ const Details = ({ details, setDeleted }: DetailsProps) => {
       zIndex: "100",
     },
   };
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors, isSubmitting, isSubmitSuccessful },
+  } = useForm<CommunityType>({
+    resolver: zodResolver(CommunitySchema),
+  });
+
+  const imageWatch = useWatch({
+    control,
+    name: "image",
+    defaultValue: null,
+  });
+
+  const name = useWatch({
+    control,
+    name: "name",
+    defaultValue: "",
+  });
+
+  const desc = useWatch({
+    control,
+    name: "desc",
+    defaultValue: "",
+  });
+
+  const { imageUrl } = useFilePreview(imageWatch);
+  const { user, setCommTags }: any = useContext(AuthContext);
+  const handleClick = () => {
+    if (inputData.trim() !== "") {
+      setDataArray((prevDataArray) => [...prevDataArray, inputData]);
+      setInputData("");
+      setCommTags(dataArray);
+    }
+  };
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputData(event.target.value);
+  };
+  const uploadFile = async (img: any) => {
     try {
-      const communityData = {
-        name: name,
-        tags: tags,
-        link: link,
-        desc: desc,
-        //userId: userId, get userId via walletAddress
-        id: communityId,
-      };
-      const comm = await updateCommunity(communityData);
-      //use data to redirect
-      if (comm?.status !== true) {
-        setError(true);
-      } else {
-        router.push(`/communities/${communityId}`);
-      }
-    } catch (err: any) {
-      throw new Error("errors submitting community data" + err);
+      if (img == null) throw new Error("No file was uploaded.");
+      const imageRef = ref(storage, `communities/${img.name + v4()}`);
+
+      const snapshot = await uploadBytes(imageRef, img);
+      const url = await getDownloadURL(snapshot.ref);
+      return url;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const onSubmit = async (community: CommunityType) => {
+    const uploadedImageUrl = await uploadFile(community.image[0]);
+
+    const communityData = {
+      name: community.name,
+      tags: dataArray,
+      link: community.link,
+      image: uploadedImageUrl,
+      desc: community.desc,
+      id: communityId,
+      userId: user?.message?.data.id,
+      ownerId: user?.message?.data.id,
+    };
+
+    const comm = await updateCommunity(communityData);
+
+    console.log("COMM", comm);
+
+    // use data to redirect
+    if (comm?.status === true) {
+      setEditedCommunity(comm.message);
+      router.reload()
     }
   };
   const handleJoin = async () => {
@@ -262,23 +367,25 @@ const Details = ({ details, setDeleted }: DetailsProps) => {
             <div className={cn("h2", styles.user, "text-[30px] text-white")}>
               Delete Community
             </div>
-            <span className="text-white opacity-30 text-center mb-2">Once community is deleted it cannot be restored, Click on delete to continue</span>
+            <span className="text-white opacity-30 text-center mb-2">
+              Once community is deleted it cannot be restored, Click on delete
+              to continue
+            </span>
             <div className="flex justify-center items-center gap-2">
               <a
                 onClick={closeDeleteModal}
                 className={cn("button", s.button, " cursor-pointer")}
-                target="_blank"
-                rel="noopener noreferrer"
               >
-               
                 <span>close</span>
               </a>
 
               <a
-                className={cn("button-white", styles.button, "m-0 cursor-pointer")}
-                target="_blank"
+                className={cn(
+                  "button-white",
+                  styles.button,
+                  "m-0 cursor-pointer"
+                )}
                 onClick={handleDelete}
-                rel="noopener noreferrer"
               >
                 <span>delete</span>
                 <Icon name="arrow-right" />
@@ -296,80 +403,149 @@ const Details = ({ details, setDeleted }: DetailsProps) => {
             },
           }}
         >
-          <button onClick={closeModal}>
-            <a className={cn("button-circle", style.back)}>
-              <Icon name="arrow-left" />
-            </a>
-          </button>
-          <LayoutCreate
-            left={
-              <>
-                <div className={style.head}>
-                  <div className={cn("h1", style.title)}>
-                    Edit <br></br>Community.
+          {editedCommunity ? (
+            <Layout layoutNoOverflow footerHide noRegistration>
+              <Congrats
+                title="SUCCESS"
+                onClick={closeModal}
+                content={
+                  <>
+                    You&apos;ve now edited your community! 
+                  </>
+                }
+                // links={
+                //   <>
+                //     <Link href={`/communities/${editedCommunity.id}`}>
+                //       <a className={cn("button-large", styles.button)}>
+                //         View community
+                //       </a>
+                //     </Link>
+                //   </>
+                // }
+              />
+            </Layout>
+          ) : (
+            <LayoutCreate
+              left={
+                <>
+                  <div className={styles.head}>
+                    <div className={cn("h1", styles.title)}>
+                      Edit <br></br>Community.
+                    </div>
+                    <button onClick={closeModal}>
+                      <a className={cn("button-circle", style.back)}>
+                        <Icon name="arrow-left" />
+                      </a>
+                    </button>
                   </div>
-                </div>
-                <div className={style.info}>Edit Community</div>
-                <form
-                  className={style.form}
-                  action=""
-                  onSubmit={(e) => handleSubmit(e)}
-                >
-                  <Field
-                    className={style.field}
-                    placeholder="Community name"
-                    icon="profile"
-                    value={name}
-                    onChange={(e: any) => setName(e.target.value)}
-                    large
-                    required
-                  />
-                  <Field
-                    className={style.field}
-                    placeholder="Community Link"
-                    icon="profile"
-                    value={link}
-                    onChange={(e: any) => setLink(e.target.value)}
-                    large
-                    required
-                  />
-                  <Field
-                    className={style.field}
-                    placeholder="Community Tags"
-                    icon="profile"
-                    value={tags}
-                    onChange={(e: any) => setTags([...tags, e.target.value])}
-                    large
-                    required
-                  />
-                  <Field
-                    className={style.field}
-                    placeholder="Community Desc"
-                    icon="email"
-                    type="text"
-                    value={desc}
-                    onChange={(e: any) => setDesc(e.target.value)}
-                    large
-                    required
-                  />
-                  <button type="submit">
-                    <a className={cn("button-large", style.button)}>
-                      <span>Continue</span>
-                      <Icon name="arrow-right" />
-                    </a>
-                  </button>
+                  <div className={styles.info}>Edit community.</div>
+                  <form
+                    className={styles.form}
+                    onSubmit={handleSubmit(onSubmit)}
+                    noValidate
+                  >
+                    <label>
+                      <div className="w-full h-40 flex flex-col gap-2 items-center justify-center border-4 border-dashed border-gray-300 rounded-xl cursor-pointer hover:bg-gray-200 transition-all">
+                        <PhotoIcon className="h-12 text-gray-400" />
+                        Select image
+                      </div>
+                      <Field
+                        className={(styles.field, "hidden")}
+                        type="file"
+                        icon="profile"
+                        large
+                        required
+                        register={register("image")}
+                      />
+                      <AlertInput>
+                        {errors?.image?.message?.toString()}
+                      </AlertInput>
+                    </label>
 
-                  {error ? (
-                    <div style={{ color: "red" }}>Error creating Community</div>
-                  ) : (
-                    ""
-                  )}
-                </form>
-              </>
-            }
-          >
-            <Preview imageUrl="/" />
-          </LayoutCreate>
+                    <Field
+                      className={styles.field}
+                      placeholder="Name"
+                      icon="profile"
+                      large
+                      register={register("name")}
+                      aria-invalid={Boolean(errors.name)}
+                    />
+                    <AlertInput>{errors?.name?.message}</AlertInput>
+
+                    <Field
+                      className={styles.field}
+                      placeholder="URL"
+                      icon="profile"
+                      large
+                      register={register("link")}
+                    />
+                    <AlertInput>{errors?.link?.message}</AlertInput>
+
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "1rem",
+                      }}
+                    >
+                      {" "}
+                      Tags:
+                      {dataArray.map((e: any, index) => (
+                        <div key={index}>{e}</div>
+                      ))}
+                    </div>
+                    <Field
+                      className={styles.field}
+                      placeholder="Tags"
+                      icon="plus"
+                      // register={register("tags")}
+                      value={inputData}
+                      onChange={handleInputChange}
+                      onClick={handleClick}
+                      large
+                    />
+                    {/* <AlertInput>{errors?.tags?.message}</AlertInput> */}
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "1rem",
+                      }}
+                    ></div>
+                    <Field
+                      className={styles.field}
+                      placeholder="Description"
+                      icon="email"
+                      textarea
+                      large
+                      register={register("desc")}
+                    />
+                    <AlertInput>{errors?.desc?.message}</AlertInput>
+
+                    <button type="submit">
+                      <a className={cn("button-large", styles.button)}>
+                        <span>Edit Community</span>
+                        <Icon name="arrow-right" />
+                      </a>
+                    </button>
+
+                    {isSubmitting && (
+                      <Spinner />
+                    )}
+
+                    {Boolean(Object.keys(errors)?.length) && (
+                      <div>
+                        There are errors, please correct them before submitting
+                        the form
+                      </div>
+                    )}
+                  </form>
+                </>
+              }
+            >
+              <Preview imageUrl={imageUrl} name={name} desc={desc} />
+            </LayoutCreate>
+          )}
         </Modal>
       </div>
       <div className={styles.list} style={{ marginBottom: "1rem" }}>
@@ -409,7 +585,7 @@ const Details = ({ details, setDeleted }: DetailsProps) => {
                                 <Icon name="plus" />
                             </button>
                         )} */}
-        {details?.tags && <Tags tags={details?.tags[0].name} />}
+        {details?.tags && <Tags tags={details?.tags} />}
       </div>
       {/* <div className={styles.foot}>
         <div className={styles.stage}>Description</div>

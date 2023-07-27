@@ -1,18 +1,23 @@
 import styles from "./Tags.module.sass";
 
 type TagsProps = {
-    tags: any;
+  tags: any;
 };
 
 const Tags = ({ tags }: TagsProps) => {
-    return(
+  return (
     <div className={styles.tags}>
-        {tags.map((tag: any, index: number) => (
-            <div className={styles.tag} key={index}>
-                {tag}
+      {tags.map((tag: any, index: number) => (
+        <div key={index} className="flex">
+          {tag?.name.map((t: any, index: number) => (
+            <div className={styles.tag} key={index} >
+              {t}
             </div>
-        ))}
+          ))}
+        </ div>
+      ))}
     </div>
-)};
+  );
+};
 
 export default Tags;

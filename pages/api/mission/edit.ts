@@ -8,9 +8,8 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
   if (session) {
     try {
       const data = req.body;
-      await updateOneMission(data.missionData);
-      res.status(200).send("updated mission successfully");
-      return { status: true, message: "success updating mission" };
+      const mission = await updateOneMission(data.missionData);
+      return res.json(mission);
     } catch (err: any) {
       throw new Error("Error updating community" + err);
     }

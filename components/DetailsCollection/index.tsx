@@ -2,12 +2,19 @@ import cn from "classnames";
 import styles from "./DetailsCollection.module.sass";
 import styled from "@/components/Description/Description.module.sass";
 import sty from "@/components/Description/Description.module.sass";
-import s from "@/components/Header/Menu/Menu.module.sass"
+import s from "@/components/Header/Menu/Menu.module.sass";
 import Statistics from "./Statistics";
 import style from "@/templates/Create/CreatePage/CreateStep1Page.module.sass";
 import Icon from "@/components/Icon";
 import { useRouter } from "next/router";
-import { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import Modal from "react-modal";
 import Preview from "@/components/Preview";
 import LayoutCreate from "@/components/LayoutCreate";
@@ -22,7 +29,7 @@ import {
   getOneUser,
   joinCommunity,
   leaveCommunity,
-  deleteCommunity
+  deleteCommunity,
 } from "@/utils/axios";
 import Layout from "../Layout";
 import Congrats from "../Congrats";
@@ -38,7 +45,7 @@ type DetailsType = {
 
 type DetailsProps = {
   details: DetailsType[] | any;
-  setDeleted?:  Dispatch<SetStateAction<boolean>> | any
+  setDeleted?: Dispatch<SetStateAction<boolean>> | any;
 };
 
 const Details = ({ details, setDeleted }: DetailsProps) => {
@@ -74,14 +81,16 @@ const Details = ({ details, setDeleted }: DetailsProps) => {
   });
   const customStyles = {
     content: {
+      height: "30%",
+      width: "40%",
       top: "50%",
       left: "50%",
       right: "auto",
       bottom: "auto",
       marginRight: "-50%",
-      backgroundColor: "rgb(168 85 247)",
+      backgroundColor: "rgb(39 39 42)",
       transform: "translate(-50%, -50%)",
-      borderRadius: "10px"
+      borderRadius: "2rem",
     },
     overlay: {
       zIndex: "100",
@@ -137,13 +146,13 @@ const Details = ({ details, setDeleted }: DetailsProps) => {
       throw new Error("error leaving community" + err);
     }
   };
-  const handleDelete = async() => {
-    const deletedCommunity = await deleteCommunity(communityId as string)
-    if(deletedCommunity.status === true){
-      setDeleteModal(false)
-      setDeleted(true)
+  const handleDelete = async () => {
+    const deletedCommunity = await deleteCommunity(communityId as string);
+    if (deletedCommunity.status === true) {
+      setDeleteModal(false);
+      setDeleted(true);
     }
-  }
+  };
   const openModal = () => {
     setIsOpen(true);
   };
@@ -249,34 +258,31 @@ const Details = ({ details, setDeleted }: DetailsProps) => {
           contentLabel="Example Modal"
           style={customStyles}
         >
-          <div className="flex flex-col justify-center items-center h-96 w-96 rounded-lg capitalize gap-4">
-            <div className={cn("h2", styles.user, "text-[30px]")}>Delete <span className="text-white">{details?.name}</span> </div>
+          <div className="flex flex-col justify-center items-center rounded-lg h-[100%] w-[100%] capitalize gap-4">
+            <div className={cn("h2", styles.user, "text-[30px] text-white")}>
+              Delete Community
+            </div>
+            <span className="text-white opacity-30 text-center mb-2">Once community is deleted it cannot be restored, Click on delete to continue</span>
             <div className="flex justify-center items-center gap-2">
-              <button
+              <a
                 onClick={closeDeleteModal}
-                className="p-4 w-[150px] bg-white rounded-lg border-slate-600 hover:text-white hover:bg-neutral-300"
+                className={cn("button", s.button, " cursor-pointer")}
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                <a
-                 
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                   Close
-                </a>
                
-              </button>
-              <button
+                <span>close</span>
+              </a>
+
+              <a
+                className={cn("button-white", styles.button, "m-0 cursor-pointer")}
+                target="_blank"
                 onClick={handleDelete}
-                className="p-4 w-[150px] bg-black text-white rounded-lg hover:text-white hover:bg-neutral-500"
+                rel="noopener noreferrer"
               >
-                <a
-                  
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                   Delete
-                </a>
-              </button>
+                <span>delete</span>
+                <Icon name="arrow-right" />
+              </a>
             </div>
           </div>
         </Modal>

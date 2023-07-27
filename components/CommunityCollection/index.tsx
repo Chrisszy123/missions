@@ -81,6 +81,7 @@ const Profile = ({ item , setDeleted}: ProfileProps) => {
             <Tokens
               titleUsers="Owned by"
               items={item?.missions}
+              owner={item?.ownerId}
               users={["/images/artists/artist-1.jpg"]}
               theme={theme}
               setTheme={setTheme}
@@ -88,11 +89,11 @@ const Profile = ({ item , setDeleted}: ProfileProps) => {
           )}
           {sorting === "activity" && <Activity items={item?.users} />}
           {sorting === "owners" && <Owners items={item?.users} />}
-          <div className={styles.foot}>
+          {/* <div className={styles.foot}>
             <Link href="#">
               <a className={styles.link}>How to enter a Mission</a>
             </Link>
-          </div>
+          </div> */}
         </List>
       </div>
     </div>

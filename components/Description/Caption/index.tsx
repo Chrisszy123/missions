@@ -63,7 +63,7 @@ const Caption = ({ title, date, data }: CaptionProps) => {
     setIsOpen(false);
   };
   return (
-    <div className={styles.caption}>
+    <div className={styles.caption} style={{marginBottom: "4rem"}}>
       <div className={styles.line}>
         <div className={cn("h2", styles.title)}>{title}</div>
         <div className={styles.actions}>

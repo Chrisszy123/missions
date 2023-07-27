@@ -56,6 +56,7 @@ const Field = ({
       { [styles.fieldLarge]: large },
       className
     )}
+    style={{width: style}}
   >
     <div className={styles.wrap}>
       {textarea ? (

@@ -18,31 +18,12 @@ const Details = ({ mission }: DetailsProps) => {
         <div className={styles.col}>
           <div className={styles.label}>Reward</div>
           <div className={cn("h4", styles.value)}>{mission.rewards[0]}</div>
-          <Link href="#">
-            <a
-              className={cn("button-medium button-wide", styles.button)}
-              onClick={() => setToggleSubmit(!toggleSubmit)}
-            >
-              ENTER
-            </a>
-          </Link>
         </div>
         <div className={styles.col}>
           <div className={styles.label}>State</div>
           <div className={cn("h4", styles.value)}>{mission.state}</div>
-          <Link href="#">
-            <a
-              className={cn(
-                "button-stroke-grey button-medium button-wide",
-                styles.button
-              )}
-            >
-              Join
-            </a>
-          </Link>
         </div>
       </div>
-      {toggleSubmit ? (
         <div className={styles.foot} style={{ flexDirection: "column" }}>
           <Field
             className={style.field}
@@ -69,7 +50,6 @@ const Details = ({ mission }: DetailsProps) => {
             </Link>
           )}
         </div>
-      ) : null}
     </div>
   );
 };

@@ -11,7 +11,8 @@ type TokenProps = {
   dark?: boolean;
 };
 
-const Token = ({ className, item, large, dark }: TokenProps) => (
+const Token = ({ className, item, large, dark }: TokenProps) =>  {
+return (
   <Link
     href={`${item.communityId}/missions/${item.id}`}
     
@@ -22,21 +23,15 @@ const Token = ({ className, item, large, dark }: TokenProps) => (
         { [styles.large]: large, [styles.dark]: dark },
         className
       )}
-      style={{
-        border: "solid",
-        borderColor: "#C4BCBA",
-        borderRadius: "10px",
-        padding: "1rem",
-      }}
     >
-      {/* <div className={styles.preview}>
+      <div className={styles.preview}>
                 <Image
-                    src={item.image}
+                    src={item?.image ? item?.image : "/images/nfts/image-1.jpg"}
                     layout="fill"
                     objectFit="cover"
                     alt="Token"
                 />
-            </div> */}
+            </div>
       <div className={styles.details}>
         <div className={styles.title}>{item.name}</div>
         <div className={styles.category}>Enter</div>
@@ -48,6 +43,6 @@ const Token = ({ className, item, large, dark }: TokenProps) => (
       </div>
     </a>
   </Link>
-);
+)};
 
 export default Token;

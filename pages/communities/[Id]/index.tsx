@@ -17,7 +17,7 @@ interface Props {
 }
 const Profile: NextPage<Props> = ({ community }) => {
   const {user}: any = useContext(AuthContext)
-  const [deleted, setDeleted] = useState (false);
+  const [deleted, setDeleted] = useState<any>();
   const userId = user?.message?.data?.id
   const ownerId = community?.ownerId
   if (deleted) {

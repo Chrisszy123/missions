@@ -14,8 +14,16 @@ import { useDisconnect } from "wagmi"
 
 const menu = [
   {
+    title: "Dashboard",
+    url: "/dashboard",
+  },
+  {
     title: "My Communities",
-    url: "/profile",
+    url: "/dashboard/communities",
+  },
+  {
+    title: "Profile",
+    url: "/dashboard/profile",
   },
 ];
 

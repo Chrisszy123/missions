@@ -12,7 +12,7 @@ const Discover: NextPage<Props> = ({missions}) => {
   return (
     <ErrorBoundary>
       <Layout layoutNoOverflow noRegistration>
-            <Spotlight missions={missions}/>
+            <Spotlight missions={missions} title="Missions"  style="bg-black" titleStyle="text-[#fff]"/>
         </Layout>
     </ErrorBoundary>
   );

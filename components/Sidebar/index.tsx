@@ -16,7 +16,7 @@ import {
 const menuItems = [
   { id: 1, label: "Home", icon: HomeIcon, link: "/dashboard" },
   { id: 2, label: "Missions", icon: ArticleIcon, link: "/dashboard/missions" },
-  { id: 3, label: "Communities", icon: UsersIcon, link: "/dashboard/commmunities" },
+  { id: 3, label: "Communities", icon: UsersIcon, link: "/dashboard/communities" },
   { id: 4, label: "Profile", icon: VideosIcon, link: "/dashboard/profile" },
 ];
 
@@ -60,7 +60,7 @@ const Sidebar = ({ children }: any) => {
   };
 
   const handleSidebarToggle = () => {
-    setToggleCollapse(!toggleCollapse);
+    setToggleCollapse((prev) => !prev);
   };
 
   return (
@@ -93,14 +93,14 @@ const Sidebar = ({ children }: any) => {
               </div>
             ) : null}
 
-            {isCollapsible && (
+            {/* {isCollapsible && (
               <button
                 className={collapseIconClasses}
                 onClick={handleSidebarToggle}
               >
                 <CollapsIcon />
               </button>
-            )}
+            )} */}
           </div>
           <div
             className={classNames(

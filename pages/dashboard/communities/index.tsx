@@ -5,20 +5,17 @@ import { getOneUser } from "@/utils/axios";
 import ErrorBoundary from "pages/_error";
 import { WalletContext } from "context/WalletContext";
 import Catalog from "@/components/Catalog";
-import Spotlight from "@/components/Spotlight";
 
-const SettingsPage = () => {
+const UserCommunities = () => {
   const [community, setCommunity] = useState([]);
-  const [mission, setMission] = useState([]);
   const { account } = useContext(WalletContext);
-  // create a new user
   const walletAddress = account?.toString().toLowerCase();
 
   useEffect(() => {
     getOneUser(walletAddress).then((e) => {
-      setCommunity(e.message.data.communities);
-      setMission(e.message.data.missions);
-    });
+      setCommunity(e.message.data.communities)
+    }
+    );
   }, [walletAddress]);
 
   return (
@@ -33,18 +30,6 @@ const SettingsPage = () => {
                 <Catalog title="My Communities" items={community} titleStyle="md:text-[40px] text-[30px]"/>
               </>
             )}
-            {mission?.length === 0 ? (
-              <div> loading... </div>
-            ) : (
-              <Spotlight
-                missions={mission}
-                title="My Missions"
-                style="bg-transparent"
-                titleStyle="text-[#000] text-[30px] md:text-[40px]"
-                nameStyle="text-[#000]"
-                btnStyle="bg-black text-white hover:bg-gray-800 hover:text-white"
-              />
-            )}
           </div>
         </div>
       </Layout>
@@ -52,4 +37,4 @@ const SettingsPage = () => {
   );
 };
 
-export default SettingsPage;
+export default UserCommunities;

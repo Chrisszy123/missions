@@ -4,11 +4,9 @@ import Layout from "@/components/Layout";
 import { getOneUser } from "@/utils/axios";
 import ErrorBoundary from "pages/_error";
 import { WalletContext } from "context/WalletContext";
-import Catalog from "@/components/Catalog";
 import Spotlight from "@/components/Spotlight";
 
-const SettingsPage = () => {
-  const [community, setCommunity] = useState([]);
+const UserMissions = () => {
   const [mission, setMission] = useState([]);
   const { account } = useContext(WalletContext);
   // create a new user
@@ -16,7 +14,6 @@ const SettingsPage = () => {
 
   useEffect(() => {
     getOneUser(walletAddress).then((e) => {
-      setCommunity(e.message.data.communities);
       setMission(e.message.data.missions);
     });
   }, [walletAddress]);
@@ -24,25 +21,16 @@ const SettingsPage = () => {
   return (
     <ErrorBoundary>
       <Layout layoutNoOverflow noRegistration dashboard>
-        <div className=" md:pl-2 md:pt-0 md:pr-10">
+        <div className="p-6 md:pl-1 md:pt-0 md:pr-10">
           <div className={styles.col}>
-            {community?.length === 0 ? (
-              <div>Loading...</div>
-            ) : (
-              <>
-                <Catalog title="My Communities" items={community} titleStyle="md:text-[40px] text-[30px]"/>
-              </>
-            )}
             {mission?.length === 0 ? (
               <div> loading... </div>
             ) : (
               <Spotlight
                 missions={mission}
                 title="My Missions"
-                style="bg-transparent"
-                titleStyle="text-[#000] text-[30px] md:text-[40px]"
-                nameStyle="text-[#000]"
-                btnStyle="bg-black text-white hover:bg-gray-800 hover:text-white"
+                style="bg-black"
+                titleStyle="text-[30px] text-[#fff]"
               />
             )}
           </div>
@@ -52,4 +40,4 @@ const SettingsPage = () => {
   );
 };
 
-export default SettingsPage;
+export default UserMissions;

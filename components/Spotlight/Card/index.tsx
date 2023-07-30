@@ -7,9 +7,10 @@ import Users from "@/components/Users";
 type CardProps = {
   className?: string;
   item: any;
+  nameStyle?: string
 };
 
-const Card = ({ className, item }: CardProps) => {
+const Card = ({ className, item, nameStyle}: CardProps) => {
   return (
     <Link href={`communities/${item?.communityId}/missions/${item?.id}`}>
       <a className={cn(styles.card, className)}>
@@ -23,9 +24,9 @@ const Card = ({ className, item }: CardProps) => {
         </div>
         <div className={styles.line}>
           <div className={styles.details}>
-            <div className={styles.title}>{item.name}</div>
-            <div className={styles.price}>
-              <span>Enter</span> {item.rewards}
+            <div className={cn(styles.title, nameStyle)}>{item.name}</div>
+            <div className={cn(styles.price, "flex gap-2")}>
+              <span>Enter</span> <div className={nameStyle}> {item.rewards}</div>
             </div>
           </div>
           {/* <Users className={styles.users} items={item.users} /> */}

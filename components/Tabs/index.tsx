@@ -9,7 +9,7 @@ type TabType = {
 
 type TabsProps = {
     className?: string;
-    items: TabType[];
+    items?: TabType[];
     value: number | string;
     setValue: any;
     dark?: boolean;
@@ -25,7 +25,7 @@ const Tabs = ({ className, items, value, setValue, dark }: TabsProps) => {
         <div
             className={cn(styles.tabs, { [styles.tabsDark]: dark }, className)}
         >
-            {items.map((item, index) => (
+            {items?.map((item, index) => (
                 <button
                     className={cn(styles.button, {
                         [styles.active]: value === item.value,

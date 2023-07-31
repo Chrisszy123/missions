@@ -5,6 +5,8 @@ import { getOneUser } from "@/utils/axios";
 import ErrorBoundary from "pages/_error";
 import { WalletContext } from "context/WalletContext";
 import Catalog from "@/components/Catalog";
+import { GetServerSidePropsContext } from "next";
+import { getSession } from "next-auth/react";
 
 const UserCommunities = () => {
   const [community, setCommunity] = useState([]);
@@ -13,9 +15,8 @@ const UserCommunities = () => {
 
   useEffect(() => {
     getOneUser(walletAddress).then((e) => {
-      setCommunity(e.message.data.communities)
-    }
-    );
+      setCommunity(e.message.data.communities);
+    });
   }, [walletAddress]);
 
   return (
@@ -27,7 +28,11 @@ const UserCommunities = () => {
               <div>Loading...</div>
             ) : (
               <>
-                <Catalog title="My Communities" items={community} titleStyle="md:text-[40px] text-[30px]"/>
+                <Catalog
+                  title="My Communities"
+                  items={community}
+                  titleStyle="md:text-[40px] text-[30px]"
+                />
               </>
             )}
           </div>
@@ -38,3 +43,20 @@ const UserCommunities = () => {
 };
 
 export default UserCommunities;
+
+export const getServerSideProps = async(context: GetServerSidePropsContext) => {
+  const session = await getSession(context)
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false
+      }
+    }
+  }
+  return {
+    props: {
+      data: 'success',
+    }
+  }
+}

@@ -6,6 +6,8 @@ import ErrorBoundary from "pages/_error";
 import { WalletContext } from "context/WalletContext";
 import Catalog from "@/components/Catalog";
 import Spotlight from "@/components/Spotlight";
+import { getSession } from "next-auth/react";
+import { GetServerSidePropsContext } from "next";
 
 const SettingsPage = () => {
   const [community, setCommunity] = useState([]);
@@ -21,6 +23,8 @@ const SettingsPage = () => {
     });
   }, [walletAddress]);
 
+ 
+
   return (
     <ErrorBoundary>
       <Layout layoutNoOverflow noRegistration dashboard>
@@ -30,7 +34,11 @@ const SettingsPage = () => {
               <div>Loading...</div>
             ) : (
               <>
-                <Catalog title="My Communities" items={community} titleStyle="md:text-[40px] text-[30px]"/>
+                <Catalog
+                  title="My Communities"
+                  items={community}
+                  titleStyle="md:text-[40px] text-[30px]"
+                />
               </>
             )}
             {mission?.length === 0 ? (
@@ -53,3 +61,20 @@ const SettingsPage = () => {
 };
 
 export default SettingsPage;
+
+export const getServerSideProps = async(context: GetServerSidePropsContext) => {
+  const session = await getSession(context)
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false
+      }
+    }
+  }
+  return {
+    props: {
+      data: 'success',
+    }
+  }
+}

@@ -5,6 +5,8 @@ import { getOneUser } from "@/utils/axios";
 import ErrorBoundary from "pages/_error";
 import { WalletContext } from "context/WalletContext";
 import Spotlight from "@/components/Spotlight";
+import { getSession } from "next-auth/react";
+import { GetServerSidePropsContext } from "next";
 
 const UserMissions = () => {
   const [mission, setMission] = useState([]);
@@ -41,3 +43,20 @@ const UserMissions = () => {
 };
 
 export default UserMissions;
+
+export const getServerSideProps = async(context: GetServerSidePropsContext) => {
+  const session = await getSession(context)
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false
+      }
+    }
+  }
+  return {
+    props: {
+      data: 'success',
+    }
+  }
+}

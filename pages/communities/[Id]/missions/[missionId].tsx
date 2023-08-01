@@ -7,6 +7,11 @@ import { Mission } from "@prisma/client";
 import Layout from "@/components/Layout";
 import Description from "@/components/Description";
 import Details from "@/components/MissionDetails";
+import { useState } from "react";
+import Congrats from "@/components/Congrats";
+import styles from "@/components/DetailsCollection/DetailsCollection.module.sass";
+import Link from "next/link";
+import classNames from "classnames";
 
 interface Props {
   mission: Mission[] | any;
@@ -29,6 +34,7 @@ const links = [
   },
 ];
 const NFTDetail: NextPage<Props> = ({ mission }) => {
+  const [deleted, setDeleted] = useState<any>();
   const statistics = [
     {
       label: "Community",
@@ -39,6 +45,31 @@ const NFTDetail: NextPage<Props> = ({ mission }) => {
     },
   ];
   //
+  if (deleted) {
+    return (
+      <Layout layoutNoOverflow footerHide noRegistration>
+        <Congrats
+          title="Success"
+          content={
+            <>
+              You&apos;ve now deleted your mission! {mission?.name}<br></br>click below to  go back to your dashboard
+            </>
+          }
+          links={
+            <>
+              <Link
+                href={`/dashboard`}
+              >
+                <a className={classNames("button-large", styles.button)}>
+                  Dashboard
+                </a>
+              </Link>
+            </>
+          }
+        />
+      </Layout>
+    );
+  }
   return (
     <ErrorBoundary>
       <Layout layoutNoOverflow footerHide noRegistration>
@@ -51,6 +82,7 @@ const NFTDetail: NextPage<Props> = ({ mission }) => {
               statistics={statistics}
               links={links}
               tags={mission.category}
+              setDeleted={setDeleted}
               // provenanceAction={{
               //   avatar: "/images/avatar.jpg",
               //   history: true,

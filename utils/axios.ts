@@ -76,6 +76,17 @@ export const updateMission = async (missionData: any) => {
         throw new Error('axios patch mission error' + err)
     }
 }
+export const deleteMission = async (missionId: string) => {
+    console.log(missionId)
+    try {
+        await axios.put('/api/mission/delete', {
+            missionId
+        })
+        return { status: true, message: "mission successfully deleted" }
+    } catch (err: any) {
+        throw new Error('axios delete mission error' + err)
+    }
+}
 // users
 export const createUser = async (userData: any) => {
     try {

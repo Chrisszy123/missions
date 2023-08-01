@@ -31,8 +31,10 @@ const UserMissions = () => {
               <Spotlight
                 missions={mission}
                 title="My Missions"
-                style="bg-black"
-                titleStyle="text-[30px] text-[#fff]"
+                style="bg-transparent"
+                titleStyle="text-[#000] text-[30px] md:text-[40px]"
+                nameStyle="text-[#000]"
+                btnStyle="bg-black text-white hover:bg-gray-800 hover:text-white"
               />
             )}
           </div>

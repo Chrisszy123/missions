@@ -29,7 +29,7 @@ const Tabs = ({ className, items, value, setValue, dark }: TabsProps) => {
                 <button
                     className={cn(styles.button, {
                         [styles.active]: value === item.value,
-                    })}
+                    }, "hover:text-gray-600")}
                     onClick={() => handleClick(item.value, item.onClick)}
                     key={index}
                 >

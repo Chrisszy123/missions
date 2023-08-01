@@ -9,6 +9,7 @@ import Caption from "./Caption";
 import Links from "./Links";
 import Tags from "./Tags";
 import Provenance from "./Provenance";
+import { Dispatch, SetStateAction } from "react";
 
 type DescriptionProps = {
   exit?: boolean;
@@ -25,6 +26,7 @@ type DescriptionProps = {
   date: string;
   children: React.ReactNode;
   missionData?: any;
+  setDeleted?:   Dispatch<SetStateAction<boolean>> | any;
 };
 
 const Description = ({
@@ -42,6 +44,7 @@ const Description = ({
   date,
   children,
   missionData,
+  setDeleted
 }: DescriptionProps) => {
   const router = useRouter();
 
@@ -97,7 +100,7 @@ const Description = ({
         <div className={styles.col}>
           <div className={styles.wrap}>
             {!captionHide && (
-              <Caption title={title} date={date} data={missionData} />
+              <Caption title={title} date={date} data={missionData} setDeleted={setDeleted}/>
             )}
             {children}
           </div>

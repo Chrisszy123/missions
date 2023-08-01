@@ -31,7 +31,7 @@ const SettingsPage = () => {
         <div className=" md:pl-2 md:pt-0 md:pr-10">
           <div className={styles.col}>
             {community?.length === 0 ? (
-              <div>Loading...</div>
+              <div>Oppps you need to create communities</div>
             ) : (
               <>
                 <Catalog
@@ -42,7 +42,7 @@ const SettingsPage = () => {
               </>
             )}
             {mission?.length === 0 ? (
-              <div> loading... </div>
+              <div> There are no missions </div>
             ) : (
               <Spotlight
                 missions={mission}

@@ -33,7 +33,7 @@ const Profile: NextPage<Props> = ({ community }) => {
           links={
             <>
               <Link
-                href={`/communities`}
+                href={`/dashboard`}
               >
                 <a className={cn("button-large", styles.button)}>
                   View Communities

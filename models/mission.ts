@@ -2,7 +2,7 @@ import prisma from "../utils/db";
 import { z } from "zod";
 import { missionSchema } from "@/types/missions";
 
-type MissionData = z.infer<typeof missionSchema>
+type MissionData = z.infer<typeof missionSchema>;
 // handle create mission
 export const createMission = async (data: MissionData) => {
   const missionData = missionSchema.parse(data);
@@ -29,9 +29,9 @@ export const createMission = async (data: MissionData) => {
         },
         users: {
           connect: {
-            id: missionData.userId
-          }
-        }
+            id: missionData.userId,
+          },
+        },
       },
       include: {
         community: true,
@@ -74,11 +74,11 @@ export const getAllMissions = async () => {
       include: {
         community: {
           include: {
-            tags: true
-          }
+            tags: true,
+          },
         },
-        users: true
-      }
+        users: true,
+      },
     });
     if (!missions) return { message: "cannot get missions", status: false };
     return missions;
@@ -99,10 +99,10 @@ export const getOneMission = async (missionId: any) => {
         users: true,
         community: {
           include: {
-            tags: true
-          }
-        }
-      }
+            tags: true,
+          },
+        },
+      },
     });
     if (!mission)
       return {
@@ -113,10 +113,9 @@ export const getOneMission = async (missionId: any) => {
   } catch (err: any) {}
 };
 // delete one mission
-export const deleteMission = async (data: MissionData) => {
-  const missionData = missionSchema.parse(data);
+export const deleteMission = async (missionId: string) => {
   try {
-    await prisma.mission.delete({ where: { id: missionData.id } });
+    await prisma.mission.delete({ where: { id: missionId } });
     return { status: true, message: "mission successfully deleted" };
   } catch (err: any) {
     return { status: false, message: "error deleting mission" };

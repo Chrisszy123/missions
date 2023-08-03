@@ -16,7 +16,7 @@ import cn from "classnames";
 import { AuthContext } from "context/AuthContext";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import type { GetServerSidePropsContext, NextPage } from "next";
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useContext, useState, useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -26,7 +26,7 @@ import styles from "./CreateStep1Page.module.sass";
 
 import { PhotoIcon } from "@heroicons/react/24/solid";
 import { useRouter } from "next/router";
-import { getOneCommunity } from "models/community";
+import {getOneCommunity} from "@/utils/axios"
 
 const MAX_FILE_SIZE = 500000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -78,28 +78,17 @@ const MissionSchema = z
 
 type MissionType = z.infer<typeof MissionSchema>;
 
-const Create = ({ ownerId }: any) => {
+const Create = () => {
   const { status, data: sessionData }: any = useSession();
   const [createdMission, setCreatedMission] = useState<any>(undefined);
-  const [communityId, setCommunityId] = useState<string>("");
+  const [ownerId, setOwnerId] = useState<string>("");
 
   const router = useRouter();
-  const slug = router.asPath;
+  const communityId = router.query.Id;
 
-  const extractSubstring = () => {
-    const regex = /\/communities\/([^/]+)\//;
-    const match = slug.match(regex);
-
-    if (match && match[1]) {
-      const extractedString = match[1];
-      setCommunityId(extractedString);
-    } else {
-      console.log("Substring not found");
-    }
-  };
   useEffect(() => {
-    extractSubstring();
-  }, [slug]);
+    getOneCommunity(communityId).then((c) => setOwnerId(c?.message?.data?.ownerId))
+  }, [communityId]);
 
   const {
     register,
@@ -277,10 +266,10 @@ const Create = ({ ownerId }: any) => {
 
               {userId === ownerId ? (
                 <button type="submit">
-                  <a className={cn("button-large", styles.button)}>
+                  <div className={cn("button-large", styles.button)}>
                     <span>Create Mission</span>
                     <Icon name="arrow-right" />
-                  </a>
+                  </div>
                 </button>
               ) : (
                 <div>only owners can create missions</div>
@@ -313,13 +302,3 @@ const Create = ({ ownerId }: any) => {
 
 export default Create;
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const communityId = context.query.Id;
-  const community: any = await getOneCommunity(communityId);
-  const ownerId = community?.ownerId;
-  return {
-    props: {
-      ownerId,
-    },
-  };
-}

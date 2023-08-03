@@ -18,8 +18,8 @@ const Spotlight = ({missions, title, style, titleStyle, nameStyle, btnStyle}: Sp
   const [sorting, setSorting] = useState<string>("1-days");
   return (
     <>
-      {missions?.length === 0 ? (
-        <>loading ...</>
+      {!missions ? (
+        <div>Mission Data loading ...</div>
       ) : (
         <div className={cn(styles.spotlight, style)}>
           <div className={styles.head}>

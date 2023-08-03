@@ -1,25 +1,33 @@
 import type { GetServerSidePropsContext, NextPage } from "next";
-import { getOneCommunity } from "../../../models/community";
+import { getOneCommunity } from "@/utils/axios";
 import ErrorBoundary from "pages/_error";
 import { Community } from "@prisma/client";
 import Layout from "@/components/Layout";
 import Background from "@/components/Background";
 import Collection from "@/components/CommunityCollection";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "context/AuthContext";
 import Congrats from "@/components/Congrats";
 import Link from "next/link";
 import styles from "@/components/DetailsCollection/DetailsCollection.module.sass";
 import cn from "classnames";
+import { useRouter } from "next/router";
+
 
 interface Props {
   community?: Community[] | any;
 }
-const Profile: NextPage<Props> = ({ community }) => {
+const Profile: NextPage<Props> = () => {
   const {user}: any = useContext(AuthContext)
   const [deleted, setDeleted] = useState<any>();
+  const [community, setCommunity] = useState<Community[] | any>();
+  const router = useRouter()
+  const communityId = router.query.Id
   const userId = user?.message?.data?.id
   const ownerId = community?.ownerId
+  useEffect(() => {
+    getOneCommunity(communityId).then((e) => setCommunity(e?.message?.data))
+  }, [communityId])
   if (deleted) {
     return (
       <Layout layoutNoOverflow footerHide noRegistration>
@@ -47,9 +55,6 @@ const Profile: NextPage<Props> = ({ community }) => {
   }
   return (
     <>
-      {community?.length === 0 ? (
-        <div>Community data Loading...</div>
-      ) : (
         <ErrorBoundary>
           <Layout layoutNoOverflow footerHide noRegistration isCommunity={userId === ownerId ?  true : false}>
             {community && community ? (
@@ -62,41 +67,8 @@ const Profile: NextPage<Props> = ({ community }) => {
             )}
           </Layout>
         </ErrorBoundary>
-      )}
     </>
   );
 };
 
 export default Profile;
-
-export const getServerSideProps = async (
-  context: GetServerSidePropsContext
-) => {
-  const communityId = context.query.Id;
-  const community: any = await getOneCommunity(communityId);
-  const serializedCommunity = {
-    ...community,
-    createdAt: community?.createdAt.toISOString(),
-    updatedAt: community?.updatedAt.toISOString(),
-    owner: {
-      ...community?.owner,
-      createdAt: community?.owner.createdAt.toISOString(),
-      updatedAt: community?.owner.updatedAt.toISOString(),
-    },
-    users: community?.users.map((user: any) => ({
-      ...user,
-      createdAt: user?.createdAt.toISOString(),
-      updatedAt: user?.updatedAt.toISOString(),
-    })),
-    missions: community?.missions.map((mission: any) => ({
-      ...mission,
-      createdAt: mission?.createdAt.toISOString(),
-      updatedAt: mission?.updatedAt.toISOString(),
-    })),
-  };
-  return {
-    props: {
-      community: serializedCommunity,
-    },
-  };
-};

@@ -90,17 +90,17 @@ const Discover = ({ className, light, isCommunity }: DiscoverProps) => {
           <div className={styles.body}>
             <div className={styles.list}>
               <Link href="/communities/create">
-                <a className={styles.item}>
+                <div className={styles.item} style={{cursor: "pointer"}}>
                   Create Community
                   <Icon name="arrow-right-thin" />
-                </a>
+                </div>
               </Link>
               {isCommunity ? (
                 <Link href={`/communities/${slug}/missions/create`}>
-                  <a className={styles.item}>
+                  <div className={styles.item} style={{cursor: "pointer"}}>
                     Create Mission
                     <Icon name="arrow-right-thin" />
-                  </a>
+                  </div>
                 </Link>
               ) : null}
             </div>

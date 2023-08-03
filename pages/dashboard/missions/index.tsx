@@ -5,10 +5,11 @@ import { getOneUser } from "@/utils/axios";
 import ErrorBoundary from "pages/_error";
 import { WalletContext } from "context/WalletContext";
 import Spotlight from "@/components/Spotlight";
-import { getSession } from "next-auth/react";
-import { GetServerSidePropsContext } from "next";
+import {useSession } from "next-auth/react";
+import AccessDenied from "@/components/AccessDenied/AccessDenied";
 
 const UserMissions = () => {
+  const { status, data: sessionData }: any = useSession();
   const [mission, setMission] = useState([]);
   const { account } = useContext(WalletContext);
   // create a new user
@@ -19,7 +20,13 @@ const UserMissions = () => {
       setMission(e.message.data.missions);
     });
   }, [walletAddress]);
-
+  if (status === "unauthenticated" || sessionData === null) {
+    return (
+      <Layout layoutNoOverflow footerHide noRegistration>
+        <AccessDenied message="You need to be signed in " />
+      </Layout>
+    );
+  }
   return (
     <ErrorBoundary>
       <Layout layoutNoOverflow noRegistration dashboard>
@@ -46,19 +53,3 @@ const UserMissions = () => {
 
 export default UserMissions;
 
-export const getServerSideProps = async(context: GetServerSidePropsContext) => {
-  const session = await getSession(context)
-  if (!session) {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false
-      }
-    }
-  }
-  return {
-    props: {
-      data: 'success',
-    }
-  }
-}

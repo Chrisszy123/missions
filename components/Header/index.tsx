@@ -135,7 +135,7 @@ const Header = ({
               <div className={styles.navigation}>
                 {menu.map((link, index) => (
                   <Link href={link.url} key={index}>
-                    <a className={styles.link}>{link.title}</a>
+                    <span className={styles.link}>{link.title}</span>
                   </Link>
                 ))}
               </div>

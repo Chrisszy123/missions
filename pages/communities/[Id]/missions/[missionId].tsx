@@ -1,17 +1,18 @@
 import type { GetServerSidePropsContext, NextPage } from "next";
 import NFTDetailPage from "@/templates/NFT/NFTDetailPage";
 import ErrorBoundary from "pages/_error";
-import { getOneMission } from "models/mission";
+import { getOneMission } from "@/utils/axios";
 import { getSession } from "next-auth/react";
 import { Mission } from "@prisma/client";
 import Layout from "@/components/Layout";
 import Description from "@/components/Description";
 import Details from "@/components/MissionDetails";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Congrats from "@/components/Congrats";
 import styles from "@/components/DetailsCollection/DetailsCollection.module.sass";
 import Link from "next/link";
 import classNames from "classnames";
+import { useRouter } from "next/router";
 
 interface Props {
   mission: Mission[] | any;
@@ -33,15 +34,21 @@ const links = [
     url: "https://ui8.net/",
   },
 ];
-const NFTDetail: NextPage<Props> = ({ mission }) => {
+const NFTDetail: NextPage<Props> = () => {
   const [deleted, setDeleted] = useState<any>();
+  const [mission, setMission] = useState<Mission[] | any>();
+  const router = useRouter();
+  const missionId = router.query.missionId;
+  useEffect(() => {
+    getOneMission(missionId).then((m) => setMission(m?.message?.data));
+  }, [missionId]);
   const statistics = [
     {
       label: "Community",
-      image: mission ? mission?.community?.image :"/images/robot.jpg",
+      image: mission ? mission?.community?.image : "/images/robot.jpg",
       title: mission ? mission?.community?.name : "",
       category: mission ? mission?.community?.tags[0].name : "",
-      link: mission ? `/communities/${mission?.community?.id}` : "#"
+      link: mission ? `/communities/${mission?.community?.id}` : "#",
     },
   ];
   //
@@ -52,14 +59,13 @@ const NFTDetail: NextPage<Props> = ({ mission }) => {
           title="Success"
           content={
             <>
-              You&apos;ve now deleted your mission! {mission?.name}<br></br>click below to  go back to your dashboard
+              You&apos;ve now deleted your mission! {mission?.name}
+              <br></br>click below to go back to your dashboard
             </>
           }
           links={
             <>
-              <Link
-                href={`/dashboard`}
-              >
+              <Link href={`/dashboard`}>
                 <a className={classNames("button-large", styles.button)}>
                   Dashboard
                 </a>
@@ -83,28 +89,6 @@ const NFTDetail: NextPage<Props> = ({ mission }) => {
               links={links}
               tags={mission.category}
               setDeleted={setDeleted}
-              // provenanceAction={{
-              //   avatar: "/images/avatar.jpg",
-              //   history: true,
-              //   content: (
-              //     <>
-              //       Auction won by <span>0x56C1...8eCC</span>
-              //     </>
-              //   ),
-              //   title: (
-              //     <>
-              //       Sold for <span>6.05 ETH</span> $9,256.58
-              //     </>
-              //   ),
-              //   date: "Aug 18, 2022 at 18:80",
-
-              //   linkTitle: (
-              //     <>
-              //       Auction settled by <span>@Kohaku</span>
-              //     </>
-              //   ),
-              //   linkUrl: "#",
-              // }}
               provenance={mission}
               content={mission.desc}
               missionData={mission}
@@ -115,35 +99,8 @@ const NFTDetail: NextPage<Props> = ({ mission }) => {
         ) : (
           <div>mission data loading...</div>
         )}
-      </Layout>{" "}
+      </Layout>
     </ErrorBoundary>
   );
 };
 export default NFTDetail;
-
-export const getServerSideProps = async (
-  context: GetServerSidePropsContext
-) => {
-  const missionId = context.query.missionId;
-  const mission: any = await getOneMission(missionId);
-  const serializedMission = {
-    ...mission,
-    createdAt: mission?.createdAt.toISOString(),
-    updatedAt: mission?.updatedAt.toISOString(),
-    users: mission?.users.map((user: any) => ({
-      ...user,
-      createdAt: user?.createdAt.toISOString(),
-      updatedAt: user?.updatedAt.toISOString(),
-    })),
-    community: {
-      ...mission?.community,
-      createdAt: mission?.community.createdAt.toISOString(),
-      updatedAt: mission?.community.updatedAt.toISOString(),
-    },
-  };
-  return {
-    props: {
-      mission: serializedMission,
-    },
-  };
-};

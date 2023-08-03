@@ -1,14 +1,16 @@
-import type { GetServerSidePropsContext, NextPage } from "next";
+import type {NextPage } from "next";
 import ErrorBoundary from "pages/_error";
-import { getAllMissions } from "models/mission";
 import { Mission } from "@prisma/client";
 import Layout from "@/components/Layout";
 import Spotlight from "@/components/Spotlight";
+import { useEffect, useState } from "react";
+import { getMissions } from "@/utils/axios";
 
-interface Props{
-  missions?: Mission[] | any
-}
-const Discover: NextPage<Props> = ({missions}) => {
+const Discover: NextPage = () => {
+  const [missions, setMissions] = useState<Mission[] | any>()
+  useEffect(()=>{
+    getMissions().then((m) => setMissions(m?.data))
+  }, [])
   return (
     <ErrorBoundary>
       <Layout layoutNoOverflow noRegistration>
@@ -18,29 +20,3 @@ const Discover: NextPage<Props> = ({missions}) => {
   );
 };
 export default Discover;
-
-export const getServerSideProps = async (
-  context: GetServerSidePropsContext
-) => {
-    const missions: any = await getAllMissions()
-    const serializedMissions = missions.map((mission: any) => ({
-      ...mission,
-      createdAt: mission?.createdAt.toISOString(),
-      updatedAt: mission?.updatedAt.toISOString(),
-      community: {
-        ...mission?.community,
-        createdAt: mission?.community.createdAt.toISOString(),
-        updatedAt: mission?.community.updatedAt.toISOString(),
-      },
-      users: mission?.users.map((user: any) => ({
-        ...user,
-        createdAt: user?.createdAt.toISOString(),
-        updatedAt: user?.updatedAt.toISOString(),
-      }))
-    }))
-    return{
-      props: { 
-        missions: serializedMissions
-      }
-    }
-};

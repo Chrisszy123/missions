@@ -1,4 +1,4 @@
-import { updateOneMission } from "models/mission";
+import { approveMission } from "models/mission";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import authOptions  from "../auth/[...nextauth]";
@@ -8,10 +8,11 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
   if (session) {
     try {
       const data = req.body;
-      const mission = await updateOneMission(data.missionData);
+      console.log(data)
+      const mission = await approveMission(data.missionId);
       return res.json(mission);
     } catch (err: any) {
-      throw new Error("Error updating mission" + err);
+      throw new Error("Error approving mission" + err);
     }
   } else {
     res.send({

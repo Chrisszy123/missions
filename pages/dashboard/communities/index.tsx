@@ -6,9 +6,11 @@ import ErrorBoundary from "pages/_error";
 import { WalletContext } from "context/WalletContext";
 import Catalog from "@/components/Catalog";
 import { GetServerSidePropsContext } from "next";
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
+import AccessDenied from "@/components/AccessDenied/AccessDenied";
 
 const UserCommunities = () => {
+  const { status, data: sessionData }: any = useSession();
   const [community, setCommunity] = useState([]);
   const { account } = useContext(WalletContext);
   const walletAddress = account?.toString().toLowerCase();
@@ -19,6 +21,13 @@ const UserCommunities = () => {
     });
   }, [walletAddress]);
 
+  if (status === "unauthenticated" || sessionData === null) {
+    return (
+      <Layout layoutNoOverflow footerHide noRegistration>
+        <AccessDenied message="You need to be signed in " />
+      </Layout>
+    );
+  }
   return (
     <ErrorBoundary>
       <Layout layoutNoOverflow noRegistration dashboard>
@@ -43,20 +52,3 @@ const UserCommunities = () => {
 };
 
 export default UserCommunities;
-
-export const getServerSideProps = async(context: GetServerSidePropsContext) => {
-  const session = await getSession(context)
-  if (!session) {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false
-      }
-    }
-  }
-  return {
-    props: {
-      data: 'success',
-    }
-  }
-}

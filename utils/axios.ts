@@ -10,9 +10,9 @@ export const getOneCommunity = async (communityId: any) => {
         communityId
     }
     try {
-        const users = await axios.post('/api/community', data)
-        if (!users) throw new Error("users missing")
-        return { status: true, message: users }
+        const community = await axios.post('/api/community', data)
+        if (!community) throw new Error("community missing")
+        return { status: true, message: community }
     } catch (err: any) {
         return { status: false, message: err }
     }
@@ -56,6 +56,18 @@ export const getMissions = async () => {
     const missions = await axios.get('/api/mission')
     return missions
 }
+export const getOneMission = async (missionId: any) => {
+    const data = {
+        missionId
+    }
+    try {
+        const mission = await axios.post('/api/mission', data)
+        if (!mission) throw new Error("mission missing")
+        return { status: true, message: mission }
+    } catch (err: any) {
+        return { status: false, message: err }
+    }
+}
 export const createMission = async (data: any) => {
     try {
         const mission = await axios.post('/api/mission/create', data)
@@ -85,6 +97,18 @@ export const deleteMission = async (missionId: string) => {
         return { status: true, message: "mission successfully deleted" }
     } catch (err: any) {
         throw new Error('axios delete mission error' + err)
+    }
+}
+export const approveMission = async (missionId: string) => {
+    const data = {
+        missionId
+    }
+    try{
+        const response = await axios.put("/api/mission/approve", data)
+        if(response)
+        return {status: true, message: "mission approved"}
+    }catch(e){
+        throw new Error("Error approving mission" + e)
     }
 }
 // users

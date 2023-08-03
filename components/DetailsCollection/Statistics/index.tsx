@@ -10,14 +10,15 @@ type StatisticsProps = {
 };
 
 const Statistics = ({ className, items }: StatisticsProps) => {
+  console.log(items);
   const statistics = [
     {
       label: "Owned by",
       avatar: "/images/avatar.jpg",
       history: true,
-      title: items.users[0].username,
-      login: items?.users[0]?.walletAddress
-        ? truncateEthAddress(items?.users[0].walletAddress)
+      title: items?.owner?.username,
+      login: items?.owner?.walletAddress
+        ? truncateEthAddress(items?.owner?.walletAddress)
         : "",
     },
   ];
@@ -31,10 +32,13 @@ const Statistics = ({ className, items }: StatisticsProps) => {
           <div className={styles.item} key={index}>
             <div className={styles.label}>{item.label}</div>
             <div className={styles.flex}>
-            <Jazzicon
+              {items?.owner?.walletAddress ? (
+                <Jazzicon
                   diameter={35}
-                  seed={jsNumberForAddress(items?.users[0].walletAddress)}
+                  seed={jsNumberForAddress(items?.owner?.walletAddress)}
                 />
+              ) : null}
+
               {/* <div
                 className={cn({
                   [styles.avatar]: item.avatar,
@@ -44,7 +48,7 @@ const Statistics = ({ className, items }: StatisticsProps) => {
               >
                 
               </div> */}
-              <div className={styles.details} style={{marginLeft: '8px'}}>
+              <div className={styles.details} style={{ marginLeft: "8px" }}>
                 <div className={styles.title}>{item.title}</div>
                 {item.login && <div className={styles.login}>{item.login}</div>}
                 {/* {items.category && (

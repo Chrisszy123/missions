@@ -40,14 +40,14 @@ const Congrats = ({ title, content, links, onClick }: CongratsProps) => (
             </div>
           </div>
           <div className={styles.confetti}>
-            <Image
+            {/* <Image
               src="/images/confetti.png"
               width="100%"
               height="100%"
               layout="responsive"
               objectFit="contain"
               alt="Avatar"
-            />
+            /> */}
           </div>
         </div>
         <div className={styles.details}>

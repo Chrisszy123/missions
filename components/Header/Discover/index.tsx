@@ -34,6 +34,7 @@ const Discover = ({ className, light, isCommunity }: DiscoverProps) => {
 
   const [visible, setVisible] = useState<boolean>(false);
   const [visibleD, setDVisible] = useState<boolean>(false);
+  const [visibleA, setAVisible] = useState<boolean>(false);
   useHotkeys("esc", () => setVisible(false));
   useHotkeys("esc", () => setDVisible(false));
 
@@ -57,22 +58,9 @@ const Discover = ({ className, light, isCommunity }: DiscoverProps) => {
         <button className={styles.head} onClick={() => setDVisible(!visibleD)}>
           <Link href="/communities">
             communities
-            {/*  <Icon name="arrow-down" /> */}
           </Link>
         </button>
 
-        {/* <div className={styles.body}>
-            <div className={styles.list}>
-              {discover.map((item, index) => (
-                <Link href={item.url} key={index}>
-                  <a className={styles.item}>
-                    {item.title}
-                    <Icon name="arrow-right-thin" />
-                  </a>
-                </Link>
-              ))}
-            </div>
-          </div> */}
       </div>
 
       <OutsideClickHandler onOutsideClick={() => setVisible(false)}>
@@ -85,9 +73,11 @@ const Discover = ({ className, light, isCommunity }: DiscoverProps) => {
           )}
         >
           <button className={styles.head} onClick={() => setVisible(!visible)}>
-            Create <Icon name="arrow-down" />
+          <Link href="/communities/create">
+            Create 
+            </Link>
           </button>
-          <div className={styles.body}>
+          {/* <div className={styles.body}>
             <div className={styles.list}>
               <Link href="/communities/create">
                 <div className={styles.item} style={{cursor: "pointer"}}>
@@ -104,19 +94,19 @@ const Discover = ({ className, light, isCommunity }: DiscoverProps) => {
                 </Link>
               ) : null}
             </div>
-          </div>
+          </div> */}
         </div>
       </OutsideClickHandler>
 
       <div
         className={cn(
           styles.discover,
-          { [styles.active]: visibleD },
+          { [styles.active]: visibleA },
           { [styles.light]: light },
           className
         )}
       >
-        <button className={styles.head} onClick={() => setDVisible(!visibleD)}>
+        <button className={styles.head} onClick={() => setAVisible(!visibleA)}>
           <Link href="#">
             about
             {/*  <Icon name="arrow-down" /> */}

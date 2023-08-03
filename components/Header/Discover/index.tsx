@@ -56,11 +56,8 @@ const Discover = ({ className, light, isCommunity }: DiscoverProps) => {
         )}
       >
         <button className={styles.head} onClick={() => setDVisible(!visibleD)}>
-          <Link href="/communities">
-            communities
-          </Link>
+          <Link href="/communities">communities</Link>
         </button>
-
       </div>
 
       <OutsideClickHandler onOutsideClick={() => setVisible(false)}>
@@ -72,11 +69,20 @@ const Discover = ({ className, light, isCommunity }: DiscoverProps) => {
             className
           )}
         >
-          <button className={styles.head} onClick={() => setVisible(!visible)}>
-          <Link href="/communities/create">
-            Create 
+          {isCommunity ? (
+            <Link href={`/communities/${slug}/missions/create`}>
+              <div className={styles.head} style={{ cursor: "pointer" }}>
+                Create Mission
+              </div>
             </Link>
-          </button>
+          ) : (
+            <button
+              className={styles.head}
+              onClick={() => setVisible(!visible)}
+            >
+              <Link href="/communities/create">Create Community</Link>
+            </button>
+          )}
           {/* <div className={styles.body}>
             <div className={styles.list}>
               <Link href="/communities/create">

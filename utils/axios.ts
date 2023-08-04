@@ -5,7 +5,7 @@ export const getCommunities = async () => {
     const communities = await axios.get('/api/community')
     return communities
 }
-export const getOneCommunity = async (communityId: any) => {
+export const getCommunity = async (communityId: any) => {
     const data = {
         communityId
     }

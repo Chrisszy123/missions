@@ -10,7 +10,6 @@ type StatisticsProps = {
 };
 
 const Statistics = ({ className, items }: StatisticsProps) => {
-  console.log(items);
   const statistics = [
     {
       label: "Owned by",

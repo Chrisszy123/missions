@@ -6,6 +6,7 @@ import Tabs from "@/components/Tabs";
 import Filters from "@/components/Filters";
 import Sorting from "./Sorting";
 import Card from "./Card";
+import MoonLoader from "react-spinners/MoonLoader";
 
 type TabsType = {
   title: string;
@@ -21,6 +22,7 @@ type CatalogProps = {
   filters: any;
   items: any;
   scrollToRef?: any;
+  status?: any;
 };
 
 const Catalog = ({
@@ -31,6 +33,7 @@ const Catalog = ({
   items,
   dark,
   scrollToRef,
+  status,
 }: CatalogProps) => {
   const [time, setTime] = useState<string>("1-days");
   const [theme, setTheme] = useState<any>(false);
@@ -58,22 +61,34 @@ const Catalog = ({
           </button>
         </div>
         {filter && <Filters statuses={filters} dark={dark || theme} />}
-        <div className={styles.list}>
-          {items?.length === 0 ? (
-            <div>Communities data not present now</div>
-          ) : (
-            <>
-              {items?.map((card: any, index: number) => (
-                <Card
-                  className={styles.card}
-                  item={card}
-                  dark={dark || theme}
-                  key={index}
-                />
-              ))}
-            </>
-          )}
-        </div>
+        {status === "loading" ? (
+          <div className="flex justify-center items-center p-8">
+            <MoonLoader
+              loading={true}
+              color="#000"
+              size={70}
+              aria-label="Loading Spinner"
+              data-testid="loader"
+            />
+          </div>
+        ) : (
+          <div className={styles.list}>
+            {items?.length === 0 ? (
+              <div>Communities data not present now</div>
+            ) : (
+              <>
+                {items?.map((card: any, index: number) => (
+                  <Card
+                    className={styles.card}
+                    item={card}
+                    dark={dark || theme}
+                    key={index}
+                  />
+                ))}
+              </>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

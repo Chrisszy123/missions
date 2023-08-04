@@ -25,6 +25,9 @@ import { z } from "zod";
 import styles from "./CreateStep1Page.module.sass";
 
 import { PhotoIcon } from "@heroicons/react/24/solid";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/router";
+import MoonLoader from "react-spinners/MoonLoader";
 
 const MAX_FILE_SIZE = 500000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -73,13 +76,23 @@ const CommunitySchema = z.object({
 type CommunityType = z.infer<typeof CommunitySchema>;
 
 const Create: NextPage = () => {
-  const { status, data: sessionData }: any = useSession();
+  const { status: state, data: sessionData }: any = useSession();
   const [createdCommunity, setCreatedCommunity] = useState<any>(undefined);
   const [dataArray, setDataArray] = useState<string[]>([]);
   const [inputData, setInputData] = useState<string>("");
 
   console.log("SESSION DATA", sessionData);
-  console.log("SESSION STATUS", status);
+  console.log("SESSION STATUS", state);
+
+  const queryClient = useQueryClient();
+  //const router = useRouter()
+  const { status, error, mutate } = useMutation({
+    mutationFn: createCommunity,
+    onSuccess: (newCommunity) => {
+      queryClient.setQueryData(["communities", newCommunity.id], newCommunity);
+      setCreatedCommunity(newCommunity);
+    },
+  });
 
   const {
     register,
@@ -111,7 +124,7 @@ const Create: NextPage = () => {
   const { imageUrl } = useFilePreview(imageWatch);
   const { user, setCommTags }: any = useContext(AuthContext);
 
-  if (status === "unauthenticated" || sessionData === null) {
+  if (state === "unauthenticated" || sessionData === null) {
     return (
       <Layout layoutNoOverflow footerHide noRegistration>
         <AccessDenied message="You need to be signed in to create community" />
@@ -146,26 +159,15 @@ const Create: NextPage = () => {
 
   const onSubmit = async (community: CommunityType) => {
     const uploadedImageUrl = await uploadFile(community.image[0]);
-
-    const communityData = {
+    mutate({
       name: community.name,
       tags: dataArray,
       link: community.link,
       image: uploadedImageUrl,
       desc: community.desc,
-      userId:  user?.message?.data.id,
-      ownerId:  user?.message?.data.id,
-    };
-
-    const comm = await createCommunity(communityData);
-
-    console.log("COMM", comm);
-
-    // use data to redirect
-    if (comm?.status === true) {
-      setCreatedCommunity(comm.message);
-      console.log("CREATED COMMUNITY");
-    }
+      userId: user?.message?.data.id,
+      ownerId: user?.message?.data.id,
+    });
   };
 
   if (createdCommunity) {
@@ -291,10 +293,17 @@ const Create: NextPage = () => {
                   <Icon name="arrow-right" />
                 </a>
               </button>
-
-              {isSubmitting && (
-                <Alert type="success">Creating Community...</Alert>
-              )}
+              {status === "loading" ? (
+                <div className="flex justify-center items-center p-8">
+                  <MoonLoader
+                    loading={true}
+                    color="#000"
+                    size={50}
+                    aria-label="Loading Spinner"
+                    data-testid="loader"
+                  />
+                </div>
+              ) : null}
 
               {Boolean(Object.keys(errors)?.length) && (
                 <div>

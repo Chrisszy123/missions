@@ -8,14 +8,13 @@ import Preview from "@/components/Preview";
 
 import useFilePreview from "@/hooks/useFilePreview";
 
-import { createMission } from "@/utils/axios";
+import { createMission, getCommunity } from "@/utils/axios";
 import { storage } from "@/utils/firebase";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import cn from "classnames";
 import { AuthContext } from "context/AuthContext";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import type { GetServerSidePropsContext, NextPage } from "next";
 import { getSession, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useContext, useState, useEffect } from "react";
@@ -26,8 +25,14 @@ import styles from "./CreateStep1Page.module.sass";
 
 import { PhotoIcon } from "@heroicons/react/24/solid";
 import { useRouter } from "next/router";
-import {getOneCommunity} from "@/utils/axios"
-
+import { getOneCommunity } from "models/community";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import MoonLoader from "react-spinners/MoonLoader";
+import { GetServerSidePropsContext } from "next";
+import { getOneUser } from "models/user";
+import {
+  useAccount,
+} from 'wagmi'
 const MAX_FILE_SIZE = 500000;
 const ACCEPTED_IMAGE_TYPES = [
   "image/jpeg",
@@ -79,17 +84,28 @@ const MissionSchema = z
 type MissionType = z.infer<typeof MissionSchema>;
 
 const Create = () => {
-  const { status, data: sessionData }: any = useSession();
+  const { status: state, data: sessionData }: any = useSession();
   const [createdMission, setCreatedMission] = useState<any>(undefined);
   const [ownerId, setOwnerId] = useState<string>("");
 
   const router = useRouter();
   const communityId = router.query.Id;
-
+  //
+  const queryClient = useQueryClient();
+  const { status, error, mutate } = useMutation({
+    mutationFn: createMission,
+    onSuccess: (newMission) => {
+      queryClient.setQueryData(["missions", newMission.id], newMission);
+      setCreatedMission(newMission);
+    },
+  });
+  //
   useEffect(() => {
-    getOneCommunity(communityId).then((c) => setOwnerId(c?.message?.data?.ownerId))
+    getCommunity(communityId).then((c) =>
+      setOwnerId(c?.message?.data?.ownerId)
+    );
   }, [communityId]);
-
+  //
   const {
     register,
     handleSubmit,
@@ -125,8 +141,8 @@ const Create = () => {
   const { imageUrl } = useFilePreview(imageWatch);
   const { user }: any = useContext(AuthContext);
   const userId = user?.message?.data?.id;
-  
-  if (status === "unauthenticated" || sessionData === null) {
+
+  if (state === "unauthenticated" || sessionData === null) {
     return (
       <Layout layoutNoOverflow footerHide noRegistration>
         <AccessDenied message="You need to be signed in to create mission" />
@@ -149,25 +165,15 @@ const Create = () => {
 
   const onSubmit = async (mission: MissionType) => {
     const uploadedImageUrl = await uploadFile(mission.image[0]);
-
-    const data = {
+    mutate({
       name: mission.name,
       rewards: mission.rewards,
       image: uploadedImageUrl,
       desc: mission.desc,
       userId: user?.message?.data.id,
       communityId: communityId,
-    };
-
-    const createdMission = await createMission(data);
-
-    // use data to redirect
-    if (createdMission?.status === true) {
-      setCreatedMission(createdMission.message);
-      console.log("CREATED mission");
-    }
+    });
   };
-
   if (createdMission) {
     return (
       <Layout layoutNoOverflow footerHide noRegistration>
@@ -275,9 +281,17 @@ const Create = () => {
                 <div>only owners can create missions</div>
               )}
 
-              {isSubmitting && (
-                <Alert type="success">Creating mission...</Alert>
-              )}
+              {status === "loading" ? (
+                <div className="flex justify-center items-center p-8">
+                  <MoonLoader
+                    loading={true}
+                    color="#000"
+                    size={50}
+                    aria-label="Loading Spinner"
+                    data-testid="loader"
+                  />
+                </div>
+              ) : null}
 
               {Boolean(Object.keys(errors)?.length) && (
                 <div>
@@ -302,3 +316,27 @@ const Create = () => {
 
 export default Create;
 
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const session: any = await getSession(context)
+  const walletAddress = session?.user?.address.toString().toLowerCase()
+  const user: any = await getOneUser(walletAddress)
+  const userId = user?.id
+  const communityId = context.query.Id;
+  const community = await getOneCommunity(communityId);
+  const ownerId = community?.ownerId;
+  if(userId !== ownerId) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false
+      }
+    }
+  }
+  return{
+    props: {
+      success: "success"
+    }
+  }
+};

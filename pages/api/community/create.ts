@@ -6,7 +6,6 @@ import authOptions from "../auth/[...nextauth]";
 export default async function (req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(req, res, authOptions);
   if (session) {
-    console.log("session", session)
     try {
       const data = req.body;
       const community = await createCommunity(data.communityData);

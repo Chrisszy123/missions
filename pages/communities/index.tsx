@@ -7,6 +7,8 @@ import { useRef, useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import Catalog from "@/components/CommunityCatalog";
 import { tabsTime, statuses } from "@/mocks/nfts";
+import { useQuery } from "@tanstack/react-query";
+
 
 interface Props {
   communities?: Community[];
@@ -14,7 +16,6 @@ interface Props {
 
 const Discover: NextPage<Props> = () => {
   const scrollToAll = useRef<any>(null);
-  const [communities, setCommunities] = useState<any>()
   const scrollToCommunities = useRef<any>(null);
   const scrollToMissions = useRef<any>(null);
   const scrollToArtist = useRef<any>(null);
@@ -44,54 +45,34 @@ const Discover: NextPage<Props> = () => {
       anchor: scrollToArtist,
     },
   ];
-  useEffect(() => {
-    getCommunities().then((c: any) => setCommunities(c?.data));
-  }, [])
+  const {
+    error,
+    status,
+    data: communities,
+  } = useQuery({
+    queryKey: ["communities"],
+    queryFn: getCommunities,
+  });
   return (
     <ErrorBoundary>
       <Layout layoutNoOverflow noRegistration>
-        {communities?.length === 0 ? (
-          <div>There are no communities at the moment</div>
-        ) : (
-          <>
-            {/* <Main scrollToRef={scrollToAll} /> */}
-            <Catalog
-              title="Communities"
-              tabsSorting={tabsSorting}
-              tabsTime={tabsTime}
-              filters={statuses}
-              items={communities}
-              scrollToRef={scrollToCommunities}
-            />
-            {/* <Newsletter /> */}
-          </>
-        )}
+            {communities?.data.length === 0 ? (
+              <div>There are no communities at the moment</div>
+            ) : (
+              <>
+                <Catalog
+                  title="Communities"
+                  tabsSorting={tabsSorting}
+                  tabsTime={tabsTime}
+                  filters={statuses}
+                  items={communities?.data}
+                  scrollToRef={scrollToCommunities}
+                  status={status}
+                />
+              </>
+            )}
       </Layout>
     </ErrorBoundary>
   );
 };
 export default Discover;
-
-// export async function getServerSideProps(context: GetServerSidePropsContext) {
-//   const communities: any = await getAllCommunities();
-//   const serializedCommunities = communities.map((community: any) => ({
-//     ...community,
-//     createdAt: community?.createdAt.toISOString(),
-//     updatedAt: community?.updatedAt.toISOString(),
-//     owner: {
-//       ...community.owner,
-//       createdAt: community?.owner.createdAt.toISOString(),
-//       updatedAt: community?.owner.updatedAt.toISOString(),
-//     },
-//     users: community?.users.map((user: any) => ({
-//       ...user,
-//       createdAt: user?.createdAt.toISOString(),
-//       updatedAt: user?.updatedAt.toISOString(),
-//     })),
-//   }));
-//   return {
-//     props: {
-//       communities: serializedCommunities,
-//     },
-//   };
-// }

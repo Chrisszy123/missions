@@ -43,6 +43,9 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "@/utils/firebase";
 import { PhotoIcon } from "@heroicons/react/24/solid";
 import Spinner from "../Spinner";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import Overlay from "../Overlay/Overlay";
+import MoonLoader from "react-spinners/MoonLoader";
 
 type DetailsType = {
   name: string;
@@ -127,6 +130,26 @@ const Details = ({ details, setDeleted }: DetailsProps) => {
       }
     });
   }, [userId]);
+
+  const queryClient = useQueryClient();
+  //const router = useRouter()
+  const { status, error, mutate } = useMutation({
+    mutationFn: joinCommunity,
+    onSuccess: (res) => {
+      console.log(res);
+      queryClient.setQueryData(["communities", res?.message?.data.id], res);
+      router.reload();
+    },
+  });
+  const { status: leaveStatus, error: leaveError, mutate: leaveMutate } = useMutation({
+    mutationFn: leaveCommunity,
+    onSuccess: (res) => {
+      console.log(res);
+      queryClient.setQueryData(["communities", res?.message?.data.id], res);
+      router.reload();
+    },
+  });
+  //
   getOneUser(walletAddress).then((e: any) => {
     setUserId(e?.message?.data?.id);
   });
@@ -220,33 +243,25 @@ const Details = ({ details, setDeleted }: DetailsProps) => {
     // use data to redirect
     if (comm?.status === true) {
       setEditedCommunity(comm.message);
-      router.reload()
+      router.reload();
     }
   };
   const handleJoin = async () => {
     try {
-      const data = {
+      mutate({
         id: communityId,
         userId,
-      };
-      const join = await joinCommunity(data);
-      if (join.status === true) {
-        router.reload();
-      }
+      });
     } catch (err: any) {
       throw new Error("error joining community" + err);
     }
   };
   const handleLeave = async () => {
     try {
-      const data = {
+      leaveMutate({
         id: communityId,
         userId,
-      };
-      const leave = await leaveCommunity(data);
-      if (leave.status === true) {
-        router.reload();
-      }
+      });
     } catch (err: any) {
       throw new Error("error leaving community" + err);
     }
@@ -271,327 +286,344 @@ const Details = ({ details, setDeleted }: DetailsProps) => {
     setDeleteModal(false);
   };
   return (
-    <div className={styles.details}>
-      <div className={styles.head}>
-        <div className={styles.box}>
-          <div className={cn("h2", styles.user)} style={{ fontSize: "30px" }}>
-            {details?.name}
+    <>
+      {status === "loading" || leaveStatus === "loading" ? (
+        <Overlay>
+          <div className="flex justify-center items-center p-8">
+            <MoonLoader
+              loading={true}
+              color="#000"
+              size={50}
+              aria-label="Loading Spinner"
+              data-testid="loader"
+            />
           </div>
-          <div className={styles.line}>
-            <div className={styles.code}>
-              {details?.link}
-              <button className={styles.copy}>
-                <Icon name="copy" />
-              </button>
+        </Overlay>
+      ) : (
+        <div className={styles.details}>
+          <div className={styles.head}>
+            <div className={styles.box}>
+              <div
+                className={cn("h2", styles.user)}
+                style={{ fontSize: "30px" }}
+              >
+                {details?.name}
+              </div>
+              <div className={styles.line}>
+                <div className={styles.code}>
+                  {details?.link}
+                  <button className={styles.copy}>
+                    <Icon name="copy" />
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        <div>
-          {creator !== userId ? (
-            <></>
-          ) : (
-            <>
-              <button
-                className={cn(
-                  "button-stroke-grey button-medium",
-                  styles.button
-                )}
-                onClick={openDeleteModal}
-                style={{
-                  paddingLeft: "0.5rem",
-                  paddingRight: "0.6rem",
-                  marginLeft: "0px",
-                }}
-              >
-                <Icon name="delete" />
-              </button>
-              <button
-                className={cn(
-                  "button-stroke-grey button-medium",
-                  styles.button
-                )}
-                onClick={openModal}
-                style={{
-                  paddingLeft: "0.5rem",
-                  paddingRight: "0.6rem",
-                  marginLeft: "2px",
-                }}
-              >
-                <Icon name="edit" />
-              </button>
-            </>
-          )}
-          {connected ? (
-            <>
-              {isMember ? (
-                <button
-                  className={cn(
-                    "button-stroke-grey button-medium",
-                    styles.button
-                  )}
-                  onClick={handleLeave}
-                  style={{
-                    paddingLeft: "0.5rem",
-                    paddingRight: "0.6rem",
-                    marginLeft: "2px",
-                  }}
-                >
-                  <Icon name="logout" />
-                </button>
+            <div>
+              {creator !== userId ? (
+                <></>
               ) : (
-                <button
-                  className={cn(
-                    "button-stroke-grey button-medium",
-                    styles.button
-                  )}
-                  onClick={handleJoin}
-                  style={{
-                    paddingLeft: "0.5rem",
-                    paddingRight: "0.6rem",
-                    marginLeft: "0px",
-                  }}
-                >
-                  <Icon name="plus" />
-                </button>
-              )}
-            </>
-          ) : null}
-        </div>
-        <Modal
-          isOpen={deletemModalIsOpen}
-          onRequestClose={closeDeleteModal}
-          contentLabel="Example Modal"
-          style={customStyles}
-        >
-          <div className="flex flex-col justify-center items-center rounded-lg h-[100%] w-[100%] capitalize gap-4">
-            <div className={cn("h2", styles.user, "text-[30px] text-white")}>
-              Delete Community
-            </div>
-            <span className="text-white opacity-30 text-center mb-2">
-              Once community is deleted it cannot be restored, Click on delete
-              to continue
-            </span>
-            <div className="flex justify-center items-center gap-2">
-              <a
-                onClick={closeDeleteModal}
-                className={cn("button", s.button, " cursor-pointer")}
-              >
-                <span>close</span>
-              </a>
-
-              <a
-                className={cn(
-                  "button-white",
-                  styles.button,
-                  "m-0 cursor-pointer"
-                )}
-                onClick={handleDelete}
-              >
-                <span>delete</span>
-                <Icon name="arrow-right" />
-              </a>
-            </div>
-          </div>
-        </Modal>
-        <Modal
-          isOpen={modalIsOpen}
-          onRequestClose={closeModal}
-          contentLabel="Example Modal"
-          style={{
-            overlay: {
-              zIndex: "100",
-            },
-          }}
-        >
-          {editedCommunity ? (
-            <Layout layoutNoOverflow footerHide noRegistration>
-              <Congrats
-                title="SUCCESS"
-                onClick={closeModal}
-                content={
-                  <>
-                    You&apos;ve now edited your community! 
-                  </>
-                }
-                // links={
-                //   <>
-                //     <Link href={`/communities/${editedCommunity.id}`}>
-                //       <a className={cn("button-large", styles.button)}>
-                //         View community
-                //       </a>
-                //     </Link>
-                //   </>
-                // }
-              />
-            </Layout>
-          ) : (
-            <LayoutCreate
-              left={
                 <>
-                  <div className={styles.head}>
-                    <div className={cn("h1", styles.title)}>
-                      Edit <br></br>Community.
-                    </div>
-                    <button onClick={closeModal}>
-                      <a className={cn("button-circle", style.back)}>
-                        <Icon name="arrow-left" />
-                      </a>
-                    </button>
-                  </div>
-                  <div className={styles.info}>Edit community.</div>
-                  <form
-                    className={styles.form}
-                    onSubmit={handleSubmit(onSubmit)}
-                    noValidate
+                  <button
+                    className={cn(
+                      "button-stroke-grey button-medium",
+                      styles.button
+                    )}
+                    onClick={openDeleteModal}
+                    style={{
+                      paddingLeft: "0.5rem",
+                      paddingRight: "0.6rem",
+                      marginLeft: "0px",
+                    }}
                   >
-                    <label>
-                      <div className="w-full h-40 flex flex-col gap-2 items-center justify-center border-4 border-dashed border-gray-300 rounded-xl cursor-pointer hover:bg-gray-200 transition-all">
-                        <PhotoIcon className="h-12 text-gray-400" />
-                        Select image
-                      </div>
-                      <Field
-                        className={(styles.field, "hidden")}
-                        type="file"
-                        icon="profile"
-                        large
-                        required
-                        register={register("image")}
-                      />
-                      <AlertInput>
-                        {errors?.image?.message?.toString()}
-                      </AlertInput>
-                    </label>
-
-                    <Field
-                      className={styles.field}
-                      placeholder="Name"
-                      icon="profile"
-                      large
-                      register={register("name")}
-                      aria-invalid={Boolean(errors.name)}
-                    />
-                    <AlertInput>{errors?.name?.message}</AlertInput>
-
-                    <Field
-                      className={styles.field}
-                      placeholder="URL"
-                      icon="profile"
-                      large
-                      register={register("link")}
-                    />
-                    <AlertInput>{errors?.link?.message}</AlertInput>
-
-                    <div
+                    <Icon name="delete" />
+                  </button>
+                  <button
+                    className={cn(
+                      "button-stroke-grey button-medium",
+                      styles.button
+                    )}
+                    onClick={openModal}
+                    style={{
+                      paddingLeft: "0.5rem",
+                      paddingRight: "0.6rem",
+                      marginLeft: "2px",
+                    }}
+                  >
+                    <Icon name="edit" />
+                  </button>
+                </>
+              )}
+              {connected ? (
+                <>
+                  {isMember ? (
+                    <button
+                      className={cn(
+                        "button-stroke-grey button-medium",
+                        styles.button
+                      )}
+                      onClick={handleLeave}
                       style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "1rem",
+                        paddingLeft: "0.5rem",
+                        paddingRight: "0.6rem",
+                        marginLeft: "2px",
                       }}
                     >
-                      {" "}
-                      Tags:
-                      {dataArray.map((e: any, index) => (
-                        <div key={index}>{e}</div>
-                      ))}
-                    </div>
-                    <Field
-                      className={styles.field}
-                      placeholder="Tags"
-                      icon="plus"
-                      // register={register("tags")}
-                      value={inputData}
-                      onChange={handleInputChange}
-                      onClick={handleClick}
-                      large
-                    />
-                    {/* <AlertInput>{errors?.tags?.message}</AlertInput> */}
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "1rem",
-                      }}
-                    ></div>
-                    <Field
-                      className={styles.field}
-                      placeholder="Description"
-                      icon="email"
-                      textarea
-                      large
-                      register={register("desc")}
-                    />
-                    <AlertInput>{errors?.desc?.message}</AlertInput>
-
-                    <button type="submit">
-                      <a className={cn("button-large", styles.button)}>
-                        <span>Edit Community</span>
-                        <Icon name="arrow-right" />
-                      </a>
+                      <Icon name="logout" />
                     </button>
-
-                    {isSubmitting && (
-                      <Spinner />
-                    )}
-
-                    {Boolean(Object.keys(errors)?.length) && (
-                      <div>
-                        There are errors, please correct them before submitting
-                        the form
-                      </div>
-                    )}
-                  </form>
+                  ) : (
+                    <button
+                      className={cn(
+                        "button-stroke-grey button-medium",
+                        styles.button
+                      )}
+                      onClick={handleJoin}
+                      style={{
+                        paddingLeft: "0.5rem",
+                        paddingRight: "0.6rem",
+                        marginLeft: "0px",
+                      }}
+                    >
+                      <Icon name="plus" />
+                    </button>
+                  )}
                 </>
-              }
+              ) : null}
+            </div>
+            <Modal
+              isOpen={deletemModalIsOpen}
+              onRequestClose={closeDeleteModal}
+              contentLabel="Example Modal"
+              style={customStyles}
             >
-              <Preview imageUrl={imageUrl} name={name} desc={desc} />
-            </LayoutCreate>
-          )}
-        </Modal>
-      </div>
-      <div className={styles.list} style={{ marginBottom: "1rem" }}>
-        <div className={styles.item}>
-          <div className={styles.label}>
-            <Icon name="profile-fat" /> Users
+              <div className="flex flex-col justify-center items-center rounded-lg h-[100%] w-[100%] capitalize gap-4">
+                <div
+                  className={cn("h2", styles.user, "text-[30px] text-white")}
+                >
+                  Delete Community
+                </div>
+                <span className="text-white opacity-30 text-center mb-2">
+                  Once community is deleted it cannot be restored, Click on
+                  delete to continue
+                </span>
+                <div className="flex justify-center items-center gap-2">
+                  <a
+                    onClick={closeDeleteModal}
+                    className={cn("button", s.button, " cursor-pointer")}
+                  >
+                    <span>close</span>
+                  </a>
+
+                  <a
+                    className={cn(
+                      "button-white",
+                      styles.button,
+                      "m-0 cursor-pointer"
+                    )}
+                    onClick={handleDelete}
+                  >
+                    <span>delete</span>
+                    <Icon name="arrow-right" />
+                  </a>
+                </div>
+              </div>
+            </Modal>
+            <Modal
+              isOpen={modalIsOpen}
+              onRequestClose={closeModal}
+              contentLabel="Example Modal"
+              style={{
+                overlay: {
+                  zIndex: "100",
+                },
+              }}
+            >
+              {editedCommunity ? (
+                <Layout layoutNoOverflow footerHide noRegistration>
+                  <Congrats
+                    title="SUCCESS"
+                    onClick={closeModal}
+                    content={<>You&apos;ve now edited your community!</>}
+                    // links={
+                    //   <>
+                    //     <Link href={`/communities/${editedCommunity.id}`}>
+                    //       <a className={cn("button-large", styles.button)}>
+                    //         View community
+                    //       </a>
+                    //     </Link>
+                    //   </>
+                    // }
+                  />
+                </Layout>
+              ) : (
+                <LayoutCreate
+                  left={
+                    <>
+                      <div className={styles.head}>
+                        <div className={cn("h1", styles.title)}>
+                          Edit <br></br>Community.
+                        </div>
+                        <button onClick={closeModal}>
+                          <a className={cn("button-circle", style.back)}>
+                            <Icon name="arrow-left" />
+                          </a>
+                        </button>
+                      </div>
+                      <div className={styles.info}>Edit community.</div>
+                      <form
+                        className={styles.form}
+                        onSubmit={handleSubmit(onSubmit)}
+                        noValidate
+                      >
+                        <label>
+                          <div className="w-full h-40 flex flex-col gap-2 items-center justify-center border-4 border-dashed border-gray-300 rounded-xl cursor-pointer hover:bg-gray-200 transition-all">
+                            <PhotoIcon className="h-12 text-gray-400" />
+                            Select image
+                          </div>
+                          <Field
+                            className={(styles.field, "hidden")}
+                            type="file"
+                            icon="profile"
+                            large
+                            required
+                            register={register("image")}
+                          />
+                          <AlertInput>
+                            {errors?.image?.message?.toString()}
+                          </AlertInput>
+                        </label>
+
+                        <Field
+                          className={styles.field}
+                          placeholder="Name"
+                          icon="profile"
+                          large
+                          register={register("name")}
+                          aria-invalid={Boolean(errors.name)}
+                        />
+                        <AlertInput>{errors?.name?.message}</AlertInput>
+
+                        <Field
+                          className={styles.field}
+                          placeholder="URL"
+                          icon="profile"
+                          large
+                          register={register("link")}
+                        />
+                        <AlertInput>{errors?.link?.message}</AlertInput>
+
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "1rem",
+                          }}
+                        >
+                          {" "}
+                          Tags:
+                          {dataArray.map((e: any, index) => (
+                            <div key={index}>{e}</div>
+                          ))}
+                        </div>
+                        <Field
+                          className={styles.field}
+                          placeholder="Tags"
+                          icon="plus"
+                          // register={register("tags")}
+                          value={inputData}
+                          onChange={handleInputChange}
+                          onClick={handleClick}
+                          large
+                        />
+                        {/* <AlertInput>{errors?.tags?.message}</AlertInput> */}
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "1rem",
+                          }}
+                        ></div>
+                        <Field
+                          className={styles.field}
+                          placeholder="Description"
+                          icon="email"
+                          textarea
+                          large
+                          register={register("desc")}
+                        />
+                        <AlertInput>{errors?.desc?.message}</AlertInput>
+
+                        <button type="submit">
+                          <a className={cn("button-large", styles.button)}>
+                            <span>Edit Community</span>
+                            <Icon name="arrow-right" />
+                          </a>
+                        </button>
+
+                        {isSubmitting && <Spinner />}
+
+                        {Boolean(Object.keys(errors)?.length) && (
+                          <div>
+                            There are errors, please correct them before
+                            submitting the form
+                          </div>
+                        )}
+                      </form>
+                    </>
+                  }
+                >
+                  <Preview imageUrl={imageUrl} name={name} desc={desc} />
+                </LayoutCreate>
+              )}
+            </Modal>
           </div>
-          <div className={cn("h4", styles.value)}>{details?.users.length}</div>
-        </div>
-        <div className={styles.item}>
-          <div className={styles.label}>
-            <Icon name="profile-fat" /> Missions
+          <div className={styles.list} style={{ marginBottom: "1rem" }}>
+            <div className={styles.item}>
+              <div className={styles.label}>
+                <Icon name="profile-fat" /> Users
+              </div>
+              <div className={cn("h4", styles.value)}>
+                {details?.users.length}
+              </div>
+            </div>
+            <div className={styles.item}>
+              <div className={styles.label}>
+                <Icon name="profile-fat" /> Missions
+              </div>
+              <div className={cn("h4", styles.value)}>
+                {details?.missions?.length}
+              </div>
+            </div>
           </div>
-          <div className={cn("h4", styles.value)}>
-            {details?.missions?.length}
+          <Statistics items={details} className={styled.box} />
+          <div
+            className={sty.box}
+            style={{ padding: "0", paddingTop: "1rem", marginTop: "2rem" }}
+          >
+            <div className={cn("h4", sty.stage)}>Description</div>
+            <div className={sty.content} style={{ fontSize: "14px" }}>
+              {details.desc}
+            </div>
+            {details?.links && <Links items={details} />}
+            {/* {addTags && (
+                             <button
+                                 className={cn(
+                                     "button-stroke-grey button-medium",
+                                     styles.button
+                                 )}
+                             >
+                                 <span>Add tags</span>
+                                 <Icon name="plus" />
+                             </button>
+                         )} */}
+            {details?.tags && <Tags tags={details?.tags} />}
           </div>
+          {/* <div className={styles.foot}>
+         <div className={styles.stage}>Description</div>
+         <div className={styles.content}>{details?.desc}</div>
+       </div> */}
         </div>
-      </div>
-      <Statistics items={details} className={styled.box} />
-      <div
-        className={sty.box}
-        style={{ padding: "0", paddingTop: "1rem", marginTop: "2rem" }}
-      >
-        <div className={cn("h4", sty.stage)}>Description</div>
-        <div className={sty.content} style={{ fontSize: "14px" }}>
-          {details.desc}
-        </div>
-        {details?.links && <Links items={details} />}
-        {/* {addTags && (
-                            <button
-                                className={cn(
-                                    "button-stroke-grey button-medium",
-                                    styles.button
-                                )}
-                            >
-                                <span>Add tags</span>
-                                <Icon name="plus" />
-                            </button>
-                        )} */}
-        {details?.tags && <Tags tags={details?.tags} />}
-      </div>
-      {/* <div className={styles.foot}>
-        <div className={styles.stage}>Description</div>
-        <div className={styles.content}>{details?.desc}</div>
-      </div> */}
-    </div>
+      )}
+    </>
   );
 };
 

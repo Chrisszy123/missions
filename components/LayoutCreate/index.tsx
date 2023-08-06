@@ -1,6 +1,6 @@
 import styles from "./LayoutCreate.module.sass";
 type LayoutCreateProps = {
-  left: React.ReactNode;
+  left?: React.ReactNode;
   children: React.ReactNode;
 };
 

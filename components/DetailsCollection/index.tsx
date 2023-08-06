@@ -31,6 +31,7 @@ import {
   joinCommunity,
   leaveCommunity,
   deleteCommunity,
+  getCommunity,
 } from "@/utils/axios";
 import Layout from "../Layout";
 import Congrats from "../Congrats";
@@ -141,7 +142,11 @@ const Details = ({ details, setDeleted }: DetailsProps) => {
       router.reload();
     },
   });
-  const { status: leaveStatus, error: leaveError, mutate: leaveMutate } = useMutation({
+  const {
+    status: leaveStatus,
+    error: leaveError,
+    mutate: leaveMutate,
+  } = useMutation({
     mutationFn: leaveCommunity,
     onSuccess: (res) => {
       console.log(res);
@@ -150,6 +155,7 @@ const Details = ({ details, setDeleted }: DetailsProps) => {
     },
   });
   //
+
   getOneUser(walletAddress).then((e: any) => {
     setUserId(e?.message?.data?.id);
   });
@@ -401,7 +407,7 @@ const Details = ({ details, setDeleted }: DetailsProps) => {
                 >
                   Delete Community
                 </div>
-                <span className="text-white opacity-30 text-center mb-2">
+                <span className="text-white opacity-70 text-center mb-2">
                   Once community is deleted it cannot be restored, Click on
                   delete to continue
                 </span>
@@ -411,18 +417,19 @@ const Details = ({ details, setDeleted }: DetailsProps) => {
                     className={cn("button", s.button, " cursor-pointer")}
                   >
                     <span>close</span>
+                    <Icon name="close" />
                   </a>
 
                   <a
                     className={cn(
                       "button-white",
                       styles.button,
-                      "m-0 cursor-pointer"
+                      " cursor-pointer m-0"
                     )}
                     onClick={handleDelete}
                   >
                     <span>delete</span>
-                    <Icon name="arrow-right" />
+                    <Icon name="arrow-right" /> 
                   </a>
                 </div>
               </div>
@@ -494,7 +501,7 @@ const Details = ({ details, setDeleted }: DetailsProps) => {
 
                         <Field
                           className={styles.field}
-                          placeholder="Name"
+                          placeholder={details?.name}
                           icon="profile"
                           large
                           register={register("name")}
@@ -504,7 +511,7 @@ const Details = ({ details, setDeleted }: DetailsProps) => {
 
                         <Field
                           className={styles.field}
-                          placeholder="URL"
+                          placeholder={details?.link}
                           icon="profile"
                           large
                           register={register("link")}
@@ -518,15 +525,28 @@ const Details = ({ details, setDeleted }: DetailsProps) => {
                             gap: "1rem",
                           }}
                         >
-                          {" "}
-                          Tags:
-                          {dataArray.map((e: any, index) => (
-                            <div key={index}>{e}</div>
-                          ))}
+                          {dataArray.length >= 0 ? (
+                            <div className="flex gap-4 mt-4">
+                              Tags:
+                              {dataArray.map((e: any, index) => (
+                                <div key={index}>{e}</div>
+                              ))}
+                            </div>
+                          ) : (
+                            <div>
+                              {details?.tags.length >= 0 ? (
+                                <div>
+                                  {details?.tags.map((e: any, i: any) => (
+                                    <div key={i}>{e?.name[0]}</div>
+                                  ))}
+                                </div>
+                              ) : null}
+                            </div>
+                          )}
                         </div>
                         <Field
                           className={styles.field}
-                          placeholder="Tags"
+                          placeholder="tags"
                           icon="plus"
                           // register={register("tags")}
                           value={inputData}
@@ -543,8 +563,8 @@ const Details = ({ details, setDeleted }: DetailsProps) => {
                           }}
                         ></div>
                         <Field
-                          className={styles.field}
-                          placeholder="Description"
+                          className={cn(styles.field, "placeholder:text-slate-200")}
+                          placeholder={details?.desc}
                           icon="email"
                           textarea
                           large
@@ -601,7 +621,7 @@ const Details = ({ details, setDeleted }: DetailsProps) => {
           >
             <div className={cn("h4", sty.stage)}>Description</div>
             <div className={sty.content} style={{ fontSize: "14px" }}>
-              {details.desc}
+              {details?.desc}
             </div>
             {details?.links && <Links items={details} />}
             {/* {addTags && (

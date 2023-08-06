@@ -34,7 +34,7 @@ const Profile: NextPage<Props> = () => {
     queryKey: ["communities", `${communityId!}`],
     queryFn: () => getCommunity(communityId!),
   });
-  const ownerId = community?.message?.data.ownerId;
+  const ownerId = community?.message?.data?.ownerId;
   if (deleted) {
     return (
       <Layout layoutNoOverflow footerHide noRegistration>

@@ -17,14 +17,6 @@ const menu = [
     title: "Dashboard",
     url: "/dashboard",
   },
-  {
-    title: "My Communities",
-    url: "/dashboard/communities",
-  },
-  {
-    title: "Profile",
-    url: "/dashboard/profile",
-  },
 ];
 
 type ProfileProps = {

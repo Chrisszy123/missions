@@ -346,7 +346,7 @@ const Caption = ({ title, date, data, setDeleted }: CaptionProps) => {
 
                       <Field
                         className={styles.field}
-                        placeholder="Name"
+                        placeholder={data?.name}
                         icon="profile"
                         large
                         register={register("name")}
@@ -356,7 +356,7 @@ const Caption = ({ title, date, data, setDeleted }: CaptionProps) => {
 
                       <Field
                         className={styles.field}
-                        placeholder="Rewards"
+                        placeholder={data?.rewards[0]}
                         icon="profile"
                         large
                         register={register("rewards")}
@@ -365,7 +365,7 @@ const Caption = ({ title, date, data, setDeleted }: CaptionProps) => {
 
                       <Field
                         className={styles.field}
-                        placeholder="Description"
+                        placeholder={data?.desc}
                         icon="email"
                         textarea
                         large

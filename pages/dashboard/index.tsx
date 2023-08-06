@@ -6,6 +6,7 @@ import ErrorBoundary from "pages/_error";
 import { WalletContext } from "context/WalletContext";
 import Catalog from "@/components/Catalog";
 import Spotlight from "@/components/Spotlight";
+import Dashboard from "@/components/SettingsPage";
 import { getSession, useSession } from "next-auth/react";
 import { GetServerSidePropsContext } from "next";
 import AccessDenied from "@/components/AccessDenied/AccessDenied";
@@ -35,35 +36,7 @@ const SettingsPage = () => {
 
   return (
     <ErrorBoundary>
-      <Layout layoutNoOverflow noRegistration dashboard>
-        <div className=" md:pl-2 md:pt-0 md:pr-10">
-          <div className={styles.col}>
-            {community?.length === 0 ? (
-              <div>Oppps you need to create communities</div>
-            ) : (
-              <>
-                <Catalog
-                  title="My Communities"
-                  items={community}
-                  titleStyle="md:text-[40px] text-[30px]"
-                />
-              </>
-            )}
-            {mission?.length === 0 ? (
-              <div> There are no missions </div>
-            ) : (
-              <Spotlight
-                missions={mission}
-                title="My Missions"
-                style="bg-transparent"
-                titleStyle="text-[#000] text-[30px] md:text-[40px]"
-                nameStyle="text-[#000]"
-                btnStyle="bg-black text-white hover:bg-gray-800 hover:text-white"
-              />
-            )}
-          </div>
-        </div>
-      </Layout>
+      <Dashboard />
     </ErrorBoundary>
   );
 };

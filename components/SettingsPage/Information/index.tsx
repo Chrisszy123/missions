@@ -5,8 +5,8 @@ import Field from "@/components/Field";
 type InformationProps = {};
 
 const Information = ({}: InformationProps) => {
-    const [email, setEmail] = useState<string>("hello@ui8.net");
-    const [name, setName] = useState<string>("Dash");
+    const [email, setEmail] = useState<string>("");
+    const [name, setName] = useState<string>("");
     const [bio, setBio] = useState<string>("");
     const [site, setSite] = useState<string>("https://ui8.net");
     const [twitter, setTwitter] = useState<string>("https://twitter.com/ui8");
@@ -28,7 +28,7 @@ const Information = ({}: InformationProps) => {
                 />
                 <Field
                     className={styles.field}
-                    label="Display name"
+                    label="username"
                     icon="profile"
                     value={name}
                     onChange={(e: any) => setName(e.target.value)}
@@ -37,7 +37,7 @@ const Information = ({}: InformationProps) => {
                 <Field
                     className={styles.field}
                     label="Short bio"
-                    placeholder="About you"
+                    placeholder="Bio"
                     icon="list-open"
                     value={bio}
                     onChange={(e: any) => setBio(e.target.value)}

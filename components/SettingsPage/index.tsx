@@ -10,7 +10,12 @@ import MissionPage from "../Create/CreateWithCollectionPage";
 import Wallet from "./Wallet";
 import Notification from "./Notification";
 
-const SettingsPage = () => {
+interface DashboardProps {
+  communities: any;
+  missions: any;
+  status: any;
+}
+const SettingsPage = ({ communities, missions, status }: DashboardProps) => {
   const scrollToRefProfile = useRef<any>(null);
   const scrollToRefWallet = useRef<any>(null);
   const scrollToRefNotification = useRef<any>(null);
@@ -38,7 +43,12 @@ const SettingsPage = () => {
             <div className={styles.anchor} ref={scrollToRefProfile}></div>
             <div className={styles.label}>information</div>
             <Information />
+            <button className={cn("button-large", styles.button, "mt-8")}>
+              <span>Save</span>
+              <Icon name="check" />
+            </button>
           </div>
+
           <div className={styles.section} id="wallet">
             <div className={styles.anchor} ref={scrollToRefWallet}></div>
             <div className={styles.label}>wallet</div>
@@ -51,14 +61,10 @@ const SettingsPage = () => {
           </div>
         </div>
       );
-    }else if(active === 2) {
-        return(
-            <CommunityPage />
-        )
-    }else{
-        return(
-           <MissionPage />
-        )
+    } else if (active === 2) {
+      return <CommunityPage communities={communities} status={status} />;
+    } else {
+      return <MissionPage missions={missions} status={status} />;
     }
   };
   return (

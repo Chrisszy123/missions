@@ -36,9 +36,9 @@ const Wallet = ({}: WalletProps) => (
                 </a>
             </Link>
         </div>
-        <button className={cn("button-stroke-grey button-wide", styles.button)}>
+        {/* <button className={cn("button-stroke-grey button-wide", styles.button)}>
             link wallet
-        </button>
+        </button> */}
     </>
 );
 

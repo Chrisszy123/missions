@@ -119,22 +119,6 @@
 .lines
     display: flex
     flex-direction: column
-    &:before,
-    &:after
-        content: ""
-        display: block
-        height: rem(12)
-        border-radius: rem(4)
-        background: $n3
-    &:before
-        width: rem(200)
-        margin-bottom: rem(12)
-        +m
-            width: rem(160)
-    &:after
-        width: rem(123)
-        +m
-            width: rem(100)
 
 .foot
     margin-top: rem(44)
@@ -150,3 +134,10 @@
         +base
     &:hover
         color: $n7
+
+.item
+    transition: box-shadow .2s
+    &:hover
+        +shadow1
+    &:not(:last-child)
+        margin-bottom: rem(24)

@@ -81,19 +81,15 @@ const Create: NextPage = () => {
   const [dataArray, setDataArray] = useState<string[]>([]);
   const [inputData, setInputData] = useState<string>("");
 
-  console.log("SESSION DATA", sessionData);
-  console.log("SESSION STATUS", state);
-
   const queryClient = useQueryClient();
   //const router = useRouter()
   const { status, error, mutate } = useMutation({
     mutationFn: createCommunity,
     onSuccess: (newCommunity) => {
       queryClient.setQueryData(["communities", newCommunity.id], newCommunity);
-      setCreatedCommunity(newCommunity);
+      setCreatedCommunity(newCommunity?.message);
     },
   });
-
   const {
     register,
     handleSubmit,

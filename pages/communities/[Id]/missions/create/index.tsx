@@ -96,7 +96,7 @@ const Create = () => {
     mutationFn: createMission,
     onSuccess: (newMission) => {
       queryClient.setQueryData(["missions", newMission.id], newMission);
-      setCreatedMission(newMission);
+      setCreatedMission(newMission?.message);
     },
   });
   //

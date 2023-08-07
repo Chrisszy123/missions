@@ -326,7 +326,40 @@ const Details = ({ details, setDeleted }: DetailsProps) => {
             </div>
             <div>
               {creator !== userId ? (
-                <></>
+                <>
+                {isMember ? (
+                    <button
+                    className={cn(
+                      "button-stroke-grey button-medium",
+                      styles.button
+                    )}
+                    onClick={handleLeave}
+                    style={{
+                      paddingLeft: "0.5rem",
+                      paddingRight: "0.6rem",
+                      marginLeft: "2px",
+                    }}
+                    >
+                    <Icon name="logout" />
+                    </button>
+                    
+                  ) : (
+                    <button
+                      className={cn(
+                        "button-stroke-grey button-medium",
+                        styles.button
+                      )}
+                      onClick={handleJoin}
+                      style={{
+                        paddingLeft: "0.5rem",
+                        paddingRight: "0.6rem",
+                        marginLeft: "0px",
+                      }}
+                    >
+                      <Icon name="plus" />
+                    </button>
+                  )}
+                </>
               ) : (
                 <>
                   <button
@@ -359,23 +392,24 @@ const Details = ({ details, setDeleted }: DetailsProps) => {
                   </button>
                 </>
               )}
-              {connected ? (
+              {/* {connected ? (
                 <>
                   {isMember ? (
                     <button
-                      className={cn(
-                        "button-stroke-grey button-medium",
-                        styles.button
-                      )}
-                      onClick={handleLeave}
-                      style={{
-                        paddingLeft: "0.5rem",
-                        paddingRight: "0.6rem",
-                        marginLeft: "2px",
-                      }}
+                    className={cn(
+                      "button-stroke-grey button-medium",
+                      styles.button
+                    )}
+                    onClick={handleLeave}
+                    style={{
+                      paddingLeft: "0.5rem",
+                      paddingRight: "0.6rem",
+                      marginLeft: "2px",
+                    }}
                     >
-                      <Icon name="logout" />
+                    <Icon name="logout" />
                     </button>
+                    
                   ) : (
                     <button
                       className={cn(
@@ -393,7 +427,7 @@ const Details = ({ details, setDeleted }: DetailsProps) => {
                     </button>
                   )}
                 </>
-              ) : null}
+              ) : null} */}
             </div>
             <Modal
               isOpen={deletemModalIsOpen}

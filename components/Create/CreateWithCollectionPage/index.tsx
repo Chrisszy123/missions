@@ -28,14 +28,14 @@ const UserMissions = ({ missions, status }: UserMissionsProps) => {
     <div>
       <div className={styles.head}>
         <div className={styles.subtitle}>Your Missions</div>
-        <div className={styles.counter}>2</div>
+        <div className={styles.counter}></div>
       </div>
-      <Link href="#">
+      {/* <Link href={`communities/${mission?.communityId}/missions/create`}>
         <a className={styles.add}>
           <div className={styles.plus}></div>
           Create new Mission
         </a>
-      </Link>
+      </Link> */}
       {status === "loading" ? (
         <div className="flex justify-center items-center p-8">
           <MoonLoader

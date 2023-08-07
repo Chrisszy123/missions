@@ -14,7 +14,7 @@ const UserCommunities = ({ communities, status }: UserCommunitiesProps) => {
         <div className={styles.subtitle}>Your Communities</div>
         <div className={styles.counter}>0</div>
       </div>
-      <Link href="#">
+      <Link href="communities/create">
         <a className={styles.add}>
           <div className={styles.plus}></div>
           <div className={styles.info}>Create new communities</div>

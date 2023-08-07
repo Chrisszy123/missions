@@ -32,7 +32,7 @@ const Tokens = ({
   const communityId = router.query.Id;
   const userId = user?.message?.data?.id;
   const [sorting, setSorting] = useState<string>("grid");
-  const sortedItems = items.sort((a: any, b: any) => {
+  const sortedItems = items?.sort((a: any, b: any) => {
     if (a.state === "OPEN" && b.state !== "OPEN") {
       return -1; // a should come before b
     } else if (a.status !== "OPEN" && b.status === "OPEN") {

@@ -113,7 +113,7 @@ const NFTDetail: NextPage<Props> = () => {
                       : "/images/robot.jpg"
                   }
                   title={mission?.message?.data?.name}
-                  date={`created at ${mission?.message?.data?.createdAt.slice(
+                  date={`created at ${mission?.message?.data?.createdAt?.slice(
                     0,
                     10
                   )}`}

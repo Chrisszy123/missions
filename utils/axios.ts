@@ -99,9 +99,10 @@ export const deleteMission = async (missionId: string) => {
         throw new Error('axios delete mission error' + err)
     }
 }
-export const approveMission = async (missionId: string) => {
+export const approveMission = async (missionId: string, missionState: string) => {
     const data = {
-        missionId
+        missionId,
+        missionState
     }
     try{
         const response = await axios.put("/api/mission/approve", data)

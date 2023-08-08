@@ -12,6 +12,8 @@
   "dependencies": {
     "@heroicons/react": "^2.0.18",
     "@hookform/resolvers": "^3.1.1",
+    "@material-ui/core": "^4.12.4",
+    "@material-ui/icons": "^4.11.3",
     "@moralisweb3/next": "^2.22.4",
     "@prisma/client": "^4.15.0",
     "@rainbow-me/rainbowkit": "^1.0.2",

@@ -327,7 +327,7 @@ const Details = ({ details, setDeleted }: DetailsProps) => {
             <div>
               {creator !== userId ? (
                 <>
-                {isMember ? (
+                {isMember && !creator ? (
                     <button
                     className={cn(
                       "button-stroke-grey button-medium",

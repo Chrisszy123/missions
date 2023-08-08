@@ -9,7 +9,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     try {
       const data = req.body;
       console.log(data)
-      const mission = await approveMission(data.missionId);
+      const mission = await approveMission(data);
       return res.json(mission);
     } catch (err: any) {
       throw new Error("Error approving mission" + err);

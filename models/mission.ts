@@ -140,15 +140,15 @@ export const closeMission = async (data: MissionData, user: any) => {
   }
 };
 // approve mission
-export const approveMission = async (data: MissionData) => {
-  const missionData = missionSchema.parse(data);
+export const approveMission = async (data: any) => {
+  //const missionData = missionSchema.parse(data);
   try {
     // check if mission is not closed or open
-    if (missionData.state !== "PENDING")
+    if (data.missionState !== "PENDING")
       throw new Error("Mission cannot be approved, State is not Pending");
     // now update the state field to open
     await prisma.mission.update({
-      where: { id: missionData.id },
+      where: { id: data.missionId },
       data: {
         state: "OPEN",
       },

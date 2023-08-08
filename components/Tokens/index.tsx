@@ -40,7 +40,7 @@ const Tokens = ({
     }
     return 0; // the order doesn't matter
   });
-  if (items.length <= 0) {
+  if (items?.length <= 0) {
     return (
       <div className="flex flex-col justify-center bg-zinc-900 items-center rounded-lg h-[100%] w-[100%] p-16 capitalize gap-4">
         {owner === userId ? (
@@ -104,13 +104,14 @@ const Tokens = ({
           [styles.list]: sorting === "list",
         })}
       >
-        {sortedItems.map((mission: any, index: number) => (
+        {sortedItems?.map((mission: any, index: number) => (
           <Token
             className={styles.token}
             item={mission}
             key={index}
             large={sorting === "list"}
             dark={theme}
+            owner={owner}
           />
         ))}
       </div>

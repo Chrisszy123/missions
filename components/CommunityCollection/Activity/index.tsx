@@ -17,7 +17,6 @@ type ActivityProps = {
 };
 
 const Activity = ({ items }: ActivityProps) => {
-  console.log(items)
 return (
   <div className={styles.table}>
     <div className={styles.row}>

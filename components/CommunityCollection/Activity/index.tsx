@@ -16,7 +16,9 @@ type ActivityProps = {
   items: ItemsType[];
 };
 
-const Activity = ({ items }: ActivityProps) => (
+const Activity = ({ items }: ActivityProps) => {
+  console.log(items)
+return (
   <div className={styles.table}>
     <div className={styles.row}>
       <div className={styles.col}>Profile</div>
@@ -70,6 +72,6 @@ const Activity = ({ items }: ActivityProps) => (
       </div>
     ))}
   </div>
-);
+)};
 
 export default Activity;

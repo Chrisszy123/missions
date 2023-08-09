@@ -16,6 +16,7 @@ import { AuthContext } from "context/AuthContext";
 import { useState } from "react";
 import { WalletConnectConnector } from "wagmi/dist/connectors/walletConnect";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { Toaster } from "react-hot-toast";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
@@ -115,6 +116,7 @@ function MyApp({
                   <meta name="msapplication-TileColor" content="#da532c" />
                   <meta name="theme-color" content="#ffffff" />
                 </Head>
+                <Toaster position="top-right" reverseOrder={false} />
                 <Component {...pageProps} />
               </AuthContext.Provider>
             </WalletContext.Provider>

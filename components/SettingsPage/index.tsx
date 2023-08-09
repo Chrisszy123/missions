@@ -43,10 +43,6 @@ const SettingsPage = ({ communities, missions, status }: DashboardProps) => {
             <div className={styles.anchor} ref={scrollToRefProfile}></div>
             <div className={styles.label}>information</div>
             <Information />
-            <button className={cn("button-large", styles.button, "mt-8")}>
-              <span>Save</span>
-              <Icon name="check" />
-            </button>
           </div>
 
           <div className={styles.section} id="wallet">

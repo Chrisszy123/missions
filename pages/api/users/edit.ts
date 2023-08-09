@@ -1,4 +1,4 @@
-import { approveMission } from "models/mission";
+import { updateUser } from "models/user";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import authOptions  from "../auth/[...nextauth]";
@@ -8,14 +8,14 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
   if (session) {
     try {
       const data = req.body;
-      const mission = await approveMission(data);
-      return res.json(mission);
+      const user = await updateUser(data.userData);
+      return res.json(user);
     } catch (err: any) {
-      throw new Error("Error approving mission" + err);
+      throw new Error("Error updating user" + err);
     }
   } else {
     res.send({
-      error: "You must be signed in to update mission.",
+      error: "You must be signed in to update user details.",
     });
   }
 }

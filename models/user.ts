@@ -55,12 +55,16 @@ export const deleteUser = async (data: UserData) => {
   }
 };
 // update user
-export const updateUser = async (data: UserData) => {
-  const userData = UserSchema.parse(data);
+export const updateUser = async (data: any) => {
+  //const userData = UserSchema.parse(data);
   try {
     const updatedUser = await prisma.user.update({
-      where: { id: userData.id },
-      data: userData,
+      where: { id: data.id },
+      data: {
+        email: data.email,
+        username: data.username,
+        bio: data.bio
+      },
     });
     return updatedUser;
   } catch (err: any) {

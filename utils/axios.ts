@@ -120,7 +120,14 @@ export const createUser = async (userData: any) => {
     } catch (err: any) {
         throw new Error('error creating user' + err)
     }
-
+}
+export const updateUser = async (userData: any) => {
+    try {
+        const user = await axios.post('/api/users/edit', { userData })
+        return { status: true, message: user }
+    } catch (err: any) {
+        throw new Error('error updating user' + err)
+    }
 }
 export const getUsers = async () => {
     try {
